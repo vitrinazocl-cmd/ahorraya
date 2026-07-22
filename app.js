@@ -1049,6 +1049,41 @@ function setupEventListeners() {
             openOrderDetailModal(orderId);
         }
     });
+
+    // Video Sound Mute/Unmute Toggle
+    const soundToggleBtn = document.getElementById('videoSoundToggle');
+    const soundToggleIcon = document.getElementById('soundToggleIcon');
+    const carouselVideo = document.querySelector('.carousel-video');
+
+    if (soundToggleBtn && carouselVideo) {
+        soundToggleBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const isMuted = carouselVideo.muted;
+            carouselVideo.muted = !isMuted;
+            
+            if (carouselVideo.muted) {
+                soundToggleBtn.setAttribute('aria-label', 'Activar Sonido');
+                soundToggleIcon.innerHTML = `<path d="M3.27,3L2,4.27L7.73,10H3V16H7L12,21V14.27L16.25,18.53C15.58,19.04 14.83,19.46 14,19.7V21.77C15.38,21.44 16.63,20.78 17.68,18.95L20.73,22L22,20.73L4.27,3M14,3.23V5.29C14.93,5.57 15.79,6.06 16.55,6.7L15.06,8.19C14.57,7.88 14.05,7.63 13.5,7.47M16.5,12C16.5,11.23 16.19,10.54 15.69,10.03L17.18,8.54C18.04,9.45 18.5,10.67 18.5,12c0,1.25-.41,2.4-1.12,3.33L15.89,13.84C16.27,13.33 16.5,12.7 16.5,12Z"/>`;
+            } else {
+                soundToggleBtn.setAttribute('aria-label', 'Desactivar Sonido');
+                soundToggleIcon.innerHTML = `<path d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18,19.86 21,16.28 21,12C21,7.72 18,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16C15.5,15.29 16.5,13.77 16.5,12M3,9H7L12,4V20L7,15H3V9Z"/>`;
+            }
+        });
+    }
+
+    // Auto-unmute on first user interaction to help sound play naturally
+    const unmuteOnInteract = () => {
+        if (carouselVideo && carouselVideo.muted) {
+            carouselVideo.muted = false;
+            if (soundToggleBtn && soundToggleIcon) {
+                soundToggleBtn.setAttribute('aria-label', 'Desactivar Sonido');
+                soundToggleIcon.innerHTML = `<path d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18,19.86 21,16.28 21,12C21,7.72 18,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16C15.5,15.29 16.5,13.77 16.5,12M3,9H7L12,4V20L7,15H3V9Z"/>`;
+            }
+        }
+    };
+    document.body.addEventListener('click', unmuteOnInteract, { once: true });
 }
 
 // Redirects to correct Admin section based on auth state

@@ -197,6 +197,12 @@
                             <source src="cocavideo1.mp4" type="video/mp4">
                             Tu navegador no soporta reproducción de videos.
                         </video>
+                        <button class="video-sound-toggle-btn" id="videoSoundToggle" aria-label="Activar Sonido" style="position: absolute; bottom: 20px; right: 20px; z-index: 15; background: rgba(0,0,0,0.6); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition-fast);">
+                            <!-- Mute icon (starts muted) -->
+                            <svg id="soundToggleIcon" viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                                <path d="M3.27,3L2,4.27L7.73,10H3V16H7L12,21V14.27L16.25,18.53C15.58,19.04 14.83,19.46 14,19.7V21.77C15.38,21.44 16.63,20.78 17.68,18.95L20.73,22L22,20.73L4.27,3M14,3.23V5.29C14.93,5.57 15.79,6.06 16.55,6.7L15.06,8.19C14.57,7.88 14.05,7.63 13.5,7.47M16.5,12C16.5,11.23 16.19,10.54 15.69,10.03L17.18,8.54C18.04,9.45 18.5,10.67 18.5,12c0,1.25-.41,2.4-1.12,3.33L15.89,13.84C16.27,13.33 16.5,12.7 16.5,12Z"/>
+                            </svg>
+                        </button>
                         <div class="carousel-caption">
                             <h2>BEBIDAS Y ABARROTES POR MAYOR</h2>
                             <p>Abastece tu negocio con la mayor tecnología y transparencia. Descuentos por caja y palet en tiempo real.</p>
