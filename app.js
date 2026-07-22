@@ -1704,7 +1704,7 @@ function submitCheckoutToWhatsApp() {
     msg += `\n_Pedido procesado de forma segura bajo cifrado SSL. Pendiente confirmación de pago por ejecutivo._`;
 
     const encodedText = encodeURIComponent(msg);
-    const whatsappUrl = `https://wa.me/56912345678?text=${encodedText}`;
+    const whatsappUrl = `https://wa.me/56931309393?text=${encodedText}`;
 
     STATE.cart = [];
     saveCartToStorage();
