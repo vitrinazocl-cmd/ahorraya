@@ -506,6 +506,28 @@ img {
     color: var(--color-accent);
 }
 
+.nav-social-links {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-left: 1px solid rgba(255, 255, 255, 0.2);
+    padding-left: 12px;
+}
+
+.social-nav-link {
+    color: white;
+    opacity: 0.8;
+    transition: var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+}
+
+.social-nav-link:hover {
+    opacity: 1;
+    color: var(--color-accent);
+    transform: scale(1.15);
+}
+
 
 /* ==========================================================================
    MOBILE DRAWERS
@@ -621,11 +643,11 @@ img {
     position: relative;
 }
 
-.carousel-img {
+.carousel-img, .carousel-video {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: brightness(0.8);
+    filter: brightness(0.75);
 }
 
 .carousel-caption {
