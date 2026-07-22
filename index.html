@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AhorraYa! - Abarrotes al por Mayor</title>
+    <meta name="description" content="AhorraYa! Compra abarrotes por mayor en Chile. Desde una unidad hasta un palet con precios decrecientes automáticos. La forma más barata de abastecerte.">
+    <!-- Google Fonts: Roboto & Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- CSS Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- STICKY HEADER -->
+    <header class="main-header" id="mainHeader">
+        <div class="header-top-bar">
+            <!-- Hamburger Menu for Mobile -->
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Abrir menú de categorías">
+                <svg viewBox="0 0 24 24" width="24" height="24">
+                    <path fill="currentColor" d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z" />
+                </svg>
+            </button>
+
+            <!-- Brand Logo -->
+            <a href="#" class="logo-container" id="brandLogo">
+                <img src="logo.jpg" alt="AhorraYa Logo" class="brand-logo">
+            </a>
+
+            <!-- Search Bar -->
+            <div class="search-container">
+                <form id="searchForm" class="search-form" onsubmit="event.preventDefault();">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Buscar abarrotes, marcas, ofertas..." autocomplete="off">
+                    <button type="button" id="clearSearchBtn" class="clear-search-btn" aria-label="Limpiar búsqueda" style="display: none;">
+                        &times;
+                    </button>
+                    <button type="submit" class="search-btn" aria-label="Buscar">
+                        <svg viewBox="0 0 24 24" width="20" height="20">
+                            <path fill="currentColor" d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" />
+                        </svg>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Header Action Controls -->
+            <div class="header-actions">
+                <!-- Admin Lock Trigger Button -->
+                <button class="admin-trigger-btn" id="adminTriggerBtn" aria-label="Acceso Administración">
+                    <svg viewBox="0 0 24 24" width="20" height="20">
+                        <path fill="currentColor" d="M12,17A2,2 0 0,0 14,15C14,13.89 13.11,13 12,13A2,2 0 0,0 10,15C10,16.11 10.89,17 12,17M18 8H17V6A5,5 0 0,0 12 1A5,5 0 0,0 7 6V8H6A2,2 0 0,0 4 10V20A2,2 0 0,0 6 22H18A2,2 0 0,0 20 20V10A2,2 0 0,0 18 8M9 6A3,3 0 0,1 12 3A3,3 0 0,1 15 6V8H9V6Z"/>
+                    </svg>
+                    <span>Acceso Admin</span>
+                </button>
+
+                <!-- Cart Widget -->
+                <button class="cart-trigger-btn" id="cartTriggerBtn" aria-label="Ver carrito">
+                    <div class="cart-icon-wrapper">
+                        <svg viewBox="0 0 24 24" width="24" height="24">
+                            <path fill="currentColor" d="M17,18A2,2 0 0,1 19,20A2,2 0 0,1 17,22A2,2 0 0,1 15,20A2,2 0 0,1 17,18M7,18A2,2 0 0,1 9,20A2,2 0 0,1 7,22A2,2 0 0,1 5,20A2,2 0 0,1 7,18M7.2,14.63L7.17,14.56L9,11H15.55C16.3,11 17,10.59 17.3,10L21.08,3.15L19.34,2.2L15.55,9H9.7L8.38,6.2L4.27,2H1V4H3L6.6,11.59L5.25,14.04C5.1,14.33 5,14.65 5,15A2,2 0 0,0 7,17H19V15H7.42C7.29,15 7.17,14.89 7.2,14.63Z" />
+                        </svg>
+                        <span class="cart-badge" id="cartBadge">0</span>
+                    </div>
+                    <div class="cart-info-text">
+                        <span class="cart-label">Mi Carrito</span>
+                        <span class="cart-total-header" id="cartTotalHeader">$0</span>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Desktop Navigation Bar -->
+        <nav class="navigation-bar">
+            <div class="nav-links">
+                <!-- Dropdown Categories -->
+                <div class="nav-dropdown" id="navDropdownCategories">
+                    <button class="nav-dropdown-btn" id="categoriesMenuBtn">
+                        <svg viewBox="0 0 24 24" width="18" height="18" style="margin-right: 8px;">
+                            <path fill="currentColor" d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z" />
+                        </svg>
+                        Categorías
+                        <svg viewBox="0 0 24 24" width="16" height="16" class="dropdown-chevron">
+                            <path fill="currentColor" d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
+                        </svg>
+                    </button>
+                    <!-- Floating Categories Menu -->
+                    <div class="dropdown-content" id="categoriesDropdown">
+                        <a href="#" data-category="all">Ver Todo</a>
+                        <a href="#" data-category="abarrotes">Abarrotes Básicos</a>
+                        <a href="#" data-category="liquidos">Bebidas y Líquidos</a>
+                        <a href="#" data-category="limpieza">Limpieza e Higiene</a>
+                        <a href="#" data-category="lacteos">Lácteos y Fiambrería</a>
+                        <a href="#" data-category="conservas">Conservas y Salsas</a>
+                    </div>
+                </div>
+
+                <a href="#" class="nav-link" id="navLinkOffers" data-view="offers">
+                    <svg viewBox="0 0 24 24" width="18" height="18" style="margin-right: 5px;">
+                        <path fill="currentColor" d="M12.79,21L21,12.79V5A2,2 0 0,0 19,3H11.21L3,11.21A2,2 0 0,0 3,14.04L9.96,21A2,2 0 0,0 12.79,21M19,7A1,1 0 1,1 19,5A1,1 0 0,1 19,7Z" />
+                    </svg>
+                    Ofertas
+                </a>
+                <a href="#" class="nav-link" id="navLinkNew" data-view="new">
+                    <svg viewBox="0 0 24 24" width="18" height="18" style="margin-right: 5px;">
+                        <path fill="currentColor" d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z" />
+                    </svg>
+                    Nuevos Productos
+                </a>
+                <a href="#" class="nav-link" id="navLinkHowToBuy">
+                    <svg viewBox="0 0 24 24" width="18" height="18" style="margin-right: 5px;">
+                        <path fill="currentColor" d="M11,18H13V16H11V18M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,6A4,4 0 0,0 8,10H10A2,2 0 0,1 12,8A2,2 0 0,1 14,10C14,12 11,11.75 11,15H13C13,12.75 16,12.5 16,10A4,4 0 0,0 12,6Z" />
+                    </svg>
+                    ¿Cómo Comprar?
+                </a>
+            </div>
+
+            <!-- DYNAMIC EXECUTIVE ADMIN HEADER MENU -->
+            <div class="admin-nav-group" id="adminNavGroup" style="display: none;">
+                <a href="#" class="nav-link active" id="navLinkAdminOrders">📦 Ver Pedidos</a>
+                <a href="#" class="nav-link" id="navLinkAdminSales">📈 Reportes de Ventas</a>
+                <button class="btn btn-secondary btn-outline-sm" id="btnHeaderAdminLogout" style="margin-left: 15px; font-size: 0.75rem; border: none; background-color: var(--color-secondary); color: white;">
+                    Cerrar Sesión
+                </button>
+            </div>
+
+            <div class="nav-extra-info" id="navExtraInfo">
+                <span>📍 Envío gratis sobre $100.000</span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- MOBILE SIDEBAR CATEGORIES DRAWER -->
+    <aside class="mobile-drawer" id="mobileDrawer">
+        <div class="drawer-header">
+            <h3>Navegación</h3>
+            <button class="drawer-close-btn" id="mobileDrawerCloseBtn" aria-label="Cerrar menú">&times;</button>
+        </div>
+        
+        <!-- Standard User Drawer Items -->
+        <nav class="drawer-nav" id="drawerNavStandard">
+            <a href="#" data-category="all" class="drawer-item">Ver Todo el Catálogo</a>
+            <a href="#" data-category="abarrotes" class="drawer-item">Abarrotes Básicos</a>
+            <a href="#" data-category="liquidos" class="drawer-item">Bebidas y Líquidos</a>
+            <a href="#" data-category="limpieza" class="drawer-item">Limpieza e Higiene</a>
+            <a href="#" data-category="lacteos" class="drawer-item">Lácteos y Fiambrería</a>
+            <a href="#" data-category="conservas" class="drawer-item">Conservas y Salsas</a>
+            <hr>
+            <a href="#" class="drawer-item" id="mobileOffersLink">🔥 Ofertas</a>
+            <a href="#" class="drawer-item" id="mobileNewLink">✨ Nuevos Productos</a>
+            <a href="#" class="drawer-item" id="mobileHowToBuyLink">❓ ¿Cómo Comprar?</a>
+            <a href="#" class="drawer-item" id="mobileAdminLoginLink">🔐 Acceso Ejecutivo</a>
+        </nav>
+
+        <!-- Admin Executive Drawer Items (Hidden by default) -->
+        <nav class="drawer-nav" id="drawerNavAdmin" style="display: none;">
+            <div style="padding: 10px 20px; font-size: 0.8rem; font-weight: 700; color: var(--color-primary-light);">
+                MODO EJECUTIVO DE VENTAS
+            </div>
+            <a href="#" class="drawer-item" id="mobileAdminOrdersLink">📦 Gestión de Pedidos</a>
+            <a href="#" class="drawer-item" id="mobileAdminSalesLink">📈 Reportes de Ventas</a>
+            <hr>
+            <a href="#" class="drawer-item" id="mobileAdminLogoutLink" style="color: var(--color-secondary);">👋 Cerrar Sesión</a>
+        </nav>
+    </aside>
+    <div class="drawer-overlay" id="drawerOverlay"></div>
+
+    <!-- MAIN VIEW CONTAINER -->
+    <main class="main-content" id="mainContent">
+
+        <!-- 1. HOME VIEW -->
+        <section class="view-section active" id="homeView">
+            
+            <!-- Banner Slider / Carousel -->
+            <div class="carousel-container" id="homeCarousel">
+                <div class="carousel-track" id="carouselTrack">
+                    <!-- Slide 1 -->
+                    <div class="carousel-slide">
+                        <img src="banner1.jpg" alt="Ahorra de verdad comprando por volumen" class="carousel-img">
+                        <div class="carousel-caption">
+                            <h2>COMPRA AL POR MAYOR</h2>
+                            <p>Abastece tu negocio o tu hogar. Descuentos automáticos por caja y palet.</p>
+                            <button class="btn btn-primary view-products-btn" data-category="all">Ver Catálogo</button>
+                        </div>
+                    </div>
+                    <!-- Slide 2 -->
+                    <div class="carousel-slide">
+                        <img src="banner2.jpg" alt="Logística rápida para tu negocio" class="carousel-img">
+                        <div class="carousel-caption">
+                            <h2>DESPACHO A TODA LA REGIÓN</h2>
+                            <p>Envíos express en 24/48 horas directamente a tu almacén o domicilio.</p>
+                            <button class="btn btn-secondary" id="infoDespachoBtn">Más Información</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Navigation Arrows -->
+                <button class="carousel-arrow prev" id="carouselPrevBtn" aria-label="Imagen anterior">&#10094;</button>
+                <button class="carousel-arrow next" id="carouselNextBtn" aria-label="Siguiente imagen">&#10095;</button>
+                <!-- Indicators -->
+                <div class="carousel-indicators" id="carouselIndicators">
+                    <span class="indicator active" data-index="0"></span>
+                    <span class="indicator" data-index="1"></span>
+                </div>
+            </div>
+
+            <!-- Content Quick Info Blocks -->
+            <div class="info-blocks-grid">
+                <div class="info-card ripple" id="blockPayments">
+                    <div class="info-card-icon">
+                        <svg viewBox="0 0 24 24" width="36" height="36" fill="currentColor">
+                            <path d="M20,8H4V6H20M20,18H4V12H20M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4Z" />
+                        </svg>
+                    </div>
+                    <div class="info-card-text">
+                        <h4>Medios de Pago</h4>
+                        <p>WebPay, Transferencia y Crédito Almacén</p>
+                    </div>
+                </div>
+                
+                <div class="info-card ripple" id="blockDelivery">
+                    <div class="info-card-icon">
+                        <svg viewBox="0 0 24 24" width="36" height="36" fill="currentColor">
+                            <path d="M20,8H17V4H3C1.89,4 1,4.89 1,6V17H3A3,3 0 0,0 6,20A3,3 0 0,0 9,17H15A3,3 0 0,0 18,20A3,3 0 0,0 21,17H23V12L20,8M6,18.5A1.5,1.5 0 0,1 4.5,17A1.5,1.5 0 0,1 6,15.5A1.5,1.5 0 0,1 7.5,17A1.5,1.5 0 0,1 6,18.5M17,12V9.5H19.5L21.47,12H17M18,18.5A1.5,1.5 0 0,1 16.5,17A1.5,1.5 0 0,1 18,15.5A1.5,1.5 0 0,1 19.5,17A1.5,1.5 0 0,1 18,18.5Z" />
+                        </svg>
+                    </div>
+                    <div class="info-card-text">
+                        <h4>Despachos</h4>
+                        <p>Despacho directo y retiro en bodega</p>
+                    </div>
+                </div>
+
+                <div class="info-card ripple" id="blockOrderStatus">
+                    <div class="info-card-icon">
+                        <svg viewBox="0 0 24 24" width="36" height="36" fill="currentColor">
+                            <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z" />
+                        </svg>
+                    </div>
+                    <div class="info-card-text">
+                        <h4>Estado de Pedido</h4>
+                        <p>Sigue tu compra en tiempo real</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Campaign / Ofertas Section -->
+            <section class="home-product-shelf" id="shelfOffers">
+                <div class="shelf-header">
+                    <div class="shelf-title">
+                        <span class="badge badge-sale">🔥 OFERTAS IMPERDIBLES</span>
+                        <h2>Los más rebajados de la semana</h2>
+                    </div>
+                    <a href="#" class="btn-text-link view-all-link" data-filter="offers">
+                        Ver todos
+                        <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"/></svg>
+                    </a>
+                </div>
+                <div class="product-grid" id="offersGrid">
+                    <!-- Dynamic Product Cards -->
+                </div>
+            </section>
+
+            <!-- Category 1 Shelf (Abarrotes Básicos) -->
+            <section class="home-product-shelf" id="shelfAbarrotes">
+                <div class="shelf-header">
+                    <div class="shelf-title">
+                        <h2>Abarrotes Básicos por Mayor</h2>
+                    </div>
+                    <a href="#" class="btn-text-link view-all-link" data-category="abarrotes">
+                        Ver todos
+                        <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"/></svg>
+                    </a>
+                </div>
+                <div class="product-grid" id="abarrotesGrid">
+                    <!-- Dynamic Product Cards -->
+                </div>
+            </section>
+
+            <!-- Category 2 Shelf (Limpieza e Higiene) -->
+            <section class="home-product-shelf" id="shelfLimpieza">
+                <div class="shelf-header">
+                    <div class="shelf-title">
+                        <h2>Higiene y Limpieza Industrial / Hogar</h2>
+                    </div>
+                    <a href="#" class="btn-text-link view-all-link" data-category="limpieza">
+                        Ver todos
+                        <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"/></svg>
+                    </a>
+                </div>
+                <div class="product-grid" id="limpiezaGrid">
+                    <!-- Dynamic Product Cards -->
+                </div>
+            </section>
+        </section>
+
+        <!-- 2. PRODUCT LIST PAGE (PLP) VIEW -->
+        <section class="view-section" id="plpView">
+            <div class="plp-layout">
+                <!-- Filters Sidebar -->
+                <aside class="plp-sidebar" id="plpSidebar">
+                    <div class="sidebar-header">
+                        <h3>Filtros</h3>
+                        <button class="btn btn-outline-sm" id="btnResetFilters">Limpiar Todo</button>
+                    </div>
+
+                    <!-- Filter Group: Availability -->
+                    <div class="filter-group">
+                        <button class="filter-group-header">
+                            <span>Disponibilidad</span>
+                            <svg class="chevron" viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"/></svg>
+                        </button>
+                        <div class="filter-group-content">
+                            <label class="filter-checkbox-label">
+                                <input type="checkbox" name="availability" value="stock" checked>
+                                <span class="checkbox-box"></span>
+                                En Stock (Disponible Ya)
+                            </label>
+                            <label class="filter-checkbox-label">
+                                <input type="checkbox" name="availability" value="order">
+                                <span class="checkbox-box"></span>
+                                Bajo Pedido (3-5 días)
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Filter Group: Brand -->
+                    <div class="filter-group">
+                        <button class="filter-group-header">
+                            <span>Marcas</span>
+                            <svg class="chevron" viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"/></svg>
+                        </button>
+                        <div class="filter-group-content" id="brandFiltersContainer">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Filter Group: Customer Type -->
+                    <div class="filter-group">
+                        <button class="filter-group-header">
+                            <span>Tipo de Cliente</span>
+                            <svg class="chevron" viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"/></svg>
+                        </button>
+                        <div class="filter-group-content">
+                            <label class="filter-checkbox-label">
+                                <input type="checkbox" name="clientType" value="minorista" checked>
+                                <span class="checkbox-box"></span>
+                                Minorista / Almacén
+                            </label>
+                            <label class="filter-checkbox-label">
+                                <input type="checkbox" name="clientType" value="mayorista" checked>
+                                <span class="checkbox-box"></span>
+                                Distribuidor / Mayorista
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Filter Group: Product Type -->
+                    <div class="filter-group">
+                        <button class="filter-group-header">
+                            <span>Categoría de Producto</span>
+                            <svg class="chevron" viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"/></svg>
+                        </button>
+                        <div class="filter-group-content">
+                            <label class="filter-checkbox-label">
+                                <input type="checkbox" name="categoryFilter" value="abarrotes">
+                                <span class="checkbox-box"></span>
+                                Abarrotes Básicos
+                            </label>
+                            <label class="filter-checkbox-label">
+                                <input type="checkbox" name="categoryFilter" value="liquidos">
+                                <span class="checkbox-box"></span>
+                                Bebidas y Líquidos
+                            </label>
+                            <label class="filter-checkbox-label">
+                                <input type="checkbox" name="categoryFilter" value="limpieza">
+                                <span class="checkbox-box"></span>
+                                Higiene y Limpieza
+                            </label>
+                            <label class="filter-checkbox-label">
+                                <input type="checkbox" name="categoryFilter" value="lacteos">
+                                <span class="checkbox-box"></span>
+                                Lácteos y Fiambrería
+                            </label>
+                            <label class="filter-checkbox-label">
+                                <input type="checkbox" name="categoryFilter" value="conservas">
+                                <span class="checkbox-box"></span>
+                                Conservas y Salsas
+                            </label>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Product Grid Content Area -->
+                <div class="plp-content">
+                    <div class="plp-title-bar">
+                        <h2 id="plpTitle">Catálogo Completo</h2>
+                        
+                        <div class="plp-sorting-widgets">
+                            <span class="product-count" id="productCount">Mostrando 0 productos</span>
+                            
+                            <div class="sort-selector">
+                                <label for="sortBySelect">Ordenar por:</label>
+                                <select id="sortBySelect" class="sort-select">
+                                    <option value="popularity">Destacados / Popularidad</option>
+                                    <option value="price-asc">Precio: Menor a Mayor</option>
+                                    <option value="price-desc">Precio: Mayor a Menor</option>
+                                    <option value="name-asc">Nombre: A - Z</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main grid of products on PLP -->
+                    <div class="product-grid plp-grid" id="plpGrid">
+                        <!-- Dynamic Product Cards -->
+                    </div>
+                    
+                    <!-- Search feedback state when no results -->
+                    <div class="no-results-state" id="noResultsState" style="display: none;">
+                        <svg viewBox="0 0 24 24" width="80" height="80" fill="var(--color-text-muted)">
+                            <path d="M15.5,14h-.79l-.28-.27C15.41,12.59,16,11.11,16,9.5A6.5,6.5,0,1,0,9.5,16c1.61,0,3.09-.59,4.23-1.57l.27.28v.79l5,4.99L20.49,19l-4.99-5Zm-6,0C7.01,14,5,11.99,5,9.5S7.01,5,9.5,5,14,7.01,14,9.5,11.99,14,9.5,14Z" />
+                        </svg>
+                        <h3>No encontramos resultados</h3>
+                        <p>Intenta buscando con palabras clave similares o limpia los filtros activos.</p>
+                        <button class="btn btn-primary" id="btnClearSearchAndFilters">Ver Todo el Catálogo</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. ADMIN LOGIN VIEW -->
+        <section class="view-section" id="adminLoginView">
+            <div class="login-wrapper">
+                <div class="login-card">
+                    <div class="login-header">
+                        <svg viewBox="0 0 24 24" width="40" height="40" class="lock-icon">
+                            <path fill="currentColor" d="M12,17A2,2 0 0,0 14,15C14,13.89 13.11,13 12,13A2,2 0 0,0 10,15C10,16.11 10.89,17 12,17M18 8H17V6A5,5 0 0,0 12 1A5,5 0 0,0 7 6V8H6A2,2 0 0,0 4 10V20A2,2 0 0,0 6 22H18A2,2 0 0,0 20 20V10A2,2 0 0,0 18 8M9 6A3,3 0 0,1 12 3A3,3 0 0,1 15 6V8H9V6Z"/>
+                        </svg>
+                        <h2>Acceso Administrativo</h2>
+                        <p>Ingrese sus credenciales de ejecutivo de ventas de AhorraYa!</p>
+                    </div>
+                    
+                    <form id="adminLoginForm">
+                        <div class="form-group">
+                            <label for="adminUser">Usuario</label>
+                            <input type="text" id="adminUser" required placeholder="Usuario (Ej: ahorraya)" autocomplete="username">
+                        </div>
+                        <div class="form-group">
+                            <label for="adminPass">Contraseña</label>
+                            <input type="password" id="adminPass" required placeholder="••••••" autocomplete="current-password">
+                        </div>
+                        <div class="login-error-msg" id="loginErrorMsg" style="display: none;">
+                            ❌ Credenciales inválidas. Intente nuevamente.
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block login-btn">Iniciar Sesión</button>
+                        <button type="button" class="btn btn-block btn-back-home" style="margin-top: 10px; background-color: var(--color-bg-light); border: 1px solid var(--color-border); color: var(--color-text-dark);">
+                            Volver a la Tienda
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. ADMIN SEPARATE VIEW 1: ORDERS MANAGEMENT -->
+        <section class="view-section" id="adminOrdersView">
+            <div class="admin-container">
+                <!-- Dashboard Header -->
+                <div class="admin-topbar">
+                    <div class="admin-title">
+                        <h2>Portal Mayorista: Pedidos Recibidos</h2>
+                        <span>Monitoreo de Órdenes y Logística de Clientes</span>
+                    </div>
+                    <div class="admin-user-widget">
+                        <span class="user-badge">👤 Ejecutivo: <strong class="adminDisplayUser">ahorraya</strong></span>
+                        <button class="btn btn-secondary btn-outline-sm btnAdminLogout" style="background-color: var(--color-secondary); color: white; border: none; font-size: 0.75rem;">
+                            Cerrar Sesión
+                        </button>
+                    </div>
+                </div>
+
+                <!-- KPI Metric Cards Grid (Same styled KPIs inside each page for consistency) -->
+                <div class="admin-kpis-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-icon money">💵</div>
+                        <div class="kpi-text">
+                            <span class="kpi-label">Ingresos Totales (Neto)</span>
+                            <h3 class="kpi-value kpiRevenue">$0</h3>
+                        </div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-icon orders">📦</div>
+                        <div class="kpi-text">
+                            <span class="kpi-label">Pedidos Recibidos</span>
+                            <h3 class="kpi-value kpiOrdersCount">0</h3>
+                        </div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-icon average">📈</div>
+                        <div class="kpi-text">
+                            <span class="kpi-label">Ticket Promedio (AOV)</span>
+                            <h3 class="kpi-value kpiTicketAverage">$0</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pane-header-action">
+                    <h3>Registro Histórico de Pedidos</h3>
+                    <p>Lista de órdenes procesadas en el portal y enviadas a WhatsApp.</p>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="admin-table" id="adminOrdersTable">
+                        <thead>
+                            <tr>
+                                <th>Fecha / Hora</th>
+                                <th>ID Pedido</th>
+                                <th>Cliente</th>
+                                <th>RUT</th>
+                                <th>Despacho</th>
+                                <th>Total Pedido</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Loaded dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. ADMIN SEPARATE VIEW 2: SALES ANALYTICS & CHARTS -->
+        <section class="view-section" id="adminSalesView">
+            <div class="admin-container">
+                <!-- Dashboard Header -->
+                <div class="admin-topbar">
+                    <div class="admin-title">
+                        <h2>Portal Mayorista: Reportes y Ventas</h2>
+                        <span>Análisis de Facturación y Crecimiento Comercial</span>
+                    </div>
+                    <div class="admin-user-widget">
+                        <span class="user-badge">👤 Ejecutivo: <strong class="adminDisplayUser">ahorraya</strong></span>
+                        <button class="btn btn-secondary btn-outline-sm btnAdminLogout" style="background-color: var(--color-secondary); color: white; border: none; font-size: 0.75rem;">
+                            Cerrar Sesión
+                        </button>
+                    </div>
+                </div>
+
+                <!-- KPI Metric Cards Grid -->
+                <div class="admin-kpis-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-icon money">💵</div>
+                        <div class="kpi-text">
+                            <span class="kpi-label">Ingresos Totales (Neto)</span>
+                            <h3 class="kpi-value kpiRevenue">$0</h3>
+                        </div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-icon orders">📦</div>
+                        <div class="kpi-text">
+                            <span class="kpi-label">Pedidos Recibidos</span>
+                            <h3 class="kpi-value kpiOrdersCount">0</h3>
+                        </div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-icon average">📈</div>
+                        <div class="kpi-text">
+                            <span class="kpi-label">Ticket Promedio (AOV)</span>
+                            <h3 class="kpi-value kpiTicketAverage">$0</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pane-header-action">
+                    <div>
+                        <h3>Análisis de Ventas por Período</h3>
+                        <p>Visualización en tiempo real de facturación agrupada.</p>
+                    </div>
+                    <div class="pane-actions">
+                        <div class="period-selector">
+                            <button class="btn-period active" data-period="day">Diario</button>
+                            <button class="btn-period" data-period="week">Semanal</button>
+                            <button class="btn-period" data-period="month">Mensual</button>
+                            <button class="btn-period" data-period="year">Anual</button>
+                        </div>
+                        <button class="btn btn-primary" id="btnExportExcel" style="font-size: 0.85rem; height: 36px; padding: 0 16px;">
+                            📊 Descargar Reporte Excel (CSV)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Dynamic Visual Chart (CSS/SVG bars layout) -->
+                <div class="chart-outer-container">
+                    <h4 id="chartTitle">Ingresos Diarios de Ventas</h4>
+                    <div class="chart-wrapper">
+                        <div class="chart-y-axis">
+                            <span class="axis-lbl" id="chartYMax">$2.0M</span>
+                            <span class="axis-lbl" id="chartYMid">$1.0M</span>
+                            <span class="axis-lbl">$0</span>
+                        </div>
+                        <div class="chart-bars-track" id="chartBarsTrack">
+                            <!-- Dynamic bars filled by JS -->
+                        </div>
+                    </div>
+                    <div class="chart-x-labels" id="chartXLabels">
+                        <!-- X Labels filled by JS -->
+                    </div>
+                </div>
+
+                <!-- Detailed Sales breakdown summary table -->
+                <div class="table-responsive" style="margin-top: 30px;">
+                    <table class="admin-table table-summary-sales" id="salesSummaryTable">
+                        <thead>
+                            <tr>
+                                <th>Período</th>
+                                <th>N° Operaciones</th>
+                                <th>Productos Vendidos</th>
+                                <th>Monto Recaudado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Loaded dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- SHOPPING CART SIDE DRAWER -->
+    <aside class="cart-drawer" id="cartDrawer">
+        <div class="cart-drawer-header">
+            <h3>Mi Carrito</h3>
+            <span class="cart-drawer-count" id="cartDrawerCount">0 productos</span>
+            <button class="drawer-close-btn" id="cartDrawerCloseBtn" aria-label="Cerrar carrito">&times;</button>
+        </div>
+        
+        <!-- Cart Items List (Scrollable) -->
+        <div class="cart-drawer-body" id="cartDrawerItems">
+            <!-- Dynamic Cart Row items -->
+            <div class="cart-empty-state" id="cartEmptyState">
+                <svg viewBox="0 0 24 24" width="60" height="60" fill="currentColor">
+                    <path d="M17,18A2,2 0 0,1 19,20A2,2 0 0,1 17,22A2,2 0 0,1 15,20A2,2 0 0,1 17,18M7,18A2,2 0 0,1 9,20A2,2 0 0,1 7,22A2,2 0 0,1 5,20A2,2 0 0,1 7,18M7.2,14.63L7.17,14.56L9,11H15.55C16.3,11 17,10.59 17.3,10L21.08,3.15L19.34,2.2L15.55,9H9.7L8.38,6.2L4.27,2H1V4H3L6.6,11.59L5.25,14.04C5.1,14.33 5,14.65 5,15A2,2 0 0,0 7,17H19V15H7.42C7.29,15 7.17,14.89 7.2,14.63Z" />
+                </svg>
+                <p>Tu carrito está vacío</p>
+                <button class="btn btn-primary close-cart-and-browse">Comenzar a Comprar</button>
+            </div>
+        </div>
+        
+        <!-- Cart Summary & Checkout Footer -->
+        <div class="cart-drawer-footer" id="cartDrawerFooter" style="display: none;">
+            <div class="summary-row">
+                <span>Subtotal</span>
+                <span id="cartSubtotal">$0</span>
+            </div>
+            <div class="summary-row delivery-row">
+                <span>Despacho</span>
+                <span id="cartDeliveryCost" class="free-badge">Gratis</span>
+            </div>
+            <div class="summary-row total-row">
+                <span>Total</span>
+                <span id="cartTotal">$0</span>
+            </div>
+            
+            <div class="cart-saving-alert" id="cartSavingAlert">
+                🎉 ¡Estás ahorrando <strong id="cartSavingsAmount">$0</strong> por comprar al por mayor!
+            </div>
+            
+            <button class="btn btn-primary btn-block checkout-btn" id="btnCheckout">
+                Proceder al Checkout (WhatsApp)
+                <svg viewBox="0 0 24 24" width="18" height="18" style="margin-left: 8px; vertical-align: middle;">
+                    <path fill="currentColor" d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01-1.88-1.88-4.37-2.9-7.02-2.9M12.04 3.7c4.46 0 8.09 3.63 8.09 8.09s-3.63 8.09-8.09 8.09c-1.57 0-3.1-.46-4.41-1.32l-.32-.19-3.28.86.88-3.19-.21-.34c-.94-1.5-1.44-3.23-1.44-5.01C3.95 7.33 7.58 3.7 12.04 3.7m-2.13 4.25c-.27-.6-.56-.61-.82-.62h-.7c-.24 0-.64.09-.98.46-.34.37-1.29 1.26-1.29 3.08s1.32 3.58 1.51 3.83c.19.25 2.6 3.97 6.3 5.56.88.38 1.57.6 2.11.78.89.28 1.7.24 2.34.15.72-.11 2.21-.9 2.52-1.78.3-.88.3-1.63.21-1.78-.09-.16-.34-.25-.72-.44-.38-.19-2.24-1.1-2.58-1.22-.34-.12-.59-.19-.84.19-.25.38-.98 1.22-1.2 1.47-.22.25-.45.28-.83.09-.38-.19-1.6-.59-3.05-1.89-1.13-1.01-1.9-2.25-2.12-2.63-.22-.38-.02-.59.17-.78.17-.17.38-.44.57-.66.19-.22.25-.38.38-.63.13-.25.06-.47-.03-.66-.09-.19-.82-1.97-1.13-2.72" />
+                </svg>
+            </button>
+        </div>
+    </aside>
+    <div class="cart-overlay" id="cartOverlay"></div>
+
+    <!-- FLOATING WHATSAPP BUTTON -->
+    <a href="https://wa.me/56912345678?text=Hola%2C%20quisiera%20hacer%20una%20consulta%20sobre%20los%20precios%20de%20AhorraYa!" 
+       class="whatsapp-float-btn ripple" 
+       target="_blank" 
+       rel="noopener noreferrer" 
+       aria-label="Contactar por WhatsApp">
+        <svg viewBox="0 0 24 24" width="30" height="30">
+            <path fill="currentColor" d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01-1.88-1.88-4.37-2.9-7.02-2.9M12.04 3.7c4.46 0 8.09 3.63 8.09 8.09s-3.63 8.09-8.09 8.09c-1.57 0-3.1-.46-4.41-1.32l-.32-.19-3.28.86.88-3.19-.21-.34c-.94-1.5-1.44-3.23-1.44-5.01C3.95 7.33 7.58 3.7 12.04 3.7m-2.13 4.25c-.27-.6-.56-.61-.82-.62h-.7c-.24 0-.64.09-.98.46-.34.37-1.29 1.26-1.29 3.08s1.32 3.58 1.51 3.83c.19.25 2.6 3.97 6.3 5.56.88.38 1.57.6 2.11.78.89.28 1.7.24 2.34.15.72-.11 2.21-.9 2.52-1.78.3-.88.3-1.63.21-1.78-.09-.16-.34-.25-.72-.44-.38-.19-2.24-1.1-2.58-1.22-.34-.12-.59-.19-.84.19-.25.38-.98 1.22-1.2 1.47-.22.25-.45.28-.83.09-.38-.19-1.6-.59-3.05-1.89-1.13-1.01-1.9-2.25-2.12-2.63-.22-.38-.02-.59.17-.78.17-.17.38-.44.57-.66.19-.22.25-.38.38-.63.13-.25.06-.47-.03-.66-.09-.19-.82-1.97-1.13-2.72" />
+        </svg>
+    </a>
+
+    <!-- SITE FOOTER -->
+    <footer class="site-footer">
+        <div class="footer-main-grid">
+            <!-- Brand Section -->
+            <div class="footer-col brand-col">
+                <img src="logo.jpg" alt="AhorraYa Logo" class="footer-logo">
+                <p>El mayorista más tecnológico y transparente de Chile. Vendemos desde 1 unidad hasta un palet completo con descuentos reales en tiempo real.</p>
+                <div class="cyber-badge">
+                    <svg viewBox="0 0 24 24" width="16" height="16" style="vertical-align: middle; margin-right: 5px;">
+                        <path fill="currentColor" d="M12,12H19C18.47,16.11 15.72,19.78 12,20.92V12H5V6.3L12,3.19M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1Z" />
+                    </svg>
+                    Conexión Encriptada SSL / TLS 1.3
+                </div>
+            </div>
+
+            <!-- Links Sections -->
+            <div class="footer-col">
+                <h3>Nosotros</h3>
+                <ul>
+                    <li><a href="#" class="btn-how-to-buy-trigger">¿Cómo comprar?</a></li>
+                    <li><a href="#" id="footerLinkPayments">Medios de Pago</a></li>
+                    <li><a href="#" id="footerLinkDelivery">Zonas de Despacho</a></li>
+                    <li><a href="#" id="footerLinkAdmin">Acceso Ejecutivo (Admin)</a></li>
+                </ul>
+            </div>
+
+            <!-- Contact & Action Section -->
+            <div class="footer-col contact-col">
+                <h3>Contacto y Soporte</h3>
+                <ul class="contact-links">
+                    <li>
+                        <a href="tel:+56912345678" class="contact-item">
+                            <span class="icon">
+                                <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82 16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21A17,17 0 0,1 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z"/></svg>
+                            </span>
+                            <span>Llámanos: +56 9 1234 5678</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="mailto:ventas@ahorraya.cl" class="contact-item">
+                            <span class="icon">
+                                <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4M20,8L12,13L4,8V6L12,11L20,6V8Z"/></svg>
+                            </span>
+                            <span>ventas@ahorraya.cl</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" id="footerAddressBtn" class="contact-item">
+                            <span class="icon">
+                                <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M12,2A10,10 0 0,0 2,12C2,16.58 9,22 12,22C15,22 22,16.58 22,12A10,10 0 0,0 12,2M12,14A2,2 0 1,1 14,12A2,2 0 0,1 12,14Z"/></svg>
+                            </span>
+                            <span>Av. Américo Vespucio Sur 1234, Santiago, Chile</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 AhorraYa! SpA. Todos los derechos reservados. Portal Operativo encriptado bajo estándares Harvard.</p>
+        </div>
+    </footer>
+
+    <!-- ================= MODALS ================= -->
+
+    <!-- Modal 1: ¿Cómo Comprar? -->
+    <div class="modal-overlay" id="modalHowToBuy">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>¿Cómo Comprar en AhorraYa!?</h3>
+                <button class="modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <ol class="how-to-steps">
+                    <li>
+                        <div class="step-num">1</div>
+                        <div class="step-text">
+                            <strong>Navega y Elige:</strong> Explora nuestras categorías y agrega productos a tu carrito.
+                        </div>
+                    </li>
+                    <li>
+                        <div class="step-num">2</div>
+                        <div class="step-text">
+                            <strong>Ahorra por Volumen:</strong> Ajusta las cantidades. Verás cómo el precio unitario baja automáticamente al alcanzar 12 unidades (Caja) o 24 unidades (Palet).
+                        </div>
+                    </li>
+                    <li>
+                        <div class="step-num">3</div>
+                        <div class="step-text">
+                            <strong>Checkout WhatsApp:</strong> Haz clic en "Proceder al Checkout". Completa tus datos de envío y el sistema formateará tu pedido completo en un mensaje de WhatsApp y registrará tu orden en nuestro panel de control.
+                        </div>
+                    </li>
+                </ol>
+                <div class="modal-alert-box">
+                    💡 <strong>Tip Comercial:</strong> Consigue despacho gratis en compras totales superiores a $100.000.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary modal-close-action">Entendido</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 2: Medios de Pago -->
+    <div class="modal-overlay" id="modalPayments">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Medios de Pago Soportados</h3>
+                <button class="modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="payment-methods-grid">
+                    <div class="payment-method-item">
+                        <div class="pay-icon">💳</div>
+                        <strong>Tarjeta de Débito / Crédito</strong>
+                        <p>Transacciones seguras procesadas vía WebPay Plus.</p>
+                    </div>
+                    <div class="payment-method-item">
+                        <div class="pay-icon">🏦</div>
+                        <strong>Transferencia Electrónica</strong>
+                        <p>Transfiere directo a nuestra cuenta corriente para un despacho ultra veloz.</p>
+                    </div>
+                    <div class="payment-method-item">
+                        <div class="pay-icon">🤝</div>
+                        <strong>Crédito Almacén</strong>
+                        <p>Línea de crédito exclusiva para clientes frecuentes con facturación a 30 días (Sujeto a evaluación comercial).</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary modal-close-action">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 3: Despachos y Logística -->
+    <div class="modal-overlay" id="modalDelivery">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Zonas y Condiciones de Despacho</h3>
+                <button class="modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Nuestra red logística está optimizada para el movimiento de carga pesada y pallets en las siguientes modalidades:</p>
+                <table class="delivery-table">
+                    <thead>
+                        <tr>
+                            <th>Zona</th>
+                            <th>Tiempo de Entrega</th>
+                            <th>Costo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Santiago Urbano</td>
+                            <td>24 - 48 Horas Hábiles</td>
+                            <td>Gratis > $100.000 / $4.990 menor valor</td>
+                        </tr>
+                        <tr>
+                            <td>Regiones Periféricas (RM)</td>
+                            <td>48 - 72 Horas Hábiles</td>
+                            <td>Gratis > $200.000 / $7.990 menor valor</td>
+                        </tr>
+                        <tr>
+                            <td>Retiro en Bodega (Renca)</td>
+                            <td>Mismo día (Listo en 2 horas)</td>
+                            <td>Siempre Gratis</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="modal-alert-box warning-alert">
+                    ⚠️ <strong>Información importante:</strong> Los despachos de pallets requieren que la zona de descarga cuente con accesibilidad para camiones planos y transpaleta.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary modal-close-action">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 4: Estado del Pedido -->
+    <div class="modal-overlay" id="modalOrderStatus">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Seguimiento de Pedido</h3>
+                <button class="modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Ingresa el código de pedido proporcionado por tu ejecutivo para conocer su estado:</p>
+                <div class="tracking-input-wrapper">
+                    <input type="text" placeholder="Ej: AY-98328-2026" class="tracking-input" id="trackingInput">
+                    <button class="btn btn-primary" id="btnTrackOrder">Buscar Pedido</button>
+                </div>
+                <div id="trackingResult" class="tracking-result-box" style="display: none;">
+                    <!-- Result filled dynamically -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary modal-close-action">Volver</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 5: Checkout Form (Generate WhatsApp order) -->
+    <div class="modal-overlay" id="modalCheckout">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Finalizar Compra por WhatsApp</h3>
+                <button class="modal-close-btn">&times;</button>
+            </div>
+            <form id="checkoutForm" onsubmit="event.preventDefault();">
+                <div class="modal-body">
+                    <p>Completa tus datos para enviarle tu orden directamente a un ejecutivo comercial de AhorraYa! en WhatsApp.</p>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="checkName">Nombre Completo *</label>
+                            <input type="text" id="checkName" required placeholder="Ej: Juan Pérez">
+                        </div>
+                        <div class="form-group">
+                            <label for="checkRut">RUT (Empresa o Personal) *</label>
+                            <input type="text" id="checkRut" required placeholder="Ej: 77.777.777-7">
+                        </div>
+                        <div class="form-group">
+                            <label for="checkPhone">Teléfono de Contacto *</label>
+                            <input type="tel" id="checkPhone" required placeholder="Ej: +56 9 1234 5678" value="+56 9 ">
+                        </div>
+                        <div class="form-group">
+                            <label for="checkEmail">Correo Electrónico *</label>
+                            <input type="email" id="checkEmail" required placeholder="Ej: juan@miempresa.cl">
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="checkAddress">Dirección de Despacho *</label>
+                            <input type="text" id="checkAddress" required placeholder="Ej: Av. Las Condes 9876, Depto 402, Las Condes">
+                        </div>
+                        <div class="form-group">
+                            <label for="checkMethod">Método de Despacho *</label>
+                            <select id="checkMethod" required>
+                                <option value="domicilio">Despacho a Domicilio</option>
+                                <option value="retiro">Retiro en Bodega Renca (Gratis)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="checkPayment">Método de Pago *</label>
+                            <select id="checkPayment" required>
+                                <option value="webpay">Tarjeta WebPay</option>
+                                <option value="transferencia">Transferencia Bancaria</option>
+                                <option value="credito">Crédito Almacén (Sujeto a convenio)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary modal-close-action">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="btnConfirmSendWhatsApp">
+                        Confirmar y Enviar a WhatsApp
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 6: Google Maps Mock Address -->
+    <div class="modal-overlay" id="modalMap">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Nuestra Ubicación</h3>
+                <button class="modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="map-placeholder">
+                    <div class="map-graphics">
+                        <div class="map-pin">📍</div>
+                        <div class="map-label">Bodega AhorraYa!</div>
+                    </div>
+                </div>
+                <div class="map-details">
+                    <strong>Dirección Central:</strong> Av. Américo Vespucio Sur 1234, Renca, Región Metropolitana.
+                    <br>
+                    <strong>Horario:</strong> Lunes a Viernes 08:30 a 18:30 Hrs. Sábados 09:00 a 14:00 Hrs.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+                    Abrir en Google Maps
+                </a>
+                <button class="btn btn-secondary modal-close-action">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 7: Admin Order Detail Viewer -->
+    <div class="modal-overlay" id="modalOrderDetail">
+        <div class="modal-card" style="max-width: 650px;">
+            <div class="modal-header">
+                <h3>Detalle de Pedido</h3>
+                <button class="modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="order-detail-meta-grid">
+                    <div><strong>Código:</strong> <span id="detId">AY-00000</span></div>
+                    <div><strong>Fecha:</strong> <span id="detDate">00/00/0000</span></div>
+                    <div><strong>Cliente:</strong> <span id="detName">Nombre</span></div>
+                    <div><strong>RUT:</strong> <span id="detRut">00.000.000-0</span></div>
+                    <div><strong>Contacto:</strong> <span id="detPhone">+569...</span></div>
+                    <div><strong>Email:</strong> <span id="detEmail">correo@correo.cl</span></div>
+                    <div style="grid-column: span 2;"><strong>Dirección:</strong> <span id="detAddress">Calle...</span></div>
+                    <div><strong>Despacho:</strong> <span id="detMethod">...</span></div>
+                    <div><strong>Pago:</strong> <span id="detPayment">...</span></div>
+                </div>
+
+                <h4 style="margin: 20px 0 10px; border-bottom: 1px solid var(--color-border); padding-bottom: 6px;">
+                    Productos Solicitados
+                </h4>
+                
+                <table class="delivery-table" id="detItemsTable" style="margin: 0;">
+                    <thead>
+                        <tr>
+                            <th>Marca</th>
+                            <th>Descripción</th>
+                            <th>Formato</th>
+                            <th>Cant.</th>
+                            <th>P. Unit</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Filled by JS -->
+                    </tbody>
+                </table>
+
+                <div style="text-align: right; margin-top: 15px; font-size: 1.1rem;">
+                    <strong>Total Neto a Cobrar:</strong> <span id="detTotal" style="color: var(--color-primary-dark); font-weight: 800; font-family: Montserrat;">$0</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary modal-close-action">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Bundle -->
+    <script src="app.js"></script>
+</body>
+</html>
