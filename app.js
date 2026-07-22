@@ -1200,7 +1200,10 @@ function createProductCardHTML(product) {
             </div>
             
             <div class="product-img-wrapper">
-                ${getProductSvg(product.category, product.name)}
+                <img src="${product.id}.jpg" alt="${sanitizeInput(product.name)}" class="product-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="svg-fallback" style="display: none; width: 100%; height: 100%;">
+                    ${getProductSvg(product.category, product.name)}
+                </div>
             </div>
             
             <div class="product-card-body">
