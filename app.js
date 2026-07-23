@@ -609,6 +609,10 @@ const DOM = {
     trackingInput: document.getElementById('trackingInput'),
     trackingResult: document.getElementById('trackingResult'),
 
+    modalCheckoutSuccess: document.getElementById('modalCheckoutSuccess'),
+    successOrderId: document.getElementById('successOrderId'),
+    btnCopyOrderId: document.getElementById('btnCopyOrderId'),
+
     // --- NEW SEPARATE ADMIN VIEWS DOM ELEMENTS ---
     adminTriggerBtn: document.getElementById('adminTriggerBtn'),
     adminLoginView: document.getElementById('adminLoginView'),
@@ -665,8 +669,27 @@ function initApp() {
 }
 
 function initializeOrdersDatabase() {
-    if (!localStorage.getItem('ahorraya_orders')) {
-        localStorage.setItem('ahorraya_orders', JSON.stringify(MOCK_HISTORICAL_ORDERS));
+    const raw = localStorage.getItem('ahorraya_orders');
+    let needsReSeed = !raw;
+    if (raw) {
+        try {
+            const parsed = JSON.parse(raw);
+            if (parsed.length > 0 && !parsed[0].hasOwnProperty('status')) {
+                needsReSeed = true;
+            }
+        } catch (e) {
+            needsReSeed = true;
+        }
+    }
+    
+    if (needsReSeed) {
+        const seededOrders = MOCK_HISTORICAL_ORDERS.map((o, idx) => {
+            let status = 'Entregado';
+            if (idx === 0) status = 'En Ruta de Despacho';
+            else if (idx === 1) status = 'Procesando Pedido';
+            return { ...o, status: status };
+        });
+        localStorage.setItem('ahorraya_orders', JSON.stringify(seededOrders));
     }
 }
 
@@ -899,27 +922,64 @@ function setupEventListeners() {
         });
     });
 
-    // Tracking Order Mock
+    // Dynamic Tracking Order Lookup Database
     DOM.btnTrackOrder.addEventListener('click', () => {
-        const orderId = sanitizeInput(DOM.trackingInput.value);
+        const orderId = sanitizeInput(DOM.trackingInput.value).trim();
         if (!orderId) return;
         
         DOM.trackingResult.style.display = 'block';
-        if (orderId.startsWith('AY-') && orderId.length > 5) {
+        const orders = getOrders();
+        const order = orders.find(o => o.id.toUpperCase() === orderId.toUpperCase());
+        
+        if (order) {
             DOM.trackingResult.className = 'tracking-result-box';
+            
+            const deliveryLabel = order.method === 'retiro' ? 'Retiro en Bodega Renca' : 'Despacho a Domicilio';
+            const statusLabel = order.status || 'Recibido (Pendiente de Pago)';
+            
+            let statusEmoji = '⏳';
+            if (statusLabel.includes('Ruta')) statusEmoji = '🚚';
+            else if (statusLabel.includes('Entregado')) statusEmoji = '✅';
+            else if (statusLabel.includes('Procesando')) statusEmoji = '⚙️';
+            
             DOM.trackingResult.innerHTML = `
-                <p>📦 <strong>Pedido:</strong> ${orderId}</p>
-                <p>🚚 <strong>Estado:</strong> En Ruta de Despacho</p>
-                <p>🕒 <strong>Entrega estimada:</strong> Mañana entre 08:30 y 13:30 Hrs</p>
-                <p>👤 <strong>Repartidor:</strong> Carlos Henríquez (+569 9876 5432)</p>
+                <p style="margin-bottom: 8px;">📦 <strong>Código de Pedido:</strong> ${order.id}</p>
+                <p style="margin-bottom: 8px;">👤 <strong>Cliente:</strong> ${sanitizeInput(order.customer.name)}</p>
+                <p style="margin-bottom: 8px;">📍 <strong>Dirección:</strong> ${sanitizeInput(order.customer.address)}</p>
+                <p style="margin-bottom: 8px;">🚚 <strong>Método:</strong> ${deliveryLabel}</p>
+                <p style="margin-bottom: 8px;">💰 <strong>Monto Total:</strong> $${formatNumber(order.total)}</p>
+                <p style="margin-top: 12px; padding: 12px; background-color: var(--color-bg-light); border-left: 4px solid var(--color-primary); border-radius: var(--border-radius); font-weight: 700;">
+                    Estado Actual: ${statusEmoji} ${statusLabel}
+                </p>
             `;
         } else {
             DOM.trackingResult.className = 'tracking-result-box error';
             DOM.trackingResult.innerHTML = `
-                <p>❌ Código no encontrado. Por favor, verifica el formato AY-XXXXX-XXXX.</p>
+                <p>❌ Código no encontrado. Por favor, ingresa el código exacto (Ej: AY-10492-2026).</p>
             `;
         }
     });
+
+    // Copy Order ID Clipboard Micro-interaction
+    const btnCopyOrderId = document.getElementById('btnCopyOrderId');
+    if (btnCopyOrderId) {
+        btnCopyOrderId.addEventListener('click', () => {
+            const orderIdText = DOM.successOrderId.textContent.trim();
+            navigator.clipboard.writeText(orderIdText).then(() => {
+                const prevHtml = btnCopyOrderId.innerHTML;
+                btnCopyOrderId.innerHTML = '✅ ¡Copiado!';
+                btnCopyOrderId.style.borderColor = 'var(--color-success)';
+                btnCopyOrderId.style.color = 'var(--color-success)';
+                setTimeout(() => {
+                    btnCopyOrderId.innerHTML = prevHtml;
+                    btnCopyOrderId.style.borderColor = '';
+                    btnCopyOrderId.style.color = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        });
+    }
 
     DOM.homeView.addEventListener('click', (e) => {
         const viewAllLink = e.target.closest('.view-all-link');
@@ -1728,7 +1788,8 @@ function submitCheckoutToWhatsApp() {
         payment: paymentVal,
         shippingCost: shippingCost,
         items: orderItems,
-        total: finalBill
+        total: finalBill,
+        status: 'Recibido (Pendiente de Pago)'
     };
     saveOrder(newOrderObj);
 
@@ -1764,7 +1825,9 @@ function submitCheckoutToWhatsApp() {
     saveCartToStorage();
     updateCartUI();
 
+    DOM.successOrderId.textContent = orderId;
     closeModal(DOM.modalCheckout);
+    openModal(DOM.modalCheckoutSuccess);
     window.open(whatsappUrl, '_blank');
 }
 
