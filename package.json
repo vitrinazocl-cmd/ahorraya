@@ -1,0 +1,9 @@
+{
+  "name": "ahorraya-backend",
+  "version": "1.0.0",
+  "description": "Backend serverless for AhorraYa app, connecting to PostgreSQL",
+  "main": "app.js",
+  "dependencies": {
+    "pg": "^8.11.3"
+  }
+}

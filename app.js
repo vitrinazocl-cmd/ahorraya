@@ -666,6 +666,9 @@ function initApp() {
     
     // Check session on startup to restore menu
     updateNavigationUI();
+
+    // Sync database in background on load
+    syncDatabaseWithLocal();
 }
 
 function initializeOrdersDatabase() {
@@ -701,10 +704,46 @@ function getOrders() {
     }
 }
 
-function saveOrder(order) {
+// Saves order locally and pushes to PostgreSQL serverless API in background
+async function saveOrder(order) {
+    // 1. Save locally first for instant checkout feedback
     const orders = getOrders();
     orders.unshift(order);
     localStorage.setItem('ahorraya_orders', JSON.stringify(orders));
+
+    // 2. Post to PostgreSQL securely in background
+    try {
+        const response = await fetch('/.netlify/functions/orders', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(order)
+        });
+        if (response.ok) {
+            console.log("✅ Order successfully synced to PostgreSQL database.");
+        } else {
+            console.warn("⚠️ Server rejected order sync. Kept locally.");
+        }
+    } catch (e) {
+        console.warn("⚠️ Failed to sync order to PostgreSQL. Kept locally.", e);
+    }
+}
+
+// Syncs local storage with PostgreSQL database
+async function syncDatabaseWithLocal() {
+    try {
+        const response = await fetch('/.netlify/functions/orders');
+        if (response.ok) {
+            const remoteOrders = await response.json();
+            if (Array.isArray(remoteOrders) && remoteOrders.length > 0) {
+                localStorage.setItem('ahorraya_orders', JSON.stringify(remoteOrders));
+                console.log("💾 Synchronized with PostgreSQL database successfully.");
+            }
+        }
+    } catch (e) {
+        console.warn("⚠️ Database offline or not configured. Using offline local storage.", e);
+    }
 }
 
 // Update menu headers depending on Admin login status
@@ -1246,12 +1285,24 @@ function navigateToView(viewName, options = {}) {
         DOM.navLinkAdminOrders.classList.add('active');
         calculateKPIs();
         renderAdminOrdersTable();
+        
+        // Sync in background, then recalculate & re-render to display the absolute latest database state
+        syncDatabaseWithLocal().then(() => {
+            calculateKPIs();
+            renderAdminOrdersTable();
+        });
     }
     else if (viewName === 'admin-sales') {
         DOM.adminSalesView.classList.add('active');
         DOM.navLinkAdminSales.classList.add('active');
         calculateKPIs();
         renderAdminSalesDashboard();
+        
+        // Sync in background, then recalculate & re-render to display the absolute latest database state
+        syncDatabaseWithLocal().then(() => {
+            calculateKPIs();
+            renderAdminSalesDashboard();
+        });
     }
 }
 
