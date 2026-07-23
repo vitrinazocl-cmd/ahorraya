@@ -1073,6 +1073,25 @@ function setupEventListeners() {
         });
     }
 
+    // Mobile PLP Filter Sidebar Toggle
+    const mobileFilterTrigger = document.getElementById('mobileFilterTrigger');
+    const plpSidebar = document.getElementById('plpSidebar');
+    if (mobileFilterTrigger && plpSidebar) {
+        mobileFilterTrigger.addEventListener('click', (e) => {
+            e.preventDefault();
+            plpSidebar.classList.toggle('open');
+            if (plpSidebar.classList.contains('open')) {
+                mobileFilterTrigger.innerHTML = '❌ Cerrar Filtros';
+                mobileFilterTrigger.style.backgroundColor = 'var(--color-secondary)';
+                mobileFilterTrigger.style.color = 'white';
+            } else {
+                mobileFilterTrigger.innerHTML = '🔍 Filtrar y Marcas';
+                mobileFilterTrigger.style.backgroundColor = '';
+                mobileFilterTrigger.style.color = '';
+            }
+        });
+    }
+
     // Auto-unmute on first user interaction to help sound play naturally
     const unmuteOnInteract = () => {
         if (carouselVideo && carouselVideo.muted) {

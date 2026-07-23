@@ -1992,25 +1992,87 @@ img {
     .kpi-value { font-size: 1.3rem; }
 }
 
+/* Mobile Filter Trigger hidden on Desktop */
+.mobile-filter-trigger {
+    display: none;
+}
+
 @media (max-width: 768px) {
-    .header-top-bar { padding: 0 15px; height: 60px; gap: 10px; }
-    .mobile-menu-btn { display: block; }
-    .brand-logo { height: 38px; }
+    .header-top-bar {
+        padding: 10px 15px;
+        height: auto;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .mobile-menu-btn {
+        display: block;
+        order: 1;
+    }
+    
+    .logo-container {
+        order: 2;
+    }
+    
+    .header-actions {
+        order: 3;
+    }
+    
+    .search-container {
+        order: 4;
+        flex: 0 0 100%;
+        max-width: 100%;
+        margin-top: 5px;
+    }
+    
+    .search-form {
+        padding: 2px 5px 2px 12px;
+    }
+    
+    .search-input {
+        height: 36px;
+        font-size: 0.85rem;
+    }
+
+    .brand-logo { height: 34px; }
     .navigation-bar { display: none; }
     
     .carousel-container { height: 240px; margin: 10px auto; border-radius: 0; }
     .carousel-caption { padding: 20px; }
-    .carousel-caption h2 { font-size: 1.5rem; }
-    .carousel-caption p { font-size: 0.9rem; margin-bottom: 12px; }
+    .carousel-caption h2 { font-size: 1.3rem; }
+    .carousel-caption p { font-size: 0.85rem; margin-bottom: 12px; }
     .carousel-arrow { width: 36px; height: 36px; font-size: 0.9rem; }
     
     .info-blocks-grid { grid-template-columns: 1fr; gap: 12px; margin: 15px auto; }
     .info-card { padding: 12px 15px; }
     .info-card-icon { width: 44px; height: 44px; }
     
+    /* PLP Layout with Toggleable Sidebar */
+    .plp-layout { flex-direction: column; gap: 15px; }
+    .plp-sidebar {
+        display: none;
+        width: 100%;
+        align-self: stretch;
+        background-color: var(--color-bg-white);
+        border: 1px solid var(--color-border);
+        border-radius: var(--border-radius);
+        padding: 15px;
+        box-shadow: var(--shadow-sm);
+        animation: fadeInSlide 0.25s ease;
+    }
+    .plp-sidebar.open {
+        display: block;
+    }
+    .mobile-filter-trigger {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6px 12px;
+        font-size: 0.8rem;
+        height: 32px;
+    }
+    
     .product-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .plp-layout { flex-direction: column; gap: 20px; }
-    .plp-sidebar { width: 100%; align-self: stretch; }
     .plp-grid { grid-template-columns: repeat(2, 1fr); }
     
     .admin-kpis-grid { grid-template-columns: 1fr; gap: 15px; }
@@ -2027,16 +2089,29 @@ img {
 }
 
 @media (max-width: 480px) {
-    .header-top-bar { padding: 0 10px; }
-    .search-input { font-size: 0.85rem; }
+    .header-top-bar { padding: 8px 10px; }
     
     .cart-trigger-btn { padding: 6px 8px; }
     .cart-info-text { display: none; }
     .admin-trigger-btn span { display: none; } /* Icon-only on very narrow mobile */
     .admin-trigger-btn { padding: 8px 10px; }
     
-    .product-grid { grid-template-columns: 1fr; gap: 15px; }
-    .plp-grid { grid-template-columns: 1fr; }
+    /* 2 Columns products layout on mobile for fast catalog navigation */
+    .product-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .plp-grid { grid-template-columns: repeat(2, 1fr); }
+    
+    .product-card { padding: 10px; }
+    .product-brand { font-size: 0.7rem; }
+    .product-desc { font-size: 0.8rem; height: 32px; margin-bottom: 6px; line-height: 1.2; }
+    .pricing-tiers-tab { gap: 3px; margin-bottom: 6px; }
+    .tier-btn { font-size: 0.65rem; padding: 4px 6px; }
+    .price-value { font-size: 1.05rem; }
+    .price-subtext { font-size: 0.65rem; }
+    .total-amount { font-size: 0.85rem; }
+    .quantity-counter { height: 28px; width: 75px; }
+    .qty-btn { width: 22px; font-size: 0.8rem; }
+    .qty-input { font-size: 0.75rem; }
+    .add-cart-btn { padding: 0 10px; font-size: 0.75rem; height: 28px; }
     
     .cart-drawer { width: 100%; right: -100%; }
     .cart-drawer.open { right: 0; }
@@ -2053,4 +2128,10 @@ img {
     .axis-lbl { font-size: 0.65rem; }
     .chart-bar-col { width: 25px; }
     .x-lbl { font-size: 0.65rem; width: 30px; }
+    
+    /* Executive administrative tables size reduction */
+    .admin-table th, .admin-table td {
+        padding: 8px 6px;
+        font-size: 0.75rem;
+    }
 }
