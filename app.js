@@ -641,6 +641,7 @@ const DOM = {
     btnHeaderAdminLogout: document.getElementById('btnHeaderAdminLogout'),
     navExtraInfo: document.getElementById('navExtraInfo'),
     footerLinkAdmin: document.getElementById('footerLinkAdmin'),
+    footerLinkAdminBottom: document.getElementById('footerLinkAdminBottom'),
     
     // Mobile Drawer switchers
     drawerNavStandard: document.getElementById('drawerNavStandard'),
@@ -1040,17 +1041,29 @@ function setupEventListeners() {
 
     // --- NEW ADMIN PORTAL LISTENERS ---
     
-    // Header Lock button click
-    DOM.adminTriggerBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        handleAdminRoute();
-    });
+    // Header Lock button click (if present)
+    if (DOM.adminTriggerBtn) {
+        DOM.adminTriggerBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            handleAdminRoute();
+        });
+    }
+
+    // Footer bottom admin link click (if present)
+    if (DOM.footerLinkAdminBottom) {
+        DOM.footerLinkAdminBottom.addEventListener('click', (e) => {
+            e.preventDefault();
+            handleAdminRoute();
+        });
+    }
 
     // Footer admin button click
-    DOM.footerLinkAdmin.addEventListener('click', (e) => {
-        e.preventDefault();
-        handleAdminRoute();
-    });
+    if (DOM.footerLinkAdmin) {
+        DOM.footerLinkAdmin.addEventListener('click', (e) => {
+            e.preventDefault();
+            handleAdminRoute();
+        });
+    }
 
     DOM.mobileAdminLoginLink.addEventListener('click', (e) => {
         e.preventDefault();

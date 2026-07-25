@@ -46,14 +46,6 @@
 
             <!-- Header Action Controls -->
             <div class="header-actions">
-                <!-- Admin Lock Trigger Button -->
-                <button class="admin-trigger-btn" id="adminTriggerBtn" aria-label="Acceso Administración">
-                    <svg viewBox="0 0 24 24" width="20" height="20">
-                        <path fill="currentColor" d="M12,17A2,2 0 0,0 14,15C14,13.89 13.11,13 12,13A2,2 0 0,0 10,15C10,16.11 10.89,17 12,17M18 8H17V6A5,5 0 0,0 12 1A5,5 0 0,0 7 6V8H6A2,2 0 0,0 4 10V20A2,2 0 0,0 6 22H18A2,2 0 0,0 20 20V10A2,2 0 0,0 18 8M9 6A3,3 0 0,1 12 3A3,3 0 0,1 15 6V8H9V6Z"/>
-                    </svg>
-                    <span>Acceso Admin</span>
-                </button>
-
                 <!-- Cart Widget -->
                 <button class="cart-trigger-btn" id="cartTriggerBtn" aria-label="Ver carrito">
                     <div class="cart-icon-wrapper">
@@ -79,7 +71,7 @@
                         <svg viewBox="0 0 24 24" width="18" height="18" style="margin-right: 8px;">
                             <path fill="currentColor" d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z" />
                         </svg>
-                        Categorías
+                        CATEGORÍAS
                         <svg viewBox="0 0 24 24" width="16" height="16" class="dropdown-chevron">
                             <path fill="currentColor" d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
                         </svg>
@@ -95,24 +87,9 @@
                     </div>
                 </div>
 
-                <a href="#" class="nav-link" id="navLinkOffers" data-view="offers">
-                    <svg viewBox="0 0 24 24" width="18" height="18" style="margin-right: 5px;">
-                        <path fill="currentColor" d="M12.79,21L21,12.79V5A2,2 0 0,0 19,3H11.21L3,11.21A2,2 0 0,0 3,14.04L9.96,21A2,2 0 0,0 12.79,21M19,7A1,1 0 1,1 19,5A1,1 0 0,1 19,7Z" />
-                    </svg>
-                    Ofertas
-                </a>
-                <a href="#" class="nav-link" id="navLinkNew" data-view="new">
-                    <svg viewBox="0 0 24 24" width="18" height="18" style="margin-right: 5px;">
-                        <path fill="currentColor" d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z" />
-                    </svg>
-                    Nuevos Productos
-                </a>
-                <a href="#" class="nav-link" id="navLinkHowToBuy">
-                    <svg viewBox="0 0 24 24" width="18" height="18" style="margin-right: 5px;">
-                        <path fill="currentColor" d="M11,18H13V16H11V18M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,6A4,4 0 0,0 8,10H10A2,2 0 0,1 12,8A2,2 0 0,1 14,10C14,12 11,11.75 11,15H13C13,12.75 16,12.5 16,10A4,4 0 0,0 12,6Z" />
-                    </svg>
-                    ¿Cómo Comprar?
-                </a>
+                <a href="#" class="nav-link" id="navLinkOffers" data-view="offers">OFERTAS</a>
+                <a href="#" class="nav-link" id="navLinkNew" data-view="new">NUEVOS PRODUCTOS</a>
+                <a href="#" class="nav-link" id="navLinkHowToBuy">¿CÓMO COMPRAR?</a>
             </div>
 
             <!-- DYNAMIC EXECUTIVE ADMIN HEADER MENU -->
@@ -126,23 +103,6 @@
 
             <div class="nav-extra-info" id="navExtraInfo" style="display: flex; align-items: center; gap: 15px;">
                 <span>📍 Envío gratis sobre $100.000</span>
-                <div class="nav-social-links">
-                    <a href="https://www.facebook.com/profile.php?id=61581413141100&amp;sk=reels_tab" target="_blank" rel="noopener noreferrer" class="social-nav-link" aria-label="Facebook">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-                            <path d="M12 2.04C6.5 2.04 2 6.53 2 12.06C2 17.06 5.66 21.21 10.44 21.96V14.96H7.9V12.06H10.44V9.85C10.44 7.34 11.93 5.96 14.22 5.96C15.31 5.96 16.45 6.15 16.45 6.15V8.62H15.19C13.95 8.62 13.56 9.39 13.56 10.18V12.06H16.34L15.89 14.96H13.56V21.96A10 10 0 0 0 22 12.06C22 6.53 17.5 2.04 12 2.04Z"/>
-                        </svg>
-                    </a>
-                    <a href="https://www.instagram.com/supermercadoahorraya?igsh=MXJzMm43anNlZDczZA==" target="_blank" rel="noopener noreferrer" class="social-nav-link" aria-label="Instagram">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-                            <path d="M7.8,2H16.2C19.4,2 22,4.6 22,7.8V16.2A5.8,5.8 0 0,1 16.2,22H7.8C4.6,22 2,19.4 2,16.2V7.8A5.8,5.8 0 0,1 7.8,2M7.6,4A3.6,3.6 0 0,0 4,7.6V16.4A3.6,3.6 0 0,0 7.6,20H16.4A3.6,3.6 0 0,0 20,16.4V7.6A3.6,3.6 0 0,0 16.4,4H7.6M12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M17.25,5.5A1.25,1.25 0 0,1 18.5,6.75A1.25,1.25 0 0,1 17.25,8A1.25,1.25 0 0,1 16,6.75A1.25,1.25 0 0,1 17.25,5.5Z"/>
-                        </svg>
-                    </a>
-                    <a href="https://www.tiktok.com/@supermercadoahorraya" target="_blank" rel="noopener noreferrer" class="social-nav-link" aria-label="TikTok">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-                            <path d="M12.525.02c1.31 0 2.57.37 3.66 1.05v4.2a6.37 6.37 0 0 1-3.66-1.12v8.94c0 3.39-2.75 6.13-6.13 6.13a6.13 6.13 0 0 1-6.13-6.13c0-3.38 2.75-6.13 6.13-6.13.23 0 .46.01.68.04V11.2c-.22-.02-.45-.03-.68-.03a4.13 4.13 0 0 0-4.13 4.13c0 2.28 1.85 4.13 4.13 4.13a4.13 4.13 0 0 0 4.13-4.13V0h5.02z"/>
-                        </svg>
-                    </a>
-                </div>
             </div>
         </nav>
     </header>
@@ -732,7 +692,7 @@
             <button class="btn btn-primary btn-block checkout-btn" id="btnCheckout">
                 Proceder al Checkout (WhatsApp)
                 <svg viewBox="0 0 24 24" width="18" height="18" style="margin-left: 8px; vertical-align: middle;">
-                    <path fill="currentColor" d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01-1.88-1.88-4.37-2.9-7.02-2.9M12.04 3.7c4.46 0 8.09 3.63 8.09 8.09s-3.63 8.09-8.09 8.09c-1.57 0-3.1-.46-4.41-1.32l-.32-.19-3.28.86.88-3.19-.21-.34c-.94-1.5-1.44-3.23-1.44-5.01C3.95 7.33 7.58 3.7 12.04 3.7m-2.13 4.25c-.27-.6-.56-.61-.82-.62h-.7c-.24 0-.64.09-.98.46-.34.37-1.29 1.26-1.29 3.08s1.32 3.58 1.51 3.83c.19.25 2.6 3.97 6.3 5.56.88.38 1.57.6 2.11.78.89.28 1.7.24 2.34.15.72-.11 2.21-.9 2.52-1.78.3-.88.3-1.63.21-1.78-.09-.16-.34-.25-.72-.44-.38-.19-2.24-1.1-2.58-1.22-.34-.12-.59-.19-.84.19-.25.38-.98 1.22-1.2 1.47-.22.25-.45.28-.83.09-.38-.19-1.6-.59-3.05-1.89-1.13-1.01-1.9-2.25-2.12-2.63-.22-.38-.02-.59.17-.78.17-.17.38-.44.57-.66.19-.22.25-.38.38-.63.13-.25.06-.47-.03-.66-.09-.19-.82-1.97-1.13-2.72" />
+                    <path fill="currentColor" d="M12.004 2C6.48 2 2 6.48 2 12.004c0 1.91.536 3.693 1.47 5.21L2 22l4.928-1.295a9.92 9.92 0 0 0 5.076 1.393c5.524 0 10.004-4.48 10.004-10.004C22.008 6.48 17.528 2 12.004 2zm.004 18.004c-1.657 0-3.21-.443-4.562-1.217l-.328-.188-3.066.804.819-2.991-.207-.33A7.954 7.954 0 0 1 3.5 12c0-4.41 3.589-8 8-8s8 3.59 8 8-3.59 8-8 8zm4.397-6.059c-.24-.12-1.423-.7-1.643-.78-.22-.08-.38-.12-.54.12-.16.24-.62.78-.76.94-.14.16-.28.18-.52.06a7.39 7.39 0 0 1-1.92-1.18c-.89-.793-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.58.14-.11.3-.35.45-.53.15-.17.2-.29.3-.47.1-.19.05-.36-.02-.5-.07-.15-.62-1.5-.85-2.05-.23-.55-.48-.47-.66-.48h-.56c-.2 0-.52.07-.79.37-.27.3-1.03 1.01-1.03 2.47s1.07 2.87 1.22 3.07c.15.2 2.11 3.22 5.11 4.52.71.31 1.27.49 1.7.63.72.23 1.37.2 1.89.12.58-.08 1.78-.73 2.03-1.43.25-.7.25-1.29.17-1.42-.08-.13-.28-.21-.52-.33z" />
                 </svg>
             </button>
         </div>
@@ -746,7 +706,7 @@
        rel="noopener noreferrer" 
        aria-label="Contactar por WhatsApp">
         <svg viewBox="0 0 24 24" width="30" height="30">
-            <path fill="currentColor" d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01-1.88-1.88-4.37-2.9-7.02-2.9M12.04 3.7c4.46 0 8.09 3.63 8.09 8.09s-3.63 8.09-8.09 8.09c-1.57 0-3.1-.46-4.41-1.32l-.32-.19-3.28.86.88-3.19-.21-.34c-.94-1.5-1.44-3.23-1.44-5.01C3.95 7.33 7.58 3.7 12.04 3.7m-2.13 4.25c-.27-.6-.56-.61-.82-.62h-.7c-.24 0-.64.09-.98.46-.34.37-1.29 1.26-1.29 3.08s1.32 3.58 1.51 3.83c.19.25 2.6 3.97 6.3 5.56.88.38 1.57.6 2.11.78.89.28 1.7.24 2.34.15.72-.11 2.21-.9 2.52-1.78.3-.88.3-1.63.21-1.78-.09-.16-.34-.25-.72-.44-.38-.19-2.24-1.1-2.58-1.22-.34-.12-.59-.19-.84.19-.25.38-.98 1.22-1.2 1.47-.22.25-.45.28-.83.09-.38-.19-1.6-.59-3.05-1.89-1.13-1.01-1.9-2.25-2.12-2.63-.22-.38-.02-.59.17-.78.17-.17.38-.44.57-.66.19-.22.25-.38.38-.63.13-.25.06-.47-.03-.66-.09-.19-.82-1.97-1.13-2.72" />
+            <path fill="currentColor" d="M12.004 2C6.48 2 2 6.48 2 12.004c0 1.91.536 3.693 1.47 5.21L2 22l4.928-1.295a9.92 9.92 0 0 0 5.076 1.393c5.524 0 10.004-4.48 10.004-10.004C22.008 6.48 17.528 2 12.004 2zm.004 18.004c-1.657 0-3.21-.443-4.562-1.217l-.328-.188-3.066.804.819-2.991-.207-.33A7.954 7.954 0 0 1 3.5 12c0-4.41 3.589-8 8-8s8 3.59 8 8-3.59 8-8 8zm4.397-6.059c-.24-.12-1.423-.7-1.643-.78-.22-.08-.38-.12-.54.12-.16.24-.62.78-.76.94-.14.16-.28.18-.52.06a7.39 7.39 0 0 1-1.92-1.18c-.89-.793-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.58.14-.11.3-.35.45-.53.15-.17.2-.29.3-.47.1-.19.05-.36-.02-.5-.07-.15-.62-1.5-.85-2.05-.23-.55-.48-.47-.66-.48h-.56c-.2 0-.52.07-.79.37-.27.3-1.03 1.01-1.03 2.47s1.07 2.87 1.22 3.07c.15.2 2.11 3.22 5.11 4.52.71.31 1.27.49 1.7.63.72.23 1.37.2 1.89.12.58-.08 1.78-.73 2.03-1.43.25-.7.25-1.29.17-1.42-.08-.13-.28-.21-.52-.33z" />
         </svg>
     </a>
 
@@ -757,6 +717,23 @@
             <div class="footer-col brand-col">
                 <img src="logo.jpg" alt="AhorraYa Logo" class="footer-logo">
                 <p>El mayorista más tecnológico y transparente de Chile. Vendemos desde 1 unidad hasta un palet completo con descuentos reales en tiempo real.</p>
+                <div class="footer-social-links" style="display: flex; gap: 10px; margin: 15px 0;">
+                    <a href="https://www.facebook.com/profile.php?id=61581413141100&amp;sk=reels_tab" target="_blank" rel="noopener noreferrer" class="social-nav-link" aria-label="Facebook">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                            <path d="M12 2.04C6.5 2.04 2 6.53 2 12.06C2 17.06 5.66 21.21 10.44 21.96V14.96H7.9V12.06H10.44V9.85C10.44 7.34 11.93 5.96 14.22 5.96C15.31 5.96 16.45 6.15 16.45 6.15V8.62H15.19C13.95 8.62 13.56 9.39 13.56 10.18V12.06H16.34L15.89 14.96H13.56V21.96A10 10 0 0 0 22 12.06C22 6.53 17.5 2.04 12 2.04Z"/>
+                        </svg>
+                    </a>
+                    <a href="https://www.instagram.com/supermercadoahorraya?igsh=MXJzMm43anNlZDczZA==" target="_blank" rel="noopener noreferrer" class="social-nav-link" aria-label="Instagram">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                            <path d="M7.8,2H16.2C19.4,2 22,4.6 22,7.8V16.2A5.8,5.8 0 0,1 16.2,22H7.8C4.6,22 2,19.4 2,16.2V7.8A5.8,5.8 0 0,1 7.8,2M7.6,4A3.6,3.6 0 0,0 4,7.6V16.4A3.6,3.6 0 0,0 7.6,20H16.4A3.6,3.6 0 0,0 20,16.4V7.6A3.6,3.6 0 0,0 16.4,4H7.6M12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M17.25,5.5A1.25,1.25 0 0,1 18.5,6.75A1.25,1.25 0 0,1 17.25,8A1.25,1.25 0 0,1 16,6.75A1.25,1.25 0 0,1 17.25,5.5Z"/>
+                        </svg>
+                    </a>
+                    <a href="https://www.tiktok.com/@supermercadoahorraya" target="_blank" rel="noopener noreferrer" class="social-nav-link" aria-label="TikTok">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                            <path d="M12.525.02c1.31 0 2.57.37 3.66 1.05v4.2a6.37 6.37 0 0 1-3.66-1.12v8.94c0 3.39-2.75 6.13-6.13 6.13a6.13 6.13 0 0 1-6.13-6.13c0-3.38 2.75-6.13 6.13-6.13.23 0 .46.01.68.04V11.2c-.22-.02-.45-.03-.68-.03a4.13 4.13 0 0 0-4.13 4.13c0 2.28 1.85 4.13 4.13 4.13a4.13 4.13 0 0 0 4.13-4.13V0h5.02z"/>
+                        </svg>
+                    </a>
+                </div>
                 <div class="cyber-badge">
                     <svg viewBox="0 0 24 24" width="16" height="16" style="vertical-align: middle; margin-right: 5px;">
                         <path fill="currentColor" d="M12,12H19C18.47,16.11 15.72,19.78 12,20.92V12H5V6.3L12,3.19M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1Z" />
@@ -808,8 +785,9 @@
             </div>
         </div>
 
-        <div class="footer-bottom">
+        <div class="footer-bottom" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
             <p>&copy; 2026 AhorraYa! SpA. Todos los derechos reservados. Portal Operativo encriptado bajo estándares Harvard.</p>
+            <a href="#" id="footerLinkAdminBottom" style="font-size: 0.8rem; color: var(--color-text-muted); text-decoration: underline; transition: var(--transition-fast);">🔐 Acceso Ejecutivo (Admin)</a>
         </div>
     </footer>
 
