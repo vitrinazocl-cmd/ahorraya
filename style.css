@@ -2135,3 +2135,86 @@ img {
         font-size: 0.75rem;
     }
 }
+
+/* ==========================================================================
+   SPECIFIED WIREFRAME CHANGES (Simplified Home Cards & PLP redirection)
+   ========================================================================== */
+
+/* Flash Highlight Animation for redirected SKUs */
+@keyframes highlight-glow {
+    0% {
+        outline: 3px solid transparent;
+        box-shadow: var(--shadow-sm);
+    }
+    25% {
+        outline: 3.5px solid var(--color-accent);
+        box-shadow: 0 0 25px rgba(255, 199, 44, 0.8);
+        background-color: rgba(255, 199, 44, 0.08);
+        transform: scale(1.02);
+    }
+    75% {
+        outline: 3.5px solid var(--color-accent);
+        box-shadow: 0 0 25px rgba(255, 199, 44, 0.8);
+        background-color: rgba(255, 199, 44, 0.08);
+        transform: scale(1.02);
+    }
+    100% {
+        outline: 3px solid transparent;
+        box-shadow: var(--shadow-sm);
+        transform: scale(1);
+    }
+}
+
+.product-card.highlight-flash {
+    animation: highlight-glow 2.5s ease-in-out;
+    z-index: 10;
+}
+
+/* Home Page Product Cards - Simplified Layout styles */
+.product-card.simplified-home-card {
+    height: 100%;
+}
+
+.price-bulk-saving {
+    font-size: 0.8rem;
+    color: var(--color-success);
+    font-weight: 600;
+    margin-top: 6px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.simplified-card-action-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid var(--color-border);
+}
+
+.home-redirect-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
+    border: none;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    box-shadow: var(--shadow-sm);
+}
+
+.home-redirect-btn:hover {
+    background-color: var(--color-primary-light);
+    transform: scale(1.08);
+    box-shadow: var(--shadow-md);
+}
+
+.home-redirect-btn svg {
+    width: 20px;
+    height: 20px;
+}
+

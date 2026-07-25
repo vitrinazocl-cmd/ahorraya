@@ -299,7 +299,8 @@ const STATE = {
         availability: ['stock'],
         brands: [],
         categories: [],
-        clientTypes: ['minorista', 'mayorista']
+        clientTypes: ['minorista', 'mayorista'],
+        productTypes: []
     },
     adminPeriod: 'day' // Sales report grouping: day, week, month, year
 };
@@ -1237,8 +1238,10 @@ function navigateToView(viewName, options = {}) {
     DOM.navLinkAdminOrders.classList.remove('active');
     DOM.navLinkAdminSales.classList.remove('active');
 
-    // Scroll to top
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Scroll to top unless we are scrolling to a specific product
+    if (!options.scrollToProduct) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
     if (viewName === 'home') {
         DOM.homeView.classList.add('active');
@@ -1276,6 +1279,19 @@ function navigateToView(viewName, options = {}) {
         
         updateActiveFiltersState();
         applyFiltersAndRenderPLP();
+
+        if (options.scrollToProduct) {
+            setTimeout(() => {
+                const cardEl = document.getElementById(`card-${options.scrollToProduct}`);
+                if (cardEl) {
+                    cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    cardEl.classList.add('highlight-flash');
+                    setTimeout(() => {
+                        cardEl.classList.remove('highlight-flash');
+                    }, 2600);
+                }
+            }, 100);
+        }
     }
     else if (viewName === 'admin-login') {
         DOM.adminLoginView.classList.add('active');
@@ -1348,7 +1364,7 @@ function setupCarousel() {
 }
 
 // 10. PRODUCT CARDS
-function createProductCardHTML(product) {
+function createProductCardHTML(product, isHome = false) {
     const priceDetail = product.prices[1];
     const avBadge = product.availability === 'order' 
         ? `<span class="badge badge-new" style="background-color: var(--color-primary-light); color: white;">📦 A Pedido</span>` 
@@ -1356,8 +1372,61 @@ function createProductCardHTML(product) {
     const saleBadge = product.isOffer ? `<span class="badge badge-sale">🔥 Oferta</span>` : '';
     const newBadge = product.isNew ? `<span class="badge badge-new">✨ Nuevo</span>` : '';
 
+    const bodyContent = isHome ? `
+        <span class="product-brand">${sanitizeInput(product.brand)}</span>
+        <h3 class="product-desc" title="${sanitizeInput(product.name)}">${sanitizeInput(product.name)}</h3>
+        
+        <div class="price-display-wrapper">
+            <div class="price-unit-row">
+                <span class="price-value" data-unit-price="${priceDetail}">$${formatNumber(priceDetail)}</span>
+                <span class="price-subtext">por unidad</span>
+            </div>
+            <div class="price-bulk-saving">
+                Desde $${formatNumber(product.prices[24])} al por mayor
+            </div>
+        </div>
+        
+        <div class="simplified-card-action-row">
+            <span style="font-size: 0.8rem; color: var(--color-text-muted); font-weight: 500;">Ver volumen</span>
+            <button class="home-redirect-btn ripple" aria-label="Ver en catálogo" title="Ver en catálogo">
+                <svg viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M17,18A2,2 0 0,1 19,20A2,2 0 0,1 17,22A2,2 0 0,1 15,20A2,2 0 0,1 17,18M7,18A2,2 0 0,1 9,20A2,2 0 0,1 7,22A2,2 0 0,1 5,20A2,2 0 0,1 7,18M7.2,14.63L7.17,14.56L9,11H15.55C16.3,11 17,10.59 17.3,10L21.08,3.15L19.34,2.2L15.55,9H9.7L8.38,6.2L4.27,2H1V4H3L6.6,11.59L5.25,14.04C5.1,14.33 5,14.65 5,15A2,2 0 0,0 7,17H19V15H7.42C7.29,15 7.17,14.89 7.2,14.63Z" />
+                </svg>
+            </button>
+        </div>
+    ` : `
+        <span class="product-brand">${sanitizeInput(product.brand)}</span>
+        <h3 class="product-desc" title="${sanitizeInput(product.name)}">${sanitizeInput(product.name)}</h3>
+        
+        <div class="pricing-tiers-tab" role="tablist">
+            <button class="tier-btn active" data-tier="1" role="tab" aria-selected="true">1 u.</button>
+            <button class="tier-btn" data-tier="12" role="tab" aria-selected="false">12 u.</button>
+            <button class="tier-btn" data-tier="24" role="tab" aria-selected="false">24 u.+</button>
+        </div>
+        
+        <div class="price-display-wrapper">
+            <div class="price-unit-row">
+                <span class="price-value" data-unit-price="${priceDetail}">$${formatNumber(priceDetail)}</span>
+                <span class="price-subtext">por unidad</span>
+            </div>
+            <div class="price-total-row">
+                <span>Total: <strong class="total-amount">$${formatNumber(priceDetail)}</strong></span>
+            </div>
+        </div>
+        
+        <div class="card-action-row">
+            <div class="quantity-counter">
+                <button class="qty-btn minus">-</button>
+                <input type="number" class="qty-input" value="1" min="1" max="999">
+                <button class="qty-btn plus">+</button>
+            </div>
+            
+            <button class="btn btn-primary add-cart-btn ripple">Agregar</button>
+        </div>
+    `;
+
     return `
-        <div class="product-card" data-product-id="${product.id}" id="card-${product.id}">
+        <div class="product-card ${isHome ? 'simplified-home-card' : ''}" data-product-id="${product.id}" id="card-${product.id}">
             <div class="product-badge-container">
                 ${saleBadge}
                 ${newBadge}
@@ -1372,34 +1441,7 @@ function createProductCardHTML(product) {
             </div>
             
             <div class="product-card-body">
-                <span class="product-brand">${sanitizeInput(product.brand)}</span>
-                <h3 class="product-desc" title="${sanitizeInput(product.name)}">${sanitizeInput(product.name)}</h3>
-                
-                <div class="pricing-tiers-tab" role="tablist">
-                    <button class="tier-btn active" data-tier="1" role="tab" aria-selected="true">1 u.</button>
-                    <button class="tier-btn" data-tier="12" role="tab" aria-selected="false">12 u.</button>
-                    <button class="tier-btn" data-tier="24" role="tab" aria-selected="false">24 u.+</button>
-                </div>
-                
-                <div class="price-display-wrapper">
-                    <div class="price-unit-row">
-                        <span class="price-value" data-unit-price="${priceDetail}">$${formatNumber(priceDetail)}</span>
-                        <span class="price-subtext">por unidad</span>
-                    </div>
-                    <div class="price-total-row">
-                        <span>Total: <strong class="total-amount">$${formatNumber(priceDetail)}</strong></span>
-                    </div>
-                </div>
-                
-                <div class="card-action-row">
-                    <div class="quantity-counter">
-                        <button class="qty-btn minus">-</button>
-                        <input type="number" class="qty-input" value="1" min="1" max="999">
-                        <button class="qty-btn plus">+</button>
-                    </div>
-                    
-                    <button class="btn btn-primary add-cart-btn ripple">Agregar</button>
-                </div>
+                ${bodyContent}
             </div>
         </div>
     `;
@@ -1412,13 +1454,13 @@ function formatNumber(num) {
 // 11. RENDER SHELVES
 function renderHomeShelves() {
     const offers = PRODUCTS.filter(p => p.isOffer).slice(0, 4);
-    DOM.offersGrid.innerHTML = offers.map(createProductCardHTML).join('');
+    DOM.offersGrid.innerHTML = offers.map(p => createProductCardHTML(p, true)).join('');
     
     const abarrotes = PRODUCTS.filter(p => p.category === 'abarrotes').slice(0, 4);
-    DOM.abarrotesGrid.innerHTML = abarrotes.map(createProductCardHTML).join('');
+    DOM.abarrotesGrid.innerHTML = abarrotes.map(p => createProductCardHTML(p, true)).join('');
 
     const limpieza = PRODUCTS.filter(p => p.category === 'limpieza').slice(0, 4);
-    DOM.limpiezaGrid.innerHTML = limpieza.map(createProductCardHTML).join('');
+    DOM.limpiezaGrid.innerHTML = limpieza.map(p => createProductCardHTML(p, true)).join('');
 
     bindCardInteractions(DOM.offersGrid);
     bindCardInteractions(DOM.abarrotesGrid);
@@ -1442,6 +1484,30 @@ function bindCardInteractions(container) {
         const productId = card.getAttribute('data-product-id');
         const product = PRODUCTS.find(p => p.id === productId);
         
+        // If it's a simplified Home card, bind redirect behavior instead
+        if (card.classList.contains('simplified-home-card')) {
+            const redirectBtn = card.querySelector('.home-redirect-btn');
+            if (redirectBtn) {
+                redirectBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    let cat = null;
+                    let filter = null;
+                    if (container === DOM.offersGrid) {
+                        filter = 'offers';
+                    } else if (container === DOM.abarrotesGrid) {
+                        cat = 'abarrotes';
+                    } else if (container === DOM.limpiezaGrid) {
+                        cat = 'limpieza';
+                    } else {
+                        cat = product.category;
+                    }
+                    navigateToView('plp', { category: cat, filter: filter, scrollToProduct: productId });
+                });
+            }
+            return;
+        }
+
         const tierButtons = card.querySelectorAll('.tier-btn');
         const qtyInput = card.querySelector('.qty-input');
         const plusBtn = card.querySelector('.qty-btn.plus');
@@ -1532,7 +1598,7 @@ function resetFilters() {
 function resetFilterCheckboxes() {
     document.querySelectorAll('.plp-sidebar input[type="checkbox"]').forEach(cb => {
         if (cb.name === 'availability') {
-            cb.checked = (cb.value === 'stock');
+            cb.checked = true; // Check both stock and order to ensure all items are visible
         } else if (cb.name === 'clientType') {
             cb.checked = true;
         } else {
@@ -1549,6 +1615,7 @@ function updateActiveFiltersState() {
     STATE.activeFilters.availability = getCheckedValues('availability');
     STATE.activeFilters.brands = getCheckedValues('brand');
     STATE.activeFilters.clientTypes = getCheckedValues('clientType');
+    STATE.activeFilters.productTypes = getCheckedValues('productTypeFilter');
     
     const catCheckboxes = getCheckedValues('categoryFilter');
     if (catCheckboxes.length > 0) {
@@ -1556,6 +1623,10 @@ function updateActiveFiltersState() {
         STATE.activeCategory = 'filters';
     } else {
         STATE.activeFilters.categories = [];
+    }
+
+    if (STATE.activeFilters.productTypes.length > 0) {
+        STATE.activeCategory = 'filters';
     }
 }
 
@@ -1587,6 +1658,10 @@ function applyFiltersAndRenderPLP() {
 
     if (STATE.activeFilters.categories.length > 0) {
         filteredList = filteredList.filter(p => STATE.activeFilters.categories.includes(p.category));
+    }
+
+    if (STATE.activeFilters.productTypes && STATE.activeFilters.productTypes.length > 0) {
+        filteredList = filteredList.filter(p => STATE.activeFilters.productTypes.includes(p.type));
     }
 
     if (STATE.activeFilters.brands.length > 0) {
