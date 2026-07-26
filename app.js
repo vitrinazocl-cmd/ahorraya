@@ -898,10 +898,21 @@ function setupEventListeners() {
 
     // Sidebar filter checkboxes
     DOM.plpView.addEventListener('change', (e) => {
-        if (e.target.tagName === 'INPUT' && (e.target.name === 'availability' || e.target.name === 'brand' || e.target.name === 'clientType' || e.target.name === 'categoryFilter')) {
+        if (e.target.tagName === 'INPUT' && (e.target.name === 'availability' || e.target.name === 'brand' || e.target.name === 'clientType' || e.target.name === 'categoryFilter' || e.target.name === 'productTypeFilter')) {
             updateActiveFiltersState();
             applyFiltersAndRenderPLP();
         }
+    });
+
+    // Sidebar filter groups collapse/expand toggle
+    document.querySelectorAll('.filter-group-header').forEach(header => {
+        header.addEventListener('click', (e) => {
+            e.preventDefault();
+            const group = header.closest('.filter-group');
+            if (group) {
+                group.classList.toggle('open');
+            }
+        });
     });
 
     // Quick info blocks
@@ -1281,6 +1292,11 @@ function navigateToView(viewName, options = {}) {
         DOM.plpView.classList.add('active');
         resetFilterCheckboxes();
         
+        // Collapse all sidebar filter groups on opening the PLP
+        document.querySelectorAll('.filter-group').forEach(group => {
+            group.classList.remove('open');
+        });
+        
         if (options.category) {
             STATE.activeCategory = options.category;
             DOM.plpTitle.textContent = options.category === 'all' 
@@ -1293,12 +1309,12 @@ function navigateToView(viewName, options = {}) {
             }
         } 
         else if (options.filter === 'offers') {
-            DOM.plpTitle.textContent = '🔥 Ofertas de la Semana';
+            DOM.plpTitle.textContent = 'Ofertas de la Semana';
             DOM.navLinkOffers.classList.add('active');
             STATE.activeCategory = 'offers';
         } 
         else if (options.filter === 'new') {
-            DOM.plpTitle.textContent = '✨ Nuevos Productos Mayoristas';
+            DOM.plpTitle.textContent = 'Nuevos Productos Mayoristas';
             DOM.navLinkNew.classList.add('active');
             STATE.activeCategory = 'new';
         } 

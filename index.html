@@ -425,20 +425,23 @@
                         <h2 id="plpTitle">Catálogo Completo</h2>
                         
                         <div class="plp-sorting-widgets">
-                            <span class="product-count" id="productCount">Mostrando 0 productos</span>
-                            
-                            <div class="sort-selector" style="display: flex; align-items: center; gap: 10px;">
-                                <button class="btn btn-outline-sm mobile-filter-trigger" id="mobileFilterTrigger">
-                                    🔍 Filtrar y Marcas
+                            <div class="sort-selector">
+                                <button class="btn btn-outline-sm mobile-filter-trigger" id="mobileFilterTrigger" aria-label="Filtrar productos">
+                                    <svg viewBox="0 0 24 24" width="20" height="20">
+                                        <path fill="currentColor" d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z" />
+                                    </svg>
                                 </button>
-                                <label for="sortBySelect">Ordenar por:</label>
-                                <select id="sortBySelect" class="sort-select">
-                                    <option value="popularity">Destacados / Popularidad</option>
-                                    <option value="price-asc">Precio: Menor a Mayor</option>
-                                    <option value="price-desc">Precio: Mayor a Menor</option>
-                                    <option value="name-asc">Nombre: A - Z</option>
-                                </select>
+                                <div class="sort-select-wrapper" style="display: flex; align-items: center; gap: 8px;">
+                                    <label for="sortBySelect">Ordenar Por</label>
+                                    <select id="sortBySelect" class="sort-select">
+                                        <option value="popularity">Más Vendidos</option>
+                                        <option value="price-asc">Precio: Menor a Mayor</option>
+                                        <option value="price-desc">Precio: Mayor a Menor</option>
+                                        <option value="name-asc">Nombre: A - Z</option>
+                                    </select>
+                                </div>
                             </div>
+                            <span class="product-count" id="productCount">Mostrando 0 productos</span>
                         </div>
                     </div>
 

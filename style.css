@@ -1092,6 +1092,22 @@ img {
     cursor: pointer;
 }
 
+.filter-group-content {
+    display: none; /* Collapsed by default */
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+}
+.filter-group.open .filter-group-content {
+    display: flex;
+}
+.filter-group .chevron {
+    transition: transform var(--transition-fast);
+}
+.filter-group.open .chevron {
+    transform: rotate(180deg);
+}
+
 .filter-checkbox-label {
     display: flex;
     align-items: center;
@@ -2098,13 +2114,69 @@ img {
     .plp-sidebar.open {
         display: block;
     }
+    .plp-title-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    .plp-sorting-widgets {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        width: 100%;
+    }
+    .sort-selector {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        gap: 15px;
+    }
     .mobile-filter-trigger {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        padding: 6px 12px;
-        font-size: 0.8rem;
-        height: 32px;
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        border-radius: var(--border-radius-sm);
+        border: 1px solid var(--color-border);
+        background-color: var(--color-bg-white);
+        cursor: pointer;
+        color: var(--color-primary-dark);
+    }
+    .sort-select-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-grow: 1;
+        justify-content: flex-end;
+    }
+    .sort-select-wrapper label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--color-text-muted);
+        white-space: nowrap;
+    }
+    .sort-select {
+        height: 44px;
+        padding: 0 12px;
+        border: 1px solid var(--color-border);
+        border-radius: var(--border-radius-sm);
+        background-color: var(--color-bg-white);
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--color-text-dark);
+        outline: none;
+        cursor: pointer;
+        flex-grow: 1;
+        max-width: 200px;
+    }
+    .product-count {
+        font-size: 0.85rem;
+        color: var(--color-text-muted);
+        margin-top: 5px;
+        display: block;
     }
     
     .product-grid {
