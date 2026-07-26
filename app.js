@@ -646,6 +646,8 @@ const DOM = {
     // Mobile Drawer switchers
     drawerNavStandard: document.getElementById('drawerNavStandard'),
     drawerNavAdmin: document.getElementById('drawerNavAdmin'),
+    drawerCategoriesBtn: document.getElementById('drawerCategoriesBtn'),
+    drawerCategoriesContent: document.getElementById('drawerCategoriesContent'),
     mobileAdminOrdersLink: document.getElementById('mobileAdminOrdersLink'),
     mobileAdminSalesLink: document.getElementById('mobileAdminSalesLink'),
     mobileAdminLogoutLink: document.getElementById('mobileAdminLogoutLink'),
@@ -859,6 +861,21 @@ function setupEventListeners() {
     DOM.mobileMenuBtn.addEventListener('click', openMobileDrawer);
     DOM.mobileDrawerCloseBtn.addEventListener('click', closeMobileDrawer);
     DOM.drawerOverlay.addEventListener('click', closeMobileDrawer);
+    
+    // Mobile drawer categories dropdown toggle
+    if (DOM.drawerCategoriesBtn && DOM.drawerCategoriesContent) {
+        DOM.drawerCategoriesBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const chevron = DOM.drawerCategoriesBtn.querySelector('.dropdown-chevron');
+            if (DOM.drawerCategoriesContent.style.display === 'none' || !DOM.drawerCategoriesContent.style.display) {
+                DOM.drawerCategoriesContent.style.display = 'flex';
+                if (chevron) chevron.style.transform = 'rotate(180deg)';
+            } else {
+                DOM.drawerCategoriesContent.style.display = 'none';
+                if (chevron) chevron.style.transform = 'rotate(0deg)';
+            }
+        });
+    }
     
     DOM.cartTriggerBtn.addEventListener('click', openCartDrawer);
     DOM.cartDrawerCloseBtn.addEventListener('click', closeCartDrawer);
@@ -1379,33 +1396,23 @@ function setupCarousel() {
 // 10. PRODUCT CARDS
 function createProductCardHTML(product, isHome = false) {
     const priceDetail = product.prices[1];
-    const avBadge = product.availability === 'order' 
+    // In Home, remove the "A Pedido" and "Nuevo" badges (keep only "Oferta")
+    const avBadge = (!isHome && product.availability === 'order')
         ? `<span class="badge badge-new" style="background-color: var(--color-primary-light); color: white;">📦 A Pedido</span>` 
         : '';
     const saleBadge = product.isOffer ? `<span class="badge badge-sale">🔥 Oferta</span>` : '';
-    const newBadge = product.isNew ? `<span class="badge badge-new">✨ Nuevo</span>` : '';
+    const newBadge = (!isHome && product.isNew) ? `<span class="badge badge-new">✨ Nuevo</span>` : '';
 
     const bodyContent = isHome ? `
         <span class="product-brand">${sanitizeInput(product.brand)}</span>
         <h3 class="product-desc" title="${sanitizeInput(product.name)}">${sanitizeInput(product.name)}</h3>
         
         <div class="price-display-wrapper">
+            <span class="price-from-label" style="font-size: 0.85rem; color: var(--color-text-muted); font-weight: 500; display: block; margin-bottom: 2px;">Precio desde</span>
             <div class="price-unit-row">
                 <span class="price-value" data-unit-price="${priceDetail}">$${formatNumber(priceDetail)}</span>
                 <span class="price-subtext">por unidad</span>
             </div>
-            <div class="price-bulk-saving">
-                Desde $${formatNumber(product.prices[24])} al por mayor
-            </div>
-        </div>
-        
-        <div class="simplified-card-action-row">
-            <span style="font-size: 0.8rem; color: var(--color-text-muted); font-weight: 500;">Ver volumen</span>
-            <button class="home-redirect-btn ripple" aria-label="Ver en catálogo" title="Ver en catálogo">
-                <svg viewBox="0 0 24 24">
-                    <path fill="currentColor" d="M17,18A2,2 0 0,1 19,20A2,2 0 0,1 17,22A2,2 0 0,1 15,20A2,2 0 0,1 17,18M7,18A2,2 0 0,1 9,20A2,2 0 0,1 7,22A2,2 0 0,1 5,20A2,2 0 0,1 7,18M7.2,14.63L7.17,14.56L9,11H15.55C16.3,11 17,10.59 17.3,10L21.08,3.15L19.34,2.2L15.55,9H9.7L8.38,6.2L4.27,2H1V4H3L6.6,11.59L5.25,14.04C5.1,14.33 5,14.65 5,15A2,2 0 0,0 7,17H19V15H7.42C7.29,15 7.17,14.89 7.2,14.63Z" />
-                </svg>
-            </button>
         </div>
     ` : `
         <span class="product-brand">${sanitizeInput(product.brand)}</span>
@@ -1497,27 +1504,22 @@ function bindCardInteractions(container) {
         const productId = card.getAttribute('data-product-id');
         const product = PRODUCTS.find(p => p.id === productId);
         
-        // If it's a simplified Home card, bind redirect behavior instead
+        // If it's a simplified Home card, bind redirect behavior to the entire card
         if (card.classList.contains('simplified-home-card')) {
-            const redirectBtn = card.querySelector('.home-redirect-btn');
-            if (redirectBtn) {
-                redirectBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    let cat = null;
-                    let filter = null;
-                    if (container === DOM.offersGrid) {
-                        filter = 'offers';
-                    } else if (container === DOM.abarrotesGrid) {
-                        cat = 'abarrotes';
-                    } else if (container === DOM.limpiezaGrid) {
-                        cat = 'limpieza';
-                    } else {
-                        cat = product.category;
-                    }
-                    navigateToView('plp', { category: cat, filter: filter, scrollToProduct: productId });
-                });
-            }
+            card.addEventListener('click', (e) => {
+                let cat = null;
+                let filter = null;
+                if (container === DOM.offersGrid) {
+                    filter = 'offers';
+                } else if (container === DOM.abarrotesGrid) {
+                    cat = 'abarrotes';
+                } else if (container === DOM.limpiezaGrid) {
+                    cat = 'limpieza';
+                } else {
+                    cat = product.category;
+                }
+                navigateToView('plp', { category: cat, filter: filter, scrollToProduct: productId });
+            });
             return;
         }
 

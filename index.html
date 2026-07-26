@@ -17,17 +17,17 @@
     <!-- STICKY HEADER -->
     <header class="main-header" id="mainHeader">
         <div class="header-top-bar">
+            <!-- Brand Logo -->
+            <a href="#" class="logo-container" id="brandLogo">
+                <img src="logo.jpg" alt="AhorraYa Logo" class="brand-logo">
+            </a>
+
             <!-- Hamburger Menu for Mobile -->
             <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Abrir menú de categorías">
                 <svg viewBox="0 0 24 24" width="24" height="24">
                     <path fill="currentColor" d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z" />
                 </svg>
             </button>
-
-            <!-- Brand Logo -->
-            <a href="#" class="logo-container" id="brandLogo">
-                <img src="logo.jpg" alt="AhorraYa Logo" class="brand-logo">
-            </a>
 
             <!-- Search Bar -->
             <div class="search-container">
@@ -116,17 +116,27 @@
         
         <!-- Standard User Drawer Items -->
         <nav class="drawer-nav" id="drawerNavStandard">
-            <a href="#" data-category="all" class="drawer-item">Ver Todo el Catálogo</a>
-            <a href="#" data-category="abarrotes" class="drawer-item">Abarrotes Básicos</a>
-            <a href="#" data-category="liquidos" class="drawer-item">Bebidas y Líquidos</a>
-            <a href="#" data-category="limpieza" class="drawer-item">Limpieza e Higiene</a>
-            <a href="#" data-category="lacteos" class="drawer-item">Lácteos y Fiambrería</a>
-            <a href="#" data-category="conservas" class="drawer-item">Conservas y Salsas</a>
-            <hr>
-            <a href="#" class="drawer-item" id="mobileOffersLink">🔥 Ofertas</a>
-            <a href="#" class="drawer-item" id="mobileNewLink">✨ Nuevos Productos</a>
-            <a href="#" class="drawer-item" id="mobileHowToBuyLink">❓ ¿Cómo Comprar?</a>
-            <a href="#" class="drawer-item" id="mobileAdminLoginLink">🔐 Acceso Ejecutivo</a>
+            <!-- Dropdown Categories Menu -->
+            <div class="drawer-dropdown">
+                <button class="drawer-dropdown-btn" id="drawerCategoriesBtn">
+                    CATEGORÍAS
+                    <svg viewBox="0 0 24 24" width="16" height="16" class="dropdown-chevron">
+                        <path fill="currentColor" d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
+                    </svg>
+                </button>
+                <div class="drawer-dropdown-content" id="drawerCategoriesContent" style="display: none; flex-direction: column;">
+                    <a href="#" data-category="all" class="drawer-item">Ver Todo el Catálogo</a>
+                    <a href="#" data-category="abarrotes" class="drawer-item">Abarrotes Básicos</a>
+                    <a href="#" data-category="liquidos" class="drawer-item">Bebidas y Líquidos</a>
+                    <a href="#" data-category="limpieza" class="drawer-item">Limpieza e Higiene</a>
+                    <a href="#" data-category="lacteos" class="drawer-item">Lácteos y Fiambrería</a>
+                    <a href="#" data-category="conservas" class="drawer-item">Conservas y Salsas</a>
+                </div>
+            </div>
+            
+            <a href="#" class="drawer-item" id="mobileOffersLink">OFERTAS</a>
+            <a href="#" class="drawer-item" id="mobileNewLink">NUEVOS PRODUCTOS</a>
+            <a href="#" class="drawer-item" id="mobileHowToBuyLink">¿CÓMO COMPRAR?</a>
         </nav>
 
         <!-- Admin Executive Drawer Items (Hidden by default) -->

@@ -598,6 +598,41 @@ img {
     margin: 10px 20px;
 }
 
+.drawer-dropdown {
+    width: 100%;
+}
+.drawer-dropdown-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-dark);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    transition: var(--transition-fast);
+}
+.drawer-dropdown-btn:hover {
+    background-color: var(--color-bg-light);
+    color: var(--color-primary);
+}
+.drawer-dropdown-btn .dropdown-chevron {
+    transition: transform var(--transition-fast);
+}
+.drawer-dropdown-content {
+    background-color: #F8F9FA;
+    border-left: 3px solid var(--color-primary-light);
+}
+.drawer-dropdown-content .drawer-item {
+    padding-left: 35px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
 .drawer-overlay {
     position: fixed;
     top: 0;
@@ -2007,11 +2042,11 @@ img {
     
     .mobile-menu-btn {
         display: block;
-        order: 1;
+        order: 2;
     }
     
     .logo-container {
-        order: 2;
+        order: 1;
     }
     
     .header-actions {
@@ -2043,7 +2078,7 @@ img {
     .carousel-caption p { font-size: 0.85rem; margin-bottom: 12px; }
     .carousel-arrow { width: 36px; height: 36px; font-size: 0.9rem; }
     
-    .info-blocks-grid { grid-template-columns: 1fr; gap: 12px; margin: 15px auto; }
+    .info-blocks-grid { display: none; }
     .info-card { padding: 12px 15px; }
     .info-card-icon { width: 44px; height: 44px; }
     
@@ -2173,6 +2208,13 @@ img {
 /* Home Page Product Cards - Simplified Layout styles */
 .product-card.simplified-home-card {
     height: 100%;
+    max-width: 230px;
+    margin: 0 auto;
+    cursor: pointer;
+}
+.product-card.simplified-home-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
 }
 
 .price-bulk-saving {
