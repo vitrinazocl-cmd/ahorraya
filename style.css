@@ -546,7 +546,8 @@ img {
     display: flex;
     flex-direction: column;
 }
-.mobile-drawer.open {
+.mobile-drawer.open,
+.mobile-drawer.active {
     left: 0;
 }
 
@@ -1207,7 +1208,8 @@ img {
     display: flex;
     flex-direction: column;
 }
-.cart-drawer.open { right: 0; }
+.cart-drawer.open,
+.cart-drawer.active { right: 0; }
 
 .cart-drawer-header {
     padding: 20px;
@@ -2241,7 +2243,8 @@ img {
     .add-cart-btn { padding: 0 10px; font-size: 0.75rem; height: 28px; }
     
     .cart-drawer { width: 100%; right: -100%; }
-    .cart-drawer.open { right: 0; }
+    .cart-drawer.open,
+    .cart-drawer.active { right: 0; }
     
     .whatsapp-float-btn { bottom: 20px; right: 20px; width: 50px; height: 50px; }
     
