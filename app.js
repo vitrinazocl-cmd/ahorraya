@@ -1419,48 +1419,6 @@ function createProductCardHTML(product, isHome = false) {
     const saleBadge = product.isOffer ? `<span class="badge badge-sale">🔥 Oferta</span>` : '';
     const newBadge = (!isHome && product.isNew) ? `<span class="badge badge-new">✨ Nuevo</span>` : '';
 
-    const bodyContent = isHome ? `
-        <span class="product-brand">${sanitizeInput(product.brand)}</span>
-        <h3 class="product-desc" title="${sanitizeInput(product.name)}">${sanitizeInput(product.name)}</h3>
-        
-        <div class="price-display-wrapper">
-            <span class="price-from-label" style="font-size: 0.85rem; color: var(--color-text-muted); font-weight: 500; display: block; margin-bottom: 2px;">Precio desde</span>
-            <div class="price-unit-row">
-                <span class="price-value" data-unit-price="${priceDetail}">$${formatNumber(priceDetail)}</span>
-                <span class="price-subtext">por unidad</span>
-            </div>
-        </div>
-    ` : `
-        <span class="product-brand">${sanitizeInput(product.brand)}</span>
-        <h3 class="product-desc" title="${sanitizeInput(product.name)}">${sanitizeInput(product.name)}</h3>
-        
-        <div class="pricing-tiers-tab" role="tablist">
-            <button class="tier-btn active" data-tier="1" role="tab" aria-selected="true">1 u.</button>
-            <button class="tier-btn" data-tier="12" role="tab" aria-selected="false">12 u.</button>
-            <button class="tier-btn" data-tier="24" role="tab" aria-selected="false">24 u.+</button>
-        </div>
-        
-        <div class="price-display-wrapper">
-            <div class="price-unit-row">
-                <span class="price-value" data-unit-price="${priceDetail}">$${formatNumber(priceDetail)}</span>
-                <span class="price-subtext">por unidad</span>
-            </div>
-            <div class="price-total-row">
-                <span>Total: <strong class="total-amount">$${formatNumber(priceDetail)}</strong></span>
-            </div>
-        </div>
-        
-        <div class="card-action-row">
-            <div class="quantity-counter">
-                <button class="qty-btn minus">-</button>
-                <input type="number" class="qty-input" value="1" min="1" max="999">
-                <button class="qty-btn plus">+</button>
-            </div>
-            
-            <button class="btn btn-primary add-cart-btn ripple">Agregar</button>
-        </div>
-    `;
-
     return `
         <div class="product-card ${isHome ? 'simplified-home-card' : ''}" data-product-id="${product.id}" id="card-${product.id}">
             <div class="product-badge-container">
@@ -1477,7 +1435,34 @@ function createProductCardHTML(product, isHome = false) {
             </div>
             
             <div class="product-card-body">
-                ${bodyContent}
+                <span class="product-brand">${sanitizeInput(product.brand)}</span>
+                <h3 class="product-desc" title="${sanitizeInput(product.name)}">${sanitizeInput(product.name)}</h3>
+                
+                <div class="pricing-tiers-tab" role="tablist">
+                    <button class="tier-btn active" data-tier="1" role="tab" aria-selected="true">1 u.</button>
+                    <button class="tier-btn" data-tier="12" role="tab" aria-selected="false">12 u.</button>
+                    <button class="tier-btn" data-tier="24" role="tab" aria-selected="false">24 u.+</button>
+                </div>
+                
+                <div class="price-display-wrapper">
+                    <div class="price-unit-row">
+                        <span class="price-value" data-unit-price="${priceDetail}">$${formatNumber(priceDetail)}</span>
+                        <span class="price-subtext">por unidad</span>
+                    </div>
+                    <div class="price-total-row">
+                        <span>Total: <strong class="total-amount">$${formatNumber(priceDetail)}</strong></span>
+                    </div>
+                </div>
+                
+                <div class="card-action-row">
+                    <div class="quantity-counter">
+                        <button class="qty-btn minus">-</button>
+                        <input type="number" class="qty-input" value="1" min="1" max="999">
+                        <button class="qty-btn plus">+</button>
+                    </div>
+                    
+                    <button class="btn btn-primary add-cart-btn ripple">Agregar</button>
+                </div>
             </div>
         </div>
     `;
@@ -1520,23 +1505,28 @@ function bindCardInteractions(container) {
         const productId = card.getAttribute('data-product-id');
         const product = PRODUCTS.find(p => p.id === productId);
         
-        // If it's a simplified Home card, bind redirect behavior to the entire card
-        if (card.classList.contains('simplified-home-card')) {
-            card.addEventListener('click', (e) => {
-                let cat = null;
-                let filter = null;
-                if (container === DOM.offersGrid) {
-                    filter = 'offers';
-                } else if (container === DOM.abarrotesGrid) {
-                    cat = 'abarrotes';
-                } else if (container === DOM.limpiezaGrid) {
-                    cat = 'limpieza';
-                } else {
-                    cat = product.category;
-                }
-                navigateToView('plp', { category: cat, filter: filter, scrollToProduct: productId });
+        // Bind redirect behavior to specific element clicks (image, brand, description) if it is on the Home page
+        const isHomeContainer = (container === DOM.offersGrid || container === DOM.abarrotesGrid || container === DOM.limpiezaGrid);
+        if (isHomeContainer) {
+            const redirectTargets = card.querySelectorAll('.product-img-wrapper, .product-brand, .product-desc');
+            redirectTargets.forEach(el => {
+                el.style.cursor = 'pointer';
+                el.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    let cat = null;
+                    let filter = null;
+                    if (container === DOM.offersGrid) {
+                        filter = 'offers';
+                    } else if (container === DOM.abarrotesGrid) {
+                        cat = 'abarrotes';
+                    } else if (container === DOM.limpiezaGrid) {
+                        cat = 'limpieza';
+                    } else {
+                        cat = product.category;
+                    }
+                    navigateToView('plp', { category: cat, filter: filter, scrollToProduct: productId });
+                });
             });
-            return;
         }
 
         const tierButtons = card.querySelectorAll('.tier-btn');
