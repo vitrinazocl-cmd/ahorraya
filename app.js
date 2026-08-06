@@ -2393,13 +2393,13 @@ function openProductDetailModal(product) {
     const priceDetail = product.prices[1];
     
     content.innerHTML = `
-        <div class="modal-product-img-wrapper" style="position: relative; padding-top: 60%; background-color: #F8F9FA; border-radius: var(--border-radius); overflow: hidden; margin-bottom: 20px;">
-            <img src="${product.id}.jpg" alt="${sanitizeInput(product.name)}" class="modal-product-img" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); max-height: 90%; max-width: 90%; object-fit: contain;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <div class="modal-product-img-wrapper">
+            <img src="${product.id}.jpg" alt="${sanitizeInput(product.name)}" class="modal-product-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
             <div class="svg-fallback" style="display: none; width: 100%; height: 100%; padding: 20px;">
                 ${getProductSvg(product.category, product.name)}
             </div>
         </div>
-        <h2 style="font-size: 1.3rem; margin-bottom: 15px; color: var(--color-text-dark);">${sanitizeInput(product.name)}</h2>
+        <h2>${sanitizeInput(product.name)}</h2>
         
         <div class="pricing-tiers-tab modal-tiers-tab" role="tablist" style="margin-bottom: 18px;">
             <button class="tier-btn active" data-tier="1" role="tab" aria-selected="true">1 u.</button>
@@ -2409,22 +2409,22 @@ function openProductDetailModal(product) {
         
         <div class="price-display-wrapper" style="margin-bottom: 20px;">
             <div class="price-unit-row" style="display: flex; align-items: baseline; gap: 6px;">
-                <span class="price-value modal-price-value" data-unit-price="${priceDetail}" style="font-size: 1.6rem; font-weight: 800; color: var(--color-primary-dark); font-family: Montserrat;">$${formatNumber(priceDetail)}</span>
+                <span class="price-value modal-price-value" data-unit-price="${priceDetail}">$${formatNumber(priceDetail)}</span>
                 <span class="price-subtext" style="font-size: 0.8rem; color: var(--color-text-muted);">por unidad</span>
             </div>
             <div class="price-total-row" style="margin-top: 4px; font-size: 0.9rem;">
-                <span>Total: <strong class="modal-total-amount" style="color: var(--color-success); font-weight: 700;">$${formatNumber(priceDetail)}</strong></span>
+                <span>Total: <strong class="modal-total-amount">$${formatNumber(priceDetail)}</strong></span>
             </div>
         </div>
         
         <div class="card-action-row" style="display: flex; gap: 12px;">
-            <div class="quantity-counter" style="display: flex; align-items: center; border: 1px solid var(--color-border); border-radius: var(--border-radius-sm); overflow: hidden; background-color: var(--color-bg-light); height: 42px;">
-                <button class="qty-btn modal-qty-minus" style="width: 38px; height: 100%; border: none; background: transparent; cursor: pointer; font-size: 1.2rem; font-weight: 700; color: var(--color-primary);">-</button>
-                <input type="number" class="qty-input modal-qty-input" value="1" min="1" max="999" style="width: 44px; height: 100%; border: none; border-left: 1px solid var(--color-border); border-right: 1px solid var(--color-border); text-align: center; font-size: 1rem; font-weight: 700; background-color: #fff;">
-                <button class="qty-btn modal-qty-plus" style="width: 38px; height: 100%; border: none; background: transparent; cursor: pointer; font-size: 1.2rem; font-weight: 700; color: var(--color-primary);">+</button>
+            <div class="quantity-counter modal-qty-counter">
+                <button class="qty-btn modal-qty-minus">-</button>
+                <input type="number" class="qty-input modal-qty-input" value="1" min="1" max="999">
+                <button class="qty-btn modal-qty-plus">+</button>
             </div>
             
-            <button class="btn btn-primary modal-add-btn ripple" style="flex: 1; height: 42px; font-size: 1rem;">Agregar al Carrito</button>
+            <button class="btn btn-primary modal-add-btn ripple">Agregar al Carrito</button>
         </div>
     `;
 
