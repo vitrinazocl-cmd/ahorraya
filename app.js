@@ -1256,6 +1256,18 @@ function handleAdminRoute() {
     }
 }
 
+// Helper to map category slugs to human-readable titles
+function getCategoryLabel(category) {
+    const labels = {
+        'abarrotes': 'Abarrotes Básicos',
+        'liquidos': 'Bebidas y Líquidos',
+        'limpieza': 'Limpieza e Higiene',
+        'lacteos': 'Lácteos y Fiambrería',
+        'conservas': 'Conservas y Salsas'
+    };
+    return labels[category] || category;
+}
+
 // 8. SPA ROUTING ENGINE
 function navigateToView(viewName, options = {}) {
     STATE.currentView = viewName;
