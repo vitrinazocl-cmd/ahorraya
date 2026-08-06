@@ -1708,7 +1708,7 @@ function applyFiltersAndRenderPLP() {
     DOM.productCount.textContent = `Mostrando ${filteredList.length} producto${filteredList.length === 1 ? '' : 's'}`;
 
     if (filteredList.length > 0) {
-        DOM.plpGrid.innerHTML = filteredList.map(createProductCardHTML).join('');
+        DOM.plpGrid.innerHTML = filteredList.map(p => createProductCardHTML(p, false)).join('');
         DOM.noResultsState.style.display = 'none';
         bindCardInteractions(DOM.plpGrid);
     } else {
