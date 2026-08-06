@@ -1112,6 +1112,21 @@
         </div>
     </div>
 
+    <!-- Modal 9: Product Detail Full Screen (Quick View) -->
+    <div class="modal-overlay" id="modalProductDetail">
+        <div class="modal-card product-detail-modal-card" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3 id="detailProductBrand" style="color: var(--color-secondary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">Marca</h3>
+                <button class="modal-close-btn" id="btnCloseProductDetail">&times;</button>
+            </div>
+            <div class="modal-body" style="padding-top: 10px;">
+                <div class="product-detail-layout" id="modalProductDetailContent">
+                    <!-- Populated dynamically by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- JavaScript Bundle -->
     <script src="app.js"></script>
 </body>

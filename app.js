@@ -613,6 +613,8 @@ const DOM = {
     modalCheckoutSuccess: document.getElementById('modalCheckoutSuccess'),
     successOrderId: document.getElementById('successOrderId'),
     btnCopyOrderId: document.getElementById('btnCopyOrderId'),
+    modalProductDetail: document.getElementById('modalProductDetail'),
+    btnCloseProductDetail: document.getElementById('btnCloseProductDetail'),
 
     // --- NEW SEPARATE ADMIN VIEWS DOM ELEMENTS ---
     adminTriggerBtn: document.getElementById('adminTriggerBtn'),
@@ -1541,6 +1543,19 @@ function bindCardInteractions(container) {
             });
         }
 
+        // Bind modal behavior to specific element clicks (image, brand, description) if it is on the PLP (Catalog) page
+        const isPlpContainer = (container === DOM.plpGrid);
+        if (isPlpContainer) {
+            const detailTargets = card.querySelectorAll('.product-img-wrapper, .product-brand, .product-desc');
+            detailTargets.forEach(el => {
+                el.style.cursor = 'pointer';
+                el.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    openProductDetailModal(product);
+                });
+            });
+        }
+
         const tierButtons = card.querySelectorAll('.tier-btn');
         const qtyInput = card.querySelector('.qty-input');
         const plusBtn = card.querySelector('.qty-btn.plus');
@@ -2357,4 +2372,137 @@ function closeModal(modal) {
     if (!anyModalOpen && !anyDrawerOpen) {
         document.body.style.overflow = '';
     }
+}
+
+// 19. PRODUCT DETAIL MODAL (QUICK VIEW / FULL SCREEN EXPANSION)
+function openProductDetailModal(product) {
+    const modal = DOM.modalProductDetail;
+    const content = document.getElementById('modalProductDetailContent');
+    if (!modal || !content) return;
+
+    const priceDetail = product.prices[1];
+    
+    content.innerHTML = `
+        <div class="modal-product-img-wrapper" style="position: relative; padding-top: 60%; background-color: #F8F9FA; border-radius: var(--border-radius); overflow: hidden; margin-bottom: 20px;">
+            <img src="${product.id}.jpg" alt="${sanitizeInput(product.name)}" class="modal-product-img" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); max-height: 90%; max-width: 90%; object-fit: contain;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <div class="svg-fallback" style="display: none; width: 100%; height: 100%; padding: 20px;">
+                ${getProductSvg(product.category, product.name)}
+            </div>
+        </div>
+        <h2 style="font-size: 1.3rem; margin-bottom: 15px; color: var(--color-text-dark);">${sanitizeInput(product.name)}</h2>
+        
+        <div class="pricing-tiers-tab modal-tiers-tab" role="tablist" style="margin-bottom: 18px;">
+            <button class="tier-btn active" data-tier="1" role="tab" aria-selected="true">1 u.</button>
+            <button class="tier-btn" data-tier="12" role="tab" aria-selected="false">12 u.</button>
+            <button class="tier-btn" data-tier="24" role="tab" aria-selected="false">24 u.+</button>
+        </div>
+        
+        <div class="price-display-wrapper" style="margin-bottom: 20px;">
+            <div class="price-unit-row" style="display: flex; align-items: baseline; gap: 6px;">
+                <span class="price-value modal-price-value" data-unit-price="${priceDetail}" style="font-size: 1.6rem; font-weight: 800; color: var(--color-primary-dark); font-family: Montserrat;">$${formatNumber(priceDetail)}</span>
+                <span class="price-subtext" style="font-size: 0.8rem; color: var(--color-text-muted);">por unidad</span>
+            </div>
+            <div class="price-total-row" style="margin-top: 4px; font-size: 0.9rem;">
+                <span>Total: <strong class="modal-total-amount" style="color: var(--color-success); font-weight: 700;">$${formatNumber(priceDetail)}</strong></span>
+            </div>
+        </div>
+        
+        <div class="card-action-row" style="display: flex; gap: 12px;">
+            <div class="quantity-counter" style="display: flex; align-items: center; border: 1px solid var(--color-border); border-radius: var(--border-radius-sm); overflow: hidden; background-color: var(--color-bg-light); height: 42px;">
+                <button class="qty-btn modal-qty-minus" style="width: 38px; height: 100%; border: none; background: transparent; cursor: pointer; font-size: 1.2rem; font-weight: 700; color: var(--color-primary);">-</button>
+                <input type="number" class="qty-input modal-qty-input" value="1" min="1" max="999" style="width: 44px; height: 100%; border: none; border-left: 1px solid var(--color-border); border-right: 1px solid var(--color-border); text-align: center; font-size: 1rem; font-weight: 700; background-color: #fff;">
+                <button class="qty-btn modal-qty-plus" style="width: 38px; height: 100%; border: none; background: transparent; cursor: pointer; font-size: 1.2rem; font-weight: 700; color: var(--color-primary);">+</button>
+            </div>
+            
+            <button class="btn btn-primary modal-add-btn ripple" style="flex: 1; height: 42px; font-size: 1rem;">Agregar al Carrito</button>
+        </div>
+    `;
+
+    document.getElementById('detailProductBrand').textContent = product.brand;
+
+    const tierButtons = content.querySelectorAll('.tier-btn');
+    const qtyInput = content.querySelector('.modal-qty-input');
+    const plusBtn = content.querySelector('.modal-qty-plus');
+    const minusBtn = content.querySelector('.modal-qty-minus');
+    const unitPriceLabel = content.querySelector('.modal-price-value');
+    const totalPriceLabel = content.querySelector('.modal-total-amount');
+    const addBtn = content.querySelector('.modal-add-btn');
+
+    const getTierPrice = (qty) => {
+        if (qty >= 24) return product.prices[24];
+        if (qty >= 12) return product.prices[12];
+        return product.prices[1];
+    };
+
+    const updateModalPrices = (qty) => {
+        const unitPrice = getTierPrice(qty);
+        const total = unitPrice * qty;
+        
+        unitPriceLabel.textContent = `$${formatNumber(unitPrice)}`;
+        unitPriceLabel.setAttribute('data-unit-price', unitPrice);
+        totalPriceLabel.textContent = `$${formatNumber(total)}`;
+        
+        let activeTier = 1;
+        if (qty >= 24) activeTier = 24;
+        else if (qty >= 12) activeTier = 12;
+
+        tierButtons.forEach(btn => {
+            const tierVal = parseInt(btn.getAttribute('data-tier'), 10);
+            if (tierVal === activeTier) {
+                btn.classList.add('active');
+                btn.setAttribute('aria-selected', 'true');
+            } else {
+                btn.classList.remove('active');
+                btn.setAttribute('aria-selected', 'false');
+            }
+        });
+    };
+
+    tierButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const tierVal = parseInt(btn.getAttribute('data-tier'), 10);
+            qtyInput.value = tierVal;
+            updateModalPrices(tierVal);
+        });
+    });
+
+    plusBtn.addEventListener('click', () => {
+        let val = parseInt(qtyInput.value, 10) || 1;
+        val++;
+        qtyInput.value = val;
+        updateModalPrices(val);
+    });
+
+    minusBtn.addEventListener('click', () => {
+        let val = parseInt(qtyInput.value, 10) || 1;
+        if (val > 1) {
+            val--;
+            qtyInput.value = val;
+            updateModalPrices(val);
+        }
+    });
+
+    qtyInput.addEventListener('input', () => {
+        let val = parseInt(qtyInput.value, 10);
+        if (isNaN(val) || val < 1) val = 1;
+        qtyInput.value = val;
+        updateModalPrices(val);
+    });
+
+    addBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const finalQty = parseInt(qtyInput.value, 10) || 1;
+        addToCart(product.id, finalQty);
+        
+        addBtn.textContent = '¡Agregado!';
+        addBtn.style.backgroundColor = 'var(--color-success)';
+        setTimeout(() => {
+            addBtn.textContent = 'Agregar al Carrito';
+            addBtn.style.backgroundColor = '';
+            closeModal(modal);
+        }, 800);
+    });
+
+    openModal(modal);
 }

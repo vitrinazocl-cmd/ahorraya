@@ -2351,3 +2351,35 @@ img {
     height: 20px;
 }
 
+/* Product Detail Modal Custom Styles */
+.product-detail-modal-card .modal-header {
+    background-color: var(--color-bg-white);
+    border-bottom: 1px solid var(--color-border);
+    padding: 16px 20px 10px;
+}
+.product-detail-modal-card .modal-header h3 {
+    color: var(--color-secondary);
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.product-detail-modal-card .modal-header .modal-close-btn {
+    color: var(--color-text-muted);
+    font-size: 1.6rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    line-height: 1;
+    transition: var(--transition-fast);
+}
+.product-detail-modal-card .modal-header .modal-close-btn:hover {
+    color: var(--color-secondary);
+    transform: scale(1.1);
+}
+.product-detail-modal-card .modal-body {
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+
