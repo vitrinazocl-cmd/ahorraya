@@ -2197,9 +2197,9 @@ img {
         border-radius: 3px;
     }
     .product-card.simplified-home-card {
-        flex: 0 0 260px;
+        flex: 0 0 190px;
         scroll-snap-align: start;
-        max-width: 260px;
+        max-width: 190px;
     }
     .plp-grid { grid-template-columns: repeat(2, 1fr); }
     
@@ -2300,8 +2300,9 @@ img {
 /* Home Page Product Cards - Simplified Layout styles */
 .product-card.simplified-home-card {
     height: 100%;
-    max-width: 280px;
+    max-width: 230px;
     margin: 0 auto;
+    cursor: pointer;
 }
 .product-card.simplified-home-card:hover {
     transform: translateY(-8px) scale(1.02);
