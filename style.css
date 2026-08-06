@@ -2203,7 +2203,12 @@ img {
         scroll-snap-align: start;
         max-width: 190px;
     }
-    .plp-grid { grid-template-columns: repeat(2, 1fr); }
+    .plp-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        overflow-x: visible;
+    }
     
     .admin-kpis-grid { grid-template-columns: 1fr; gap: 15px; }
     .admin-topbar { flex-direction: column; align-items: flex-start; gap: 15px; }
@@ -2227,7 +2232,12 @@ img {
     .admin-trigger-btn { padding: 8px 10px; }
     
     /* 2 Columns products layout on mobile for fast catalog navigation */
-    .plp-grid { grid-template-columns: repeat(2, 1fr); }
+    .plp-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        overflow-x: visible;
+    }
     
     .product-card { padding: 10px; }
     .product-brand { font-size: 0.7rem; }
