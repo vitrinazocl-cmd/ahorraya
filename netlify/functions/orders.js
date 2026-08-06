@@ -53,9 +53,14 @@ exports.handler = async (event, context) => {
             const orderId = queryParams.id;
 
             if (orderId) {
-                // Fetch single order (Tracking lookup)
-                const queryText = 'SELECT * FROM orders WHERE UPPER(id) = UPPER($1)';
+                // Fetch single order (Tracking lookup) - Enforce Row-Level Security
+                await client.query('BEGIN');
+                await client.query("SELECT set_config('app.current_user_role', 'anonymous', true)");
+                await client.query("SELECT set_config('app.current_order_id', $1, true)", [orderId]);
+                
+                const queryText = 'SELECT * FROM secure_store.orders WHERE UPPER(id) = UPPER($1)';
                 const res = await client.query(queryText, [orderId]);
+                await client.query('COMMIT');
                 
                 if (res.rows.length === 0) {
                     return createResponse(404, { error: 'Order not found' });
@@ -82,9 +87,13 @@ exports.handler = async (event, context) => {
                 
                 return createResponse(200, formattedOrder);
             } else {
-                // Fetch all orders (Admin views dashboard)
-                const queryText = 'SELECT * FROM orders ORDER BY date DESC';
+                // Fetch all orders (Admin views dashboard) - Enforce Row-Level Security
+                await client.query('BEGIN');
+                await client.query("SELECT set_config('app.current_user_role', 'admin', true)");
+                
+                const queryText = 'SELECT * FROM secure_store.orders ORDER BY date DESC';
                 const res = await client.query(queryText);
+                await client.query('COMMIT');
                 
                 const formattedOrders = res.rows.map(dbOrder => ({
                     id: dbOrder.id,
@@ -124,7 +133,7 @@ exports.handler = async (event, context) => {
             }
 
             const insertText = `
-                INSERT INTO orders (
+                INSERT INTO secure_store.orders (
                     id, date, customer_name, customer_rut, customer_phone, 
                     customer_email, customer_address, method, payment, 
                     shipping_cost, total, status, items
@@ -148,7 +157,10 @@ exports.handler = async (event, context) => {
                 JSON.stringify(items)
             ];
 
+            await client.query('BEGIN');
+            await client.query("SELECT set_config('app.current_user_role', 'customer', true)");
             await client.query(insertText, values);
+            await client.query('COMMIT');
             return createResponse(201, { success: true, orderId: id });
         } 
         
@@ -158,6 +170,11 @@ exports.handler = async (event, context) => {
         }
     } catch (err) {
         console.error('❌ Database query execution error:', err);
+        try {
+            await client.query('ROLLBACK');
+        } catch (rollbackErr) {
+            // Ignore rollback errors if no transaction was active
+        }
         return createResponse(500, { 
             error: 'Failed to query database', 
             details: err.message 
