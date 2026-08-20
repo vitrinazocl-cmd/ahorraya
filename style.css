@@ -1929,6 +1929,8 @@ img {
     overflow-y: auto;
     line-height: 1.5;
     font-size: 0.92rem;
+    flex: 1;
+    min-height: 0;
 }
 
 .modal-footer {
