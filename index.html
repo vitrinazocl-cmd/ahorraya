@@ -963,7 +963,12 @@
 
     <!-- Modal 5: Checkout Form (Generate WhatsApp order) -->
     <div class="modal-overlay" id="modalCheckout">
-                   <form id="checkoutForm" onsubmit="event.preventDefault();">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Finalizar Compra</h3>
+                <button class="modal-close-btn">&times;</button>
+            </div>
+            <form id="checkoutForm" onsubmit="event.preventDefault();">
                 <div class="modal-body">
                     <p style="margin-bottom: 20px; color: #64748B;">Selecciona tu medio de pago y completa tus datos para procesar tu orden.</p>
                     
