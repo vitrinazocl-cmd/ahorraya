@@ -3092,6 +3092,7 @@ const DOM = {
     cartDrawerCloseBtn: document.getElementById('cartDrawerCloseBtn'),
     cartOverlay: document.getElementById('cartOverlay'),
     cartBadge: document.getElementById('cartBadge'),
+    cartDrawerCount: document.getElementById('cartDrawerCount'),
     cartTotalHeader: document.getElementById('cartTotalHeader'),
     cartDrawerItems: document.getElementById('cartDrawerItems'),
     cartEmptyState: document.getElementById('cartEmptyState'),
