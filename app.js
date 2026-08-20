@@ -3492,6 +3492,9 @@ function setupEventListeners() {
     DOM.btnCheckout.addEventListener('click', () => {
         closeCartDrawer();
         openModal(DOM.modalCheckout);
+        if (window.selectPaymentMethod) {
+            window.selectPaymentMethod('webpay');
+        }
     });
     
     DOM.checkoutForm.addEventListener('submit', (e) => {
@@ -3499,17 +3502,37 @@ function setupEventListeners() {
         submitCheckout();
     });
 
-    // Dynamic payment method select text change event
-    const checkPaymentSelect = document.getElementById('checkPayment');
+    // Dynamic payment method select cards click events
+    const checkPaymentHidden = document.getElementById('checkPayment');
     const confirmBtn = document.getElementById('btnConfirmSendWhatsApp');
-    if (checkPaymentSelect && confirmBtn) {
-        checkPaymentSelect.addEventListener('change', () => {
-            if (checkPaymentSelect.value === 'webpay') {
-                confirmBtn.textContent = 'Pagar de forma segura con Webpay';
-            } else {
-                confirmBtn.textContent = 'Confirmar y Enviar a WhatsApp';
-            }
-        });
+    const cardWebpay = document.getElementById('paymentCardWebpay');
+    const cardTransferencia = document.getElementById('paymentCardTransferencia');
+
+    window.selectPaymentMethod = function(method) {
+        if (!checkPaymentHidden) return;
+        checkPaymentHidden.value = method;
+
+        if (method === 'webpay') {
+            if (cardWebpay) cardWebpay.classList.add('active');
+            if (cardTransferencia) cardTransferencia.classList.remove('active');
+            if (confirmBtn) confirmBtn.textContent = 'Pagar de forma segura con Webpay';
+        } else {
+            if (cardWebpay) cardWebpay.classList.remove('active');
+            if (cardTransferencia) cardTransferencia.classList.add('active');
+            if (confirmBtn) confirmBtn.textContent = 'Confirmar y Enviar a WhatsApp';
+        }
+    };
+
+    if (cardWebpay) {
+        cardWebpay.addEventListener('click', () => selectPaymentMethod('webpay'));
+    }
+    if (cardTransferencia) {
+        cardTransferencia.addEventListener('click', () => selectPaymentMethod('transferencia'));
+    }
+
+    // Set initial state
+    if (confirmBtn) {
+        confirmBtn.textContent = 'Pagar de forma segura con Webpay';
     }
 
     document.querySelectorAll('.close-cart-and-browse').forEach(btn => {
