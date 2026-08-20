@@ -969,8 +969,8 @@
                     
                     <label style="font-weight: 700; font-size: 0.9rem; display: block; margin-bottom: 10px; color: var(--color-primary-dark);">1. Método de Pago *</label>
                     <div class="payment-selection-cards">
-                        <!-- WebPay Card -->
-                        <div class="payment-card active" data-value="webpay" id="paymentCardWebpay">
+                        <!-- WebPay Card (Hidden temporarily until connected) -->
+                        <div class="payment-card" data-value="webpay" id="paymentCardWebpay" style="display: none;">
                             <svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor">
                                 <path d="M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4M20,18H4V12H20V18M20,8H4V6H20V8Z"/>
                             </svg>
@@ -978,8 +978,8 @@
                             <span style="font-size: 0.7rem; color: #64748B;">Débito / Crédito</span>
                         </div>
                         
-                        <!-- Transferencia Card -->
-                        <div class="payment-card" data-value="transferencia" id="paymentCardTransferencia">
+                        <!-- Transferencia Card (Active) -->
+                        <div class="payment-card active" data-value="transferencia" id="paymentCardTransferencia">
                             <svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor">
                                 <path d="M12.004 2C6.48 2 2 6.48 2 12.004c0 1.91.536 3.693 1.47 5.21L2 22l4.928-1.295a9.92 9.92 0 0 0 5.076 1.393c5.524 0 10.004-4.48 10.004-10.004C22.008 6.48 17.528 2 12.004 2z"/>
                             </svg>
@@ -988,7 +988,7 @@
                         </div>
                     </div>
                     
-                    <input type="hidden" id="checkPayment" value="webpay">
+                    <input type="hidden" id="checkPayment" value="transferencia">
                     
                     <label style="font-weight: 700; font-size: 0.9rem; display: block; margin-bottom: 10px; color: var(--color-primary-dark);">2. Datos de Despacho y Contacto</label>
                     

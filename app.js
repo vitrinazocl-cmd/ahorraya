@@ -3493,7 +3493,7 @@ function setupEventListeners() {
         closeCartDrawer();
         openModal(DOM.modalCheckout);
         if (window.selectPaymentMethod) {
-            window.selectPaymentMethod('webpay');
+            window.selectPaymentMethod('transferencia');
         }
     });
     
@@ -3532,7 +3532,7 @@ function setupEventListeners() {
 
     // Set initial state
     if (confirmBtn) {
-        confirmBtn.textContent = 'Pagar de forma segura con Webpay';
+        confirmBtn.textContent = 'Confirmar y Enviar a WhatsApp';
     }
 
     document.querySelectorAll('.close-cart-and-browse').forEach(btn => {
