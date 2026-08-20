@@ -2266,7 +2266,7 @@ const PRODUCTS = [
             "6": 6000,
             "12": 5625
         },
-        "image": "Muffin relleno ddl x6.jpg"
+        "image": "Muffin relleno ddl x6.webp"
     },
     {
         "id": "p108",
