@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estado de Pago - AhorraYa!</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #0F4C81;
+            --color-primary-dark: #0A3358;
+            --color-secondary: #E35E14;
+            --color-bg: #F4F6F8;
+            --color-text-dark: #1E293B;
+            --color-success: #25D366;
+            --color-danger: #EF4444;
+            --color-warning: #F59E0B;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--color-bg);
+            color: var(--color-text-dark);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .success-card {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            max-width: 500px;
+            width: 100%;
+            padding: 40px 30px;
+            text-align: center;
+            border-top: 5px solid var(--color-primary);
+        }
+
+        .icon-container {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px auto;
+        }
+
+        .icon-container.success {
+            background-color: rgba(37, 211, 102, 0.1);
+            color: var(--color-success);
+        }
+
+        .icon-container.failure {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--color-danger);
+        }
+
+        .icon-container.warning {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: var(--color-warning);
+        }
+
+        .icon-container svg {
+            width: 40px;
+            height: 40px;
+        }
+
+        h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.6rem;
+            margin-bottom: 12px;
+            color: var(--color-primary-dark);
+        }
+
+        p.subtitle {
+            font-size: 0.95rem;
+            color: #64748B;
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .details-box {
+            background-color: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 28px;
+            text-align: left;
+        }
+
+        .details-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .details-row:last-child {
+            margin-bottom: 0;
+            padding-top: 10px;
+            border-top: 1px dashed #CBD5E1;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .details-label {
+            color: #64748B;
+        }
+
+        .details-value {
+            color: var(--color-text-dark);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border: none;
+            margin-bottom: 12px;
+        }
+
+        .btn-whatsapp {
+            background-color: var(--color-success);
+            color: #ffffff;
+        }
+
+        .btn-whatsapp:hover {
+            background-color: #20BA5A;
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background-color: var(--color-primary);
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--color-primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(15, 76, 129, 0.05);
+        }
+
+        .btn svg {
+            margin-right: 8px;
+        }
+
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: var(--color-primary);
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="success-card" id="cardContainer">
+        <div id="loader">
+            <div class="loading-spinner"></div>
+            <p>Procesando estado de tu pago...</p>
+        </div>
+        <div id="content" style="display: none;">
+            <!-- Populated Dynamically -->
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderId = urlParams.get('orderId') || 'Desconocido';
+        const status = urlParams.get('status') || 'error';
+        const amountParam = urlParams.get('amount');
+
+        const cardContainer = document.getElementById('cardContainer');
+        const loader = document.getElementById('loader');
+        const contentDiv = document.getElementById('content');
+
+        // Main logic
+        async function init() {
+            let orderData = null;
+            
+            // Try to fetch order details from Netlify Postgres API
+            if (orderId && orderId !== 'Desconocido') {
+                try {
+                    const res = await fetch(`/.netlify/functions/orders?id=${orderId}`);
+                    if (res.ok) {
+                        orderData = await res.json();
+                    }
+                } catch (e) {
+                    console.warn("Failed to fetch order details from Postgres API", e);
+                }
+            }
+
+            loader.style.display = 'none';
+            contentDiv.style.display = 'block';
+
+            const formatAmount = (num) => new Intl.NumberFormat('es-CL').format(Math.round(num));
+
+            if (status === 'success') {
+                cardContainer.style.borderTopColor = 'var(--color-success)';
+                const totalPaid = amountParam ? parseInt(amountParam, 10) : (orderData ? orderData.total : 0);
+                
+                contentDiv.innerHTML = `
+                    <div class="icon-container success">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        </svg>
+                    </div>
+                    <h2>¡Pago Exitoso!</h2>
+                    <p class="subtitle">Hemos recibido tu pago con Webpay correctamente. Tu pedido se está procesando.</p>
+                    
+                    <div class="details-box">
+                        <div class="details-row">
+                            <span class="details-label">Pedido ID</span>
+                            <span class="details-value" style="font-weight: 700;">${orderId}</span>
+                        </div>
+                        <div class="details-row">
+                            <span class="details-label">Estado de Pago</span>
+                            <span class="details-value" style="color: var(--color-success); font-weight: 700;">Aprobado (WebPay)</span>
+                        </div>
+                        <div class="details-row">
+                            <span class="details-label">Total Cifrado</span>
+                            <span class="details-value">$${formatAmount(totalPaid)}</span>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-whatsapp" id="btnSendWhatsappSuccess">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" style="vertical-align: middle;">
+                            <path d="M12.004 2C6.48 2 2 6.48 2 12.004c0 1.91.536 3.693 1.47 5.21L2 22l4.928-1.295a9.92 9.92 0 0 0 5.076 1.393c5.524 0 10.004-4.48 10.004-10.004C22.008 6.48 17.528 2 12.004 2zm.004 18.004c-1.657 0-3.21-.443-4.562-1.217l-.328-.188-3.066.804.819-2.991-.207-.33A7.954 7.954 0 0 1 3.5 12c0-4.41 3.589-8 8-8s8 3.59 8 8-3.59 8-8 8zm4.397-6.059c-.24-.12-1.423-.7-1.643-.78-.22-.08-.38-.12-.54.12-.16.24-.62.78-.76.94-.14.16-.28.18-.52.06a7.39 7.39 0 0 1-1.92-1.18c-.89-.793-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.58.14-.11.3-.35.45-.53.15-.17.2-.29.3-.47.1-.19.05-.36-.02-.5-.07-.15-.62-1.5-.85-2.05-.23-.55-.48-.47-.66-.48h-.56c-.2 0-.52.07-.79.37-.27.3-1.03 1.01-1.03 2.47s1.07 2.87 1.22 3.07c.15.2 2.11 3.22 5.11 4.52.71.31 1.27.49 1.7.63.72.23 1.37.2 1.89.12.58-.08 1.78-.73 2.03-1.43.25-.7.25-1.29.17-1.42-.08-.13-.28-.21-.52-.33z"/>
+                        </svg>
+                        Enviar Detalle por WhatsApp
+                    </button>
+                    <a href="/" class="btn btn-secondary">Volver a la Tienda</a>
+                `;
+
+                document.getElementById('btnSendWhatsappSuccess').addEventListener('click', () => {
+                    sendWhatsappNotification(orderData, orderId, totalPaid, 'WebPay (Aprobado)');
+                });
+
+            } else if (status === 'failure') {
+                cardContainer.style.borderTopColor = 'var(--color-danger)';
+                contentDiv.innerHTML = `
+                    <div class="icon-container failure">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                        </svg>
+                    </div>
+                    <h2>Pago Rechazado</h2>
+                    <p class="subtitle font-weight-500">Transbank Webpay rechazó la transacción. No se ha realizado ningún cobro.</p>
+                    
+                    <div class="details-box">
+                        <div class="details-row">
+                            <span class="details-label">Pedido ID</span>
+                            <span class="details-value">${orderId}</span>
+                        </div>
+                        <div class="details-row">
+                            <span class="details-label">Método</span>
+                            <span class="details-value" style="color: var(--color-danger); font-weight: 700;">WebPay Rechazado</span>
+                        </div>
+                    </div>
+
+                    <a href="/" class="btn btn-primary">Reintentar Compra</a>
+                    <button class="btn btn-whatsapp" id="btnSendWhatsappSupport">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" style="vertical-align: middle; margin-right: 8px;">
+                            <path d="M12.004 2C6.48 2 2 6.48 2 12.004c0 1.91.536 3.693 1.47 5.21L2 22l4.928-1.295a9.92 9.92 0 0 0 5.076 1.393c5.524 0 10.004-4.48 10.004-10.004C22.008 6.48 17.528 2 12.004 2zm.004 18.004c-1.657 0-3.21-.443-4.562-1.217l-.328-.188-3.066.804.819-2.991-.207-.33A7.954 7.954 0 0 1 3.5 12c0-4.41 3.589-8 8-8s8 3.59 8 8-3.59 8-8 8zm4.397-6.059c-.24-.12-1.423-.7-1.643-.78-.22-.08-.38-.12-.54.12-.16.24-.62.78-.76.94-.14.16-.28.18-.52.06a7.39 7.39 0 0 1-1.92-1.18c-.89-.793-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.58.14-.11.3-.35.45-.53.15-.17.2-.29.3-.47.1-.19.05-.36-.02-.5-.07-.15-.62-1.5-.85-2.05-.23-.55-.48-.47-.66-.48h-.56c-.2 0-.52.07-.79.37-.27.3-1.03 1.01-1.03 2.47s1.07 2.87 1.22 3.07c.15.2 2.11 3.22 5.11 4.52.71.31 1.27.49 1.7.63.72.23 1.37.2 1.89.12.58-.08 1.78-.73 2.03-1.43.25-.7.25-1.29.17-1.42-.08-.13-.28-.21-.52-.33z"/>
+                        </svg>
+                        Coordinar Pago con Transferencia por WhatsApp
+                    </button>
+                `;
+
+                document.getElementById('btnSendWhatsappSupport').addEventListener('click', () => {
+                    const text = encodeURIComponent(`Hola, mi pago con Webpay para el pedido ${orderId} fue rechazado. Quisiera coordinar el pago mediante transferencia bancaria.`);
+                    window.open(`https://wa.me/56951496392?text=${text}`, '_blank');
+                });
+
+            } else if (status === 'aborted') {
+                cardContainer.style.borderTopColor = 'var(--color-warning)';
+                contentDiv.innerHTML = `
+                    <div class="icon-container warning">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                        </svg>
+                    </div>
+                    <h2>Pago Cancelado</h2>
+                    <p class="subtitle">Has cancelado el proceso de pago. El pedido sigue guardado como pendiente.</p>
+
+                    <div class="details-box">
+                        <div class="details-row">
+                            <span class="details-label">Pedido ID</span>
+                            <span class="details-value">${orderId}</span>
+                        </div>
+                    </div>
+
+                    <a href="/" class="btn btn-primary">Volver al Catálogo</a>
+                    <button class="btn btn-whatsapp" id="btnSendWhatsappAbort">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" style="vertical-align: middle; margin-right: 8px;">
+                            <path d="M12.004 2C6.48 2 2 6.48 2 12.004c0 1.91.536 3.693 1.47 5.21L2 22l4.928-1.295a9.92 9.92 0 0 0 5.076 1.393c5.524 0 10.004-4.48 10.004-10.004C22.008 6.48 17.528 2 12.004 2zm.004 18.004c-1.657 0-3.21-.443-4.562-1.217l-.328-.188-3.066.804.819-2.991-.207-.33A7.954 7.954 0 0 1 3.5 12c0-4.41 3.589-8 8-8s8 3.59 8 8-3.59 8-8 8zm4.397-6.059c-.24-.12-1.423-.7-1.643-.78-.22-.08-.38-.12-.54.12-.16.24-.62.78-.76.94-.14.16-.28.18-.52.06a7.39 7.39 0 0 1-1.92-1.18c-.89-.793-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.58.14-.11.3-.35.45-.53.15-.17.2-.29.3-.47.1-.19.05-.36-.02-.5-.07-.15-.62-1.5-.85-2.05-.23-.55-.48-.47-.66-.48h-.56c-.2 0-.52.07-.79.37-.27.3-1.03 1.01-1.03 2.47s1.07 2.87 1.22 3.07c.15.2 2.11 3.22 5.11 4.52.71.31 1.27.49 1.7.63.72.23 1.37.2 1.89.12.58-.08 1.78-.73 2.03-1.43.25-.7.25-1.29.17-1.42-.08-.13-.28-.21-.52-.33z"/>
+                        </svg>
+                        Coordinar por WhatsApp
+                    </button>
+                `;
+
+                document.getElementById('btnSendWhatsappAbort').addEventListener('click', () => {
+                    const text = encodeURIComponent(`Hola, cancelé el pago con Webpay de mi pedido ${orderId}. Quisiera ver opciones para realizar la compra.`);
+                    window.open(`https://wa.me/56951496392?text=${text}`, '_blank');
+                });
+            } else {
+                // Generic Error
+                cardContainer.style.borderTopColor = 'var(--color-danger)';
+                contentDiv.innerHTML = `
+                    <div class="icon-container failure">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                        </svg>
+                    </div>
+                    <h2>Error de Conexión</h2>
+                    <p class="subtitle">Ocurrió un error al procesar el estado de pago. Si se realizó el cargo, por favor ponte en contacto con nuestro equipo.</p>
+                    <a href="/" class="btn btn-primary">Volver al Catálogo</a>
+                `;
+            }
+        }
+
+        // WhatsApp notification compiler helper
+        function sendWhatsappNotification(order, orderId, amount, paymentMethod) {
+            let msg = `🛒 *COMPROBANTE DE COMPRA AHORRAYA!*\n\n`;
+            msg += `🧾 *Orden ID:* ${orderId}\n`;
+            msg += `💳 *Método de Pago:* ${paymentMethod}\n`;
+            msg += `💵 *Monto Pagado:* $${new Intl.NumberFormat('es-CL').format(amount)}\n\n`;
+
+            if (order) {
+                msg += `👤 *Datos del Cliente:*\n`;
+                msg += `• *Nombre:* ${order.customer.name}\n`;
+                msg += `• *RUT:* ${order.customer.rut}\n`;
+                msg += `• *Teléfono:* ${order.customer.phone}\n`;
+                msg += `• *Dirección:* ${order.customer.address}\n\n`;
+                
+                msg += `📦 *Detalle del Pedido:*\n`;
+                // If items array is present
+                if (order.items && order.items.length > 0) {
+                    msg += `Cargado en sistema y validado vía API.\n`;
+                }
+            } else {
+                msg += `El pedido con ID ${orderId} fue registrado y procesado exitosamente por Webpay.\n`;
+            }
+
+            msg += `\n_Comprobante automático generado de forma segura. Gracias por tu compra en AhorraYa!_`;
+            
+            const encodedText = encodeURIComponent(msg);
+            window.open(`https://wa.me/56951496392?text=${encodedText}`, '_blank');
+        }
+
+        init();
+    </script>
+</body>
+</html>

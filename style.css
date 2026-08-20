@@ -1752,10 +1752,8 @@ img {
     bottom: 30px;
     right: 30px;
     background-color: #25D366;
-    color: var(--color-text-light);
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
+    color: var(--color-text-light) !important;
+    border-radius: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1763,6 +1761,12 @@ img {
     z-index: 200;
     transition: var(--transition-fast);
     animation: pulseWhatsapp 2s infinite;
+    padding: 12px 24px;
+    gap: 8px;
+    text-decoration: none;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
 }
 .whatsapp-float-btn:hover {
     transform: scale(1.1);
@@ -2256,7 +2260,7 @@ img {
     .cart-drawer.open,
     .cart-drawer.active { right: 0; }
     
-    .whatsapp-float-btn { bottom: 20px; right: 20px; width: 50px; height: 50px; }
+    .whatsapp-float-btn { bottom: 15px; right: 15px; padding: 8px 12px; font-size: 0.7rem; gap: 4px; }
     
     .modal-card { max-height: 95vh; }
     .payment-methods-grid { grid-template-columns: 1fr; }

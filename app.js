@@ -3496,8 +3496,21 @@ function setupEventListeners() {
     
     DOM.checkoutForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        submitCheckoutToWhatsApp();
+        submitCheckout();
     });
+
+    // Dynamic payment method select text change event
+    const checkPaymentSelect = document.getElementById('checkPayment');
+    const confirmBtn = document.getElementById('btnConfirmSendWhatsApp');
+    if (checkPaymentSelect && confirmBtn) {
+        checkPaymentSelect.addEventListener('change', () => {
+            if (checkPaymentSelect.value === 'webpay') {
+                confirmBtn.textContent = 'Pagar de forma segura con Webpay';
+            } else {
+                confirmBtn.textContent = 'Confirmar y Enviar a WhatsApp';
+            }
+        });
+    }
 
     document.querySelectorAll('.close-cart-and-browse').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -4415,8 +4428,8 @@ function handleCartItemInteractions(e) {
     }
 }
 
-// 15. WHATSAPP CHECKOUT SUBMIT
-function submitCheckoutToWhatsApp() {
+// 15. SECURE CHECKOUT SUBMIT
+async function submitCheckout() {
     const name = sanitizeInput(document.getElementById('checkName').value);
     const rut = sanitizeInput(document.getElementById('checkRut').value);
     const phone = sanitizeInput(document.getElementById('checkPhone').value);
@@ -4428,6 +4441,14 @@ function submitCheckoutToWhatsApp() {
     if (!name || !rut || !phone || !email || !address) {
         alert("Por favor, rellene todos los campos obligatorios.");
         return;
+    }
+
+    const submitBtn = document.getElementById('btnConfirmSendWhatsApp');
+    const originalBtnText = submitBtn ? submitBtn.textContent : '';
+
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Procesando tu pedido...';
     }
 
     let itemsText = '';
@@ -4486,46 +4507,106 @@ function submitCheckoutToWhatsApp() {
         shippingCost: shippingCost,
         items: orderItems,
         total: finalBill,
-        status: 'Recibido (Pendiente de Pago)'
+        status: paymentVal === 'webpay' ? 'Pendiente de Pago (WebPay)' : 'Recibido (Pendiente de Pago)'
     };
-    saveOrder(newOrderObj);
 
-    let msg = `🛒 *NUEVO PEDIDO AHORRAYA! CHILE*\n\n`;
-    msg += `🧾 *Orden ID:* ${orderId}\n\n`;
-    msg += `👤 *Datos del Cliente:*\n`;
-    msg += `• *Nombre:* ${name}\n`;
-    msg += `• *RUT:* ${rut}\n`;
-    msg += `• *Teléfono:* ${phone}\n`;
-    msg += `• *Email:* ${email}\n`;
-    msg += `• *Dirección:* ${address}\n\n`;
-
-    msg += `📦 *Detalle del Pedido:*\n`;
-    msg += `${itemsText}\n`;
-    
-    msg += `💵 *Resumen de Compra:*\n`;
-    msg += `• *Subtotal:* $${formatNumber(totalDiscountedValue)}\n`;
-    msg += `• *Envío:* ${shippingCost === 0 ? 'Gratis' : `$${formatNumber(shippingCost)}`}\n`;
-    msg += `• *Método Despacho:* ${deliveryText}\n`;
-    msg += `• *Método Pago:* ${paymentVal.toUpperCase()}\n`;
-    msg += `• *TOTAL A PAGAR:* $${formatNumber(finalBill)}\n`;
-    
-    if (savings > 0) {
-        msg += `🎉 *Ahorro Total por Mayor:* $${formatNumber(savings)}\n`;
+    try {
+        await saveOrder(newOrderObj);
+    } catch (dbErr) {
+        console.warn("Postgres save failed, proceeding anyway", dbErr);
     }
-    
-    msg += `\n_Pedido procesado de forma segura bajo cifrado SSL. Pendiente confirmación de pago por ejecutivo._`;
 
-    const encodedText = encodeURIComponent(msg);
-    const whatsappUrl = `https://wa.me/56931309393?text=${encodedText}`;
+    if (paymentVal === 'transferencia') {
+        let msg = `🛒 *NUEVO PEDIDO AHORRAYA! CHILE*\n\n`;
+        msg += `🧾 *Orden ID:* ${orderId}\n\n`;
+        msg += `👤 *Datos del Cliente:*\n`;
+        msg += `• *Nombre:* ${name}\n`;
+        msg += `• *RUT:* ${rut}\n`;
+        msg += `• *Teléfono:* ${phone}\n`;
+        msg += `• *Email:* ${email}\n`;
+        msg += `• *Dirección:* ${address}\n\n`;
 
-    STATE.cart = [];
-    saveCartToStorage();
-    updateCartUI();
+        msg += `📦 *Detalle del Pedido:*\n`;
+        msg += `${itemsText}\n`;
+        
+        msg += `💵 *Resumen de Compra:*\n`;
+        msg += `• *Subtotal:* $${formatNumber(totalDiscountedValue)}\n`;
+        msg += `• *Envío:* ${shippingCost === 0 ? 'Gratis' : `$${formatNumber(shippingCost)}`}\n`;
+        msg += `• *Método Despacho:* ${deliveryText}\n`;
+        msg += `• *Método Pago:* TRANSFERENCIA BANCARIA\n`;
+        msg += `• *TOTAL A PAGAR:* $${formatNumber(finalBill)}\n`;
+        
+        if (savings > 0) {
+            msg += `🎉 *Ahorro Total por Mayor:* $${formatNumber(savings)}\n`;
+        }
+        
+        msg += `\n_Pedido procesado de forma segura bajo cifrado SSL. Favor de coordinar los datos de transferencia bancaria por este chat._`;
 
-    DOM.successOrderId.textContent = orderId;
-    closeModal(DOM.modalCheckout);
-    openModal(DOM.modalCheckoutSuccess);
-    window.open(whatsappUrl, '_blank');
+        const encodedText = encodeURIComponent(msg);
+        const whatsappUrl = `https://wa.me/56951496392?text=${encodedText}`;
+
+        STATE.cart = [];
+        saveCartToStorage();
+        updateCartUI();
+
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalBtnText;
+        }
+
+        DOM.successOrderId.textContent = orderId;
+        closeModal(DOM.modalCheckout);
+        openModal(DOM.modalCheckoutSuccess);
+        
+        window.open(whatsappUrl, '_blank');
+    } else if (paymentVal === 'webpay') {
+        try {
+            if (submitBtn) {
+                submitBtn.textContent = 'Conectando con Transbank...';
+            }
+            const res = await fetch('/.netlify/functions/webpay', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    action: 'create',
+                    orderId: orderId,
+                    amount: finalBill
+                })
+            });
+
+            const resData = await res.json();
+
+            if (res.ok && resData.token && resData.url) {
+                STATE.cart = [];
+                saveCartToStorage();
+                updateCartUI();
+
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = resData.url;
+                
+                const inputToken = document.createElement('input');
+                inputToken.type = 'hidden';
+                inputToken.name = 'token_ws';
+                inputToken.value = resData.token;
+                
+                form.appendChild(inputToken);
+                document.body.appendChild(form);
+                form.submit();
+            } else {
+                throw new Error(resData.error || 'Respuesta inválida del servidor');
+            }
+        } catch (err) {
+            console.error('Webpay initialization error:', err);
+            alert("No pudimos conectar con Webpay. Por favor, selecciona Pago con Transferencia.");
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+            }
+        }
+    }
 }
 
 
