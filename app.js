@@ -3645,6 +3645,15 @@ function setupEventListeners() {
         });
     }
 
+    // Footer admin ventas link click
+    const footerLinkAdminVentas = document.getElementById('footerLinkAdminVentas');
+    if (footerLinkAdminVentas) {
+        footerLinkAdminVentas.addEventListener('click', (e) => {
+            e.preventDefault();
+            handleAdminRoute();
+        });
+    }
+
     DOM.mobileAdminLoginLink.addEventListener('click', (e) => {
         e.preventDefault();
         closeMobileDrawer();
