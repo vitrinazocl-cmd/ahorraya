@@ -876,7 +876,7 @@ img {
 .product-img-wrapper {
     position: relative;
     padding-top: 75%;
-    background-color: #F8F9FA;
+    background-color: #FFFFFF;
     overflow: hidden;
     border-bottom: 1px solid var(--color-border);
 }
@@ -2405,7 +2405,7 @@ img {
 .modal-product-img-wrapper {
     position: relative;
     padding-top: 60%;
-    background-color: #F8F9FA;
+    background-color: #FFFFFF;
     border-radius: var(--border-radius);
     overflow: hidden;
     margin-bottom: 20px;
