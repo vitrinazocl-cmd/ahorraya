@@ -4588,10 +4588,17 @@ async function submitCheckout() {
         }
 
         DOM.successOrderId.textContent = orderId;
+        
+        const btnGo = document.getElementById('btnGoToWhatsappSuccess');
+        if (btnGo) {
+            btnGo.href = whatsappUrl;
+        }
+
         closeModal(DOM.modalCheckout);
         openModal(DOM.modalCheckoutSuccess);
         
-        window.open(whatsappUrl, '_blank');
+        // Redirect tab to trigger WhatsApp directly (popup blocker proof)
+        window.location.href = whatsappUrl;
     } else if (paymentVal === 'webpay') {
         try {
             if (submitBtn) {
