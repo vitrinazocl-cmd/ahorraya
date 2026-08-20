@@ -607,7 +607,7 @@ const PRODUCTS = [
             "6": 867,
             "12": 813
         },
-        "image": "Spaghetti #5 Carozzi 400g.webp"
+        "image": "Spaghetti N5 Carozzi 400g.webp"
     },
     {
         "id": "p29",
