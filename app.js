@@ -4532,7 +4532,6 @@ async function submitCheckout() {
         total: finalBill,
         status: paymentVal === 'webpay' ? 'Pendiente de Pago (WebPay)' : 'Recibido (Pendiente de Pago)'
     };
-
     try {
         await saveOrder(newOrderObj);
     } catch (dbErr) {
@@ -4540,30 +4539,40 @@ async function submitCheckout() {
     }
 
     if (paymentVal === 'transferencia') {
-        let msg = `🛒 *NUEVO PEDIDO AHORRAYA! CHILE*\n\n`;
-        msg += `🧾 *Orden ID:* ${orderId}\n\n`;
-        msg += `👤 *Datos del Cliente:*\n`;
+        let msg = `=================================\n`;
+        msg += `          *AHORRAYA! CHILE*        \n`;
+        msg += `      *VALE DE COMPRA / PEDIDO*     \n`;
+        msg += `=================================\n\n`;
+        msg += `🧾 *Orden ID:* ${orderId}\n`;
+        msg += `📅 *Fecha:* ${new Date().toLocaleDateString('es-CL')}\n\n`;
+        
+        msg += `---------------------------------\n`;
+        msg += `👤 *DATOS DEL CLIENTE:*\n`;
         msg += `• *Nombre:* ${name}\n`;
         msg += `• *RUT:* ${rut}\n`;
         msg += `• *Teléfono:* ${phone}\n`;
         msg += `• *Email:* ${email}\n`;
-        msg += `• *Dirección:* ${address}\n\n`;
+        msg += `• *Dirección:* ${address}\n`;
+        msg += `---------------------------------\n\n`;
 
-        msg += `📦 *Detalle del Pedido:*\n`;
+        msg += `📦 *DETALLE DE PRODUCTOS:*\n`;
         msg += `${itemsText}\n`;
+        msg += `---------------------------------\n`;
         
-        msg += `💵 *Resumen de Compra:*\n`;
+        msg += `💵 *RESUMEN DE CUENTA:*\n`;
         msg += `• *Subtotal:* $${formatNumber(totalDiscountedValue)}\n`;
-        msg += `• *Envío:* ${shippingCost === 0 ? 'Gratis' : `$${formatNumber(shippingCost)}`}\n`;
-        msg += `• *Método Despacho:* ${deliveryText}\n`;
-        msg += `• *Método Pago:* TRANSFERENCIA BANCARIA\n`;
-        msg += `• *TOTAL A PAGAR:* $${formatNumber(finalBill)}\n`;
+        msg += `• *Envío (${deliveryText}):* ${shippingCost === 0 ? 'Gratis' : `$${formatNumber(shippingCost)}`}\n`;
+        msg += `• *Medio de Pago:* Transferencia Bancaria\n`;
+        msg += `• *TOTAL A PAGAR:* *$${formatNumber(finalBill)}*\n`;
         
         if (savings > 0) {
-            msg += `🎉 *Ahorro Total por Mayor:* $${formatNumber(savings)}\n`;
+            msg += `• *Ahorro por Mayor:* $${formatNumber(savings)}\n`;
         }
+        msg += `---------------------------------\n\n`;
         
-        msg += `\n_Pedido procesado de forma segura bajo cifrado SSL. Favor de coordinar los datos de transferencia bancaria por este chat._`;
+        msg += `💬 *MENSAJE AL EJECUTIVO:*\n`;
+        msg += `_Hola, este es mi vale de pedido. Favor facilitarme los datos de transferencia bancaria para concretar mi pago y confirmar el despacho._\n`;
+        msg += `=================================`;
 
         const encodedText = encodeURIComponent(msg);
         const whatsappUrl = `https://wa.me/56951496392?text=${encodedText}`;
