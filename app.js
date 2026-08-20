@@ -339,7 +339,7 @@ const PRODUCTS = [
     {
         "id": "p16",
         "brand": "Big Cola",
-        "name": "Big Cola 3,03lt",
+        "name": "Big Cola 3 Lts",
         "category": "liquidos",
         "type": "Líquidos",
         "availability": "stock",
