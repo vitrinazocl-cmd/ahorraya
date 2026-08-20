@@ -1751,7 +1751,7 @@ img {
     position: fixed;
     bottom: 30px;
     right: 30px;
-    background-color: #25D366;
+    background-color: var(--color-primary);
     color: var(--color-text-light) !important;
     border-radius: 50px;
     display: flex;
@@ -1770,7 +1770,7 @@ img {
 }
 .whatsapp-float-btn:hover {
     transform: scale(1.1);
-    background-color: #20BA5A;
+    background-color: var(--color-primary-dark);
 }
 
 .site-footer {
@@ -2030,9 +2030,9 @@ img {
 }
 
 @keyframes pulseWhatsapp {
-    0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.6); }
-    70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+    0% { box-shadow: 0 0 0 0 rgba(15, 76, 129, 0.6); }
+    70% { box-shadow: 0 0 0 15px rgba(15, 76, 129, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(15, 76, 129, 0); }
 }
 
 
