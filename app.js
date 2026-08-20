@@ -40,7 +40,7 @@ const PRODUCTS = [
             "6": 14520,
             "12": 13613
         },
-        "image": "Nescafé 400g.avif"
+        "image": "Nescafé 400g.webp"
     },
     {
         "id": "p2",
@@ -61,7 +61,7 @@ const PRODUCTS = [
             "6": 3333,
             "12": 3125
         },
-        "image": "Nescafé Vainilla latte x 8 sobres.avif"
+        "image": "Nescafé Vainilla latte x 8 sobres.webp"
     },
     {
         "id": "p3",
@@ -271,7 +271,7 @@ const PRODUCTS = [
             "6": 1299,
             "12": 1218
         },
-        "image": "Atun lomito 140g San jose en agua.jpg"
+        "image": "Atun lomito 140g San jose en agua.webp"
     },
     {
         "id": "p13",
@@ -355,7 +355,7 @@ const PRODUCTS = [
             "6": 1311,
             "12": 1229
         },
-        "image": "Big Cola 3,03lt.png"
+        "image": "Big Cola 3,03lt.webp"
     },
     {
         "id": "p17",
@@ -376,7 +376,7 @@ const PRODUCTS = [
             "6": 1311,
             "12": 1229
         },
-        "image": "Big Cola Zero 3.03 lt.jpg"
+        "image": "Big Cola Zero 3.03 lt.webp"
     },
     {
         "id": "p18",
@@ -418,7 +418,7 @@ const PRODUCTS = [
             "6": 873,
             "12": 819
         },
-        "image": "Agua Vida con gas 1600 mml.avif"
+        "image": "Agua Vida con gas 1600 mml.webp"
     },
     {
         "id": "p20",
@@ -439,7 +439,7 @@ const PRODUCTS = [
             "6": 387,
             "12": 363
         },
-        "image": "Benedictino con gas 500 ml.jpg"
+        "image": "Benedictino con gas 500 ml.webp"
     },
     {
         "id": "p21",
@@ -523,7 +523,7 @@ const PRODUCTS = [
             "6": 1987,
             "12": 1863
         },
-        "image": "Arroz Miraflores 1k.avif"
+        "image": "Arroz Miraflores 1k.webp"
     },
     {
         "id": "p25",
@@ -565,7 +565,7 @@ const PRODUCTS = [
             "6": 1000,
             "12": 938
         },
-        "image": "Arroz Blue Bonnet 900g.jpg"
+        "image": "Arroz Blue Bonnet 900g.webp"
     },
     {
         "id": "p27",
@@ -586,7 +586,7 @@ const PRODUCTS = [
             "6": 587,
             "12": 550
         },
-        "image": "Spaghetti Canoro 400g.jpg"
+        "image": "Spaghetti Canoro 400g.webp"
     },
     {
         "id": "p28",
@@ -607,7 +607,7 @@ const PRODUCTS = [
             "6": 867,
             "12": 813
         },
-        "image": "Spaghetti #5 Carozzi 400g.avif"
+        "image": "Spaghetti #5 Carozzi 400g.webp"
     },
     {
         "id": "p29",
@@ -649,7 +649,7 @@ const PRODUCTS = [
             "6": 867,
             "12": 813
         },
-        "image": "Mostaccioli Carozzi 400g.jpg"
+        "image": "Mostaccioli Carozzi 400g.webp"
     },
     {
         "id": "p31",
@@ -691,7 +691,7 @@ const PRODUCTS = [
             "6": 733,
             "12": 688
         },
-        "image": "Espirales Parma 400g.jpg"
+        "image": "Espirales Parma 400g.webp"
     },
     {
         "id": "p33",
@@ -712,7 +712,7 @@ const PRODUCTS = [
             "6": 733,
             "12": 688
         },
-        "image": "Mostacholi Parma 400g.jpg"
+        "image": "Mostacholi Parma 400g.webp"
     },
     {
         "id": "p34",
@@ -754,7 +754,7 @@ const PRODUCTS = [
             "6": 427,
             "12": 400
         },
-        "image": "Salsa San Remo 200g.jpeg"
+        "image": "Salsa San Remo 200g.webp"
     },
     {
         "id": "p36",
@@ -775,7 +775,7 @@ const PRODUCTS = [
             "6": 267,
             "12": 250
         },
-        "image": "Salsa Teodoro Italiana 200g.jpg"
+        "image": "Salsa Teodoro Italiana 200g.webp"
     },
     {
         "id": "p37",
@@ -796,7 +796,7 @@ const PRODUCTS = [
             "6": 2369,
             "12": 2221
         },
-        "image": "Arveja congelada 1k minuto verde.jpg"
+        "image": "Arveja congelada 1k minuto verde.webp"
     },
     {
         "id": "p38",
@@ -817,7 +817,7 @@ const PRODUCTS = [
             "6": 636,
             "12": 596
         },
-        "image": "Arveja congelada200g Minuto Verde.jpg"
+        "image": "Arveja congelada200g Minuto Verde.webp"
     },
     {
         "id": "p39",
@@ -838,7 +838,7 @@ const PRODUCTS = [
             "6": 583,
             "12": 546
         },
-        "image": "Choclo congelado 200 g Minuto Verde.png"
+        "image": "Choclo congelado 200 g Minuto Verde.webp"
     },
     {
         "id": "p40",
@@ -859,7 +859,7 @@ const PRODUCTS = [
             "6": 2369,
             "12": 2221
         },
-        "image": "Choclo congelado 1k Minuto Verde.jpg"
+        "image": "Choclo congelado 1k Minuto Verde.webp"
     },
     {
         "id": "p41",
@@ -964,7 +964,7 @@ const PRODUCTS = [
             "6": 4958,
             "12": 4648
         },
-        "image": "Papas pre fritas 7x7m 2,5k Minuto Verde.jpeg"
+        "image": "Papas pre fritas 7x7m 2,5k Minuto Verde.webp"
     },
     {
         "id": "p46",
@@ -1027,7 +1027,7 @@ const PRODUCTS = [
             "6": 612,
             "12": 574
         },
-        "image": "Mix Pimentones 150g  Minuto Verde.jpg"
+        "image": "Mix Pimentones 150g  Minuto Verde.webp"
     },
     {
         "id": "p49",
@@ -1090,7 +1090,7 @@ const PRODUCTS = [
             "6": 2926,
             "12": 2743
         },
-        "image": "Queso Chanco laminado 250g Quillayes.jpg"
+        "image": "Queso Chanco laminado 250g Quillayes.webp"
     },
     {
         "id": "p52",
@@ -1111,7 +1111,7 @@ const PRODUCTS = [
             "6": 1000,
             "12": 938
         },
-        "image": "Servilleta Swan x300un.avif"
+        "image": "Servilleta Swan x300un.webp"
     },
     {
         "id": "p53",
@@ -1132,7 +1132,7 @@ const PRODUCTS = [
             "6": 2467,
             "12": 2313
         },
-        "image": "Confort 50mt x 4 Swan.avif"
+        "image": "Confort 50mt x 4 Swan.webp"
     },
     {
         "id": "p54",
@@ -1153,7 +1153,7 @@ const PRODUCTS = [
             "6": 1432,
             "12": 1342
         },
-        "image": "Toalla de papel Swan 70 m.jpg"
+        "image": "Toalla de papel Swan 70 m.webp"
     },
     {
         "id": "p55",
@@ -1174,7 +1174,7 @@ const PRODUCTS = [
             "6": 467,
             "12": 438
         },
-        "image": "Bolsa de basura 50x70.avif"
+        "image": "Bolsa de basura 50x70.webp"
     },
     {
         "id": "p56",
@@ -1195,7 +1195,7 @@ const PRODUCTS = [
             "6": 667,
             "12": 625
         },
-        "image": "Bolsa de basura 70x90.avif"
+        "image": "Bolsa de basura 70x90.webp"
     },
     {
         "id": "p57",
@@ -1216,7 +1216,7 @@ const PRODUCTS = [
             "6": 1067,
             "12": 1000
         },
-        "image": "Bolsa de basura 80x110.avif"
+        "image": "Bolsa de basura 80x110.webp"
     },
     {
         "id": "p58",
@@ -1300,7 +1300,7 @@ const PRODUCTS = [
             "6": 733,
             "12": 688
         },
-        "image": "Trapero de Microfibra.avif"
+        "image": "Trapero de Microfibra.webp"
     },
     {
         "id": "p62",
@@ -1321,7 +1321,7 @@ const PRODUCTS = [
             "6": 8667,
             "12": 8125
         },
-        "image": "Toalla 2 x250 Prepicada.avif"
+        "image": "Toalla 2 x250 Prepicada.webp"
     },
     {
         "id": "p63",
@@ -1363,7 +1363,7 @@ const PRODUCTS = [
             "6": 1467,
             "12": 1375
         },
-        "image": "Trapero humedo x 12.jpg"
+        "image": "Trapero humedo x 12.webp"
     },
     {
         "id": "p65",
@@ -1447,7 +1447,7 @@ const PRODUCTS = [
             "6": 41253,
             "12": 38675
         },
-        "image": "Medialunas 45g x 180u.jpeg"
+        "image": "Medialunas 45g x 180u.webp"
     },
     {
         "id": "p69",
@@ -1468,7 +1468,7 @@ const PRODUCTS = [
             "6": 6000,
             "12": 5625
         },
-        "image": "Muffin relleno ddl x6.jpg"
+        "image": "Muffin relleno ddl x6.webp"
     },
     {
         "id": "p70",
@@ -1510,7 +1510,7 @@ const PRODUCTS = [
             "6": 6000,
             "12": 5625
         },
-        "image": "Muffin Vainilla chips chocolate x6.jpg"
+        "image": "Muffin Vainilla chips chocolate x6.webp"
     },
     {
         "id": "p72",
@@ -1531,7 +1531,7 @@ const PRODUCTS = [
             "6": 240,
             "12": 225
         },
-        "image": "Mini Cocaditas  Costa 35g.jpg"
+        "image": "Mini Cocaditas  Costa 35g.webp"
     },
     {
         "id": "p73",
@@ -1552,7 +1552,7 @@ const PRODUCTS = [
             "6": 240,
             "12": 225
         },
-        "image": "Mini Mantequilla Costa 35g.jpg"
+        "image": "Mini Mantequilla Costa 35g.webp"
     },
     {
         "id": "p74",
@@ -1573,7 +1573,7 @@ const PRODUCTS = [
             "6": 240,
             "12": 225
         },
-        "image": "Mini Chips Costa 35.jpg"
+        "image": "Mini Chips Costa 35.webp"
     },
     {
         "id": "p75",
@@ -1615,7 +1615,7 @@ const PRODUCTS = [
             "6": 4800,
             "12": 4500
         },
-        "image": "Cereal Bar Chocolate Costa x20.jpg"
+        "image": "Cereal Bar Chocolate Costa x20.webp"
     },
     {
         "id": "p77",
@@ -1636,7 +1636,7 @@ const PRODUCTS = [
             "6": 240,
             "12": 225
         },
-        "image": "Mini Vino Costa 35g.jpg"
+        "image": "Mini Vino Costa 35g.webp"
     },
     {
         "id": "p78",
@@ -1657,7 +1657,7 @@ const PRODUCTS = [
             "6": 240,
             "12": 225
         },
-        "image": "Mini Dulcitas Costa 35g.jpg"
+        "image": "Mini Dulcitas Costa 35g.webp"
     },
     {
         "id": "p79",
@@ -1699,7 +1699,7 @@ const PRODUCTS = [
             "6": 1428,
             "12": 1339
         },
-        "image": "Pita Chips Tomate Romero 115g.avif"
+        "image": "Pita Chips Tomate Romero 115g.webp"
     },
     {
         "id": "p81",
@@ -1720,7 +1720,7 @@ const PRODUCTS = [
             "6": 1428,
             "12": 1339
         },
-        "image": "Pita Chips Cebolla  115g.avif"
+        "image": "Pita Chips Cebolla  115g.webp"
     },
     {
         "id": "p82",
@@ -1741,7 +1741,7 @@ const PRODUCTS = [
             "6": 1428,
             "12": 1339
         },
-        "image": "Pita Chips Jalapeño 115g.avif"
+        "image": "Pita Chips Jalapeño 115g.webp"
     },
     {
         "id": "p83",
@@ -1762,7 +1762,7 @@ const PRODUCTS = [
             "6": 1428,
             "12": 1339
         },
-        "image": "Pita Chips Cúrcuma 115g.jpg"
+        "image": "Pita Chips Cúrcuma 115g.webp"
     },
     {
         "id": "p84",
@@ -1804,7 +1804,7 @@ const PRODUCTS = [
             "6": 667,
             "12": 625
         },
-        "image": "Arveja lata 350g 3 Arroyos.jpg"
+        "image": "Arveja lata 350g 3 Arroyos.webp"
     },
     {
         "id": "p86",
@@ -1825,7 +1825,7 @@ const PRODUCTS = [
             "6": 667,
             "12": 625
         },
-        "image": "Lenteja en lata 350g 3 arroyos.jpg"
+        "image": "Lenteja en lata 350g 3 arroyos.webp"
     },
     {
         "id": "p87",
@@ -1888,7 +1888,7 @@ const PRODUCTS = [
             "6": 800,
             "12": 750
         },
-        "image": "Energetica canoro 500ml.jpeg"
+        "image": "Energetica canoro 500ml.webp"
     },
     {
         "id": "p90",
@@ -1909,7 +1909,7 @@ const PRODUCTS = [
             "6": 733,
             "12": 688
         },
-        "image": "Limonada Canoro 600 ml Frambuesa.jpg"
+        "image": "Limonada Canoro 600 ml Frambuesa.webp"
     },
     {
         "id": "p91",
@@ -1930,7 +1930,7 @@ const PRODUCTS = [
             "6": 733,
             "12": 688
         },
-        "image": "Limonada Canoro 600 ml Maracuya.jpeg"
+        "image": "Limonada Canoro 600 ml Maracuya.webp"
     },
     {
         "id": "p92",
@@ -1951,7 +1951,7 @@ const PRODUCTS = [
             "6": 733,
             "12": 688
         },
-        "image": "Limonada Canoro 600 ml Maqui Berries.jpeg"
+        "image": "Limonada Canoro 600 ml Maqui Berries.webp"
     },
     {
         "id": "p93",
@@ -1972,7 +1972,7 @@ const PRODUCTS = [
             "6": 733,
             "12": 688
         },
-        "image": "Limonada Canoro 600 ml.jpg"
+        "image": "Limonada Canoro 600 ml.webp"
     },
     {
         "id": "p94",
@@ -1993,7 +1993,7 @@ const PRODUCTS = [
             "6": 733,
             "12": 688
         },
-        "image": "Limonada Canoro 600 ml.jpg"
+        "image": "Limonada Canoro 600 ml.webp"
     },
     {
         "id": "p95",
@@ -2098,7 +2098,7 @@ const PRODUCTS = [
             "6": 600,
             "12": 563
         },
-        "image": "Sopas Maggi Costilla.jpg"
+        "image": "Sopas Maggi Costilla.webp"
     },
     {
         "id": "p100",
@@ -2161,7 +2161,7 @@ const PRODUCTS = [
             "6": 600,
             "12": 563
         },
-        "image": "Sopa Carne con Fideos.jpg"
+        "image": "Sopa Carne con Fideos.webp"
     },
     {
         "id": "p103",
@@ -2182,7 +2182,7 @@ const PRODUCTS = [
             "6": 12667,
             "12": 11875
         },
-        "image": "Alitas de pollo rebozadas 2k.jpg"
+        "image": "Alitas de pollo rebozadas 2k.webp"
     },
     {
         "id": "p104",
@@ -2287,7 +2287,7 @@ const PRODUCTS = [
             "6": 6000,
             "12": 5625
         },
-        "image": "Muffin Vainilla con Chips chocolate x6 (repetido).jpg"
+        "image": "Muffin Vainilla con Chips chocolate x6 (repetido).webp"
     },
     {
         "id": "p109",
@@ -2308,7 +2308,7 @@ const PRODUCTS = [
             "6": 6000,
             "12": 5625
         },
-        "image": "Muffin Chocolate con Chips de Chocolate x6 (repetido).jpg"
+        "image": "Muffin Chocolate con Chips de Chocolate x6 (repetido).webp"
     },
     {
         "id": "p110",
@@ -2392,7 +2392,7 @@ const PRODUCTS = [
             "6": 2387,
             "12": 2238
         },
-        "image": "Mostaza Heinz 1k.jpg"
+        "image": "Mostaza Heinz 1k.webp"
     },
     {
         "id": "p114",
@@ -2413,7 +2413,7 @@ const PRODUCTS = [
             "6": 1467,
             "12": 1375
         },
-        "image": "Harina Selecta con polvo 1k.avif"
+        "image": "Harina Selecta con polvo 1k.webp"
     },
     {
         "id": "p115",
@@ -2434,7 +2434,7 @@ const PRODUCTS = [
             "6": 1467,
             "12": 1375
         },
-        "image": "Harina Selecta sin polvo 1k.avif"
+        "image": "Harina Selecta sin polvo 1k.webp"
     },
     {
         "id": "p116",
@@ -2455,7 +2455,7 @@ const PRODUCTS = [
             "6": 1240,
             "12": 1163
         },
-        "image": "Harina Mont Blanc sin polvo 1k.jpg"
+        "image": "Harina Mont Blanc sin polvo 1k.webp"
     },
     {
         "id": "p117",
@@ -2476,7 +2476,7 @@ const PRODUCTS = [
             "6": 1240,
             "12": 1163
         },
-        "image": "Harina Mont Blanc con polvo 1k.jpg"
+        "image": "Harina Mont Blanc con polvo 1k.webp"
     },
     {
         "id": "p118",
@@ -2560,7 +2560,7 @@ const PRODUCTS = [
             "6": 1067,
             "12": 1000
         },
-        "image": "Hamburguesa 100g x2 super beef.jpg"
+        "image": "Hamburguesa 100g x2 super beef.webp"
     },
     {
         "id": "p122",
@@ -2581,7 +2581,7 @@ const PRODUCTS = [
             "6": 1640,
             "12": 1538
         },
-        "image": "Hamburguesa Mastodonte 185g.png"
+        "image": "Hamburguesa Mastodonte 185g.webp"
     },
     {
         "id": "p123",
@@ -2623,7 +2623,7 @@ const PRODUCTS = [
             "6": 1827,
             "12": 1713
         },
-        "image": "Carne Molida Hacienda.jpg"
+        "image": "Carne Molida Hacienda.webp"
     },
     {
         "id": "p125",
@@ -2665,7 +2665,7 @@ const PRODUCTS = [
             "6": 16187,
             "12": 15175
         },
-        "image": "Nugget de pollo 3k Sadia.jpg"
+        "image": "Nugget de pollo 3k Sadia.webp"
     },
     {
         "id": "p127",
@@ -2728,7 +2728,7 @@ const PRODUCTS = [
             "6": 5667,
             "12": 5313
         },
-        "image": "Mayonesa Kraft 650 ml.jpg"
+        "image": "Mayonesa Kraft 650 ml.webp"
     },
     {
         "id": "p130",
@@ -2770,7 +2770,7 @@ const PRODUCTS = [
             "6": 2933,
             "12": 2750
         },
-        "image": "Salchicha La Española x 20.jpg"
+        "image": "Salchicha La Española x 20.webp"
     }
 ];
 
