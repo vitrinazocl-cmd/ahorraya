@@ -3560,7 +3560,7 @@ function setupEventListeners() {
         if (order) {
             DOM.trackingResult.className = 'tracking-result-box';
             
-            const deliveryLabel = order.method === 'retiro' ? 'Retiro en Bodega Renca' : 'Despacho a Domicilio';
+            const deliveryLabel = order.method === 'retiro' ? 'Retiro en Sala de Ventas Recoleta' : 'Despacho a Domicilio';
             const statusLabel = order.status || 'Recibido (Pendiente de Pago)';
             
             let statusEmoji = '⏳';
@@ -4551,7 +4551,7 @@ async function submitCheckout() {
         itemsText += `   Cant: ${item.quantity} x $${formatNumber(unitActivePrice)} (${formatType}) | Total: $${formatNumber(rowCost)}\n`;
     });
 
-    const deliveryText = methodVal === 'retiro' ? 'Retiro en Bodega Renca' : 'Despacho a Domicilio';
+    const deliveryText = methodVal === 'retiro' ? 'Retiro en Sala de Ventas Recoleta' : 'Despacho a Domicilio';
     let shippingCost = 0;
     if (methodVal === 'domicilio') {
         shippingCost = totalDiscountedValue >= 100000 ? 0 : 4990;
@@ -4793,7 +4793,7 @@ function openOrderDetailModal(orderId) {
     document.getElementById('detPhone').textContent = (order.customer && order.customer.phone) ? order.customer.phone : 'Sin Teléfono';
     document.getElementById('detEmail').textContent = (order.customer && order.customer.email) ? order.customer.email : 'Sin Email';
     document.getElementById('detAddress').textContent = (order.customer && order.customer.address) ? order.customer.address : 'Sin Dirección';
-    document.getElementById('detMethod').textContent = order.method === 'retiro' ? 'Retiro en Bodega Renca' : 'Despacho a Domicilio';
+    document.getElementById('detMethod').textContent = order.method === 'retiro' ? 'Retiro en Sala de Ventas Recoleta' : 'Despacho a Domicilio';
     document.getElementById('detPayment').textContent = order.payment ? order.payment.toUpperCase() : 'TRANSFERENCIA';
     document.getElementById('detTotal').textContent = `$${formatNumber(order.total || 0)}`;
 
@@ -5000,7 +5000,7 @@ function exportSalesToCSV() {
         const email = (order.customer && order.customer.email) ? order.customer.email.replace(/;/g, ',') : 'Sin Email';
         const phone = (order.customer && order.customer.phone) ? order.customer.phone.replace(/;/g, ',') : 'Sin Telefono';
         const address = (order.customer && order.customer.address) ? order.customer.address.replace(/;/g, ',') : 'Sin Direccion';
-        const method = order.method === 'retiro' ? 'Retiro Renca' : 'Despacho Domicilio';
+        const method = order.method === 'retiro' ? 'Retiro Recoleta' : 'Despacho Domicilio';
         const payment = order.payment ? order.payment.toUpperCase() : 'TRANSFERENCIA';
         const shipCost = order.shippingCost || 0;
         const total = order.total || 0;
