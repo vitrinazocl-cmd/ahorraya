@@ -3568,12 +3568,14 @@ function setupEventListeners() {
             else if (statusLabel.includes('Entregado')) statusEmoji = '✅';
             else if (statusLabel.includes('Procesando')) statusEmoji = '⚙️';
             
+            const customerName = (order.customer && order.customer.name) ? order.customer.name : 'Cliente Sin Nombre';
+            const customerAddress = (order.customer && order.customer.address) ? order.customer.address : 'Sin Dirección';
             DOM.trackingResult.innerHTML = `
                 <p style="margin-bottom: 8px;">📦 <strong>Código de Pedido:</strong> ${order.id}</p>
-                <p style="margin-bottom: 8px;">👤 <strong>Cliente:</strong> ${sanitizeInput(order.customer.name)}</p>
-                <p style="margin-bottom: 8px;">📍 <strong>Dirección:</strong> ${sanitizeInput(order.customer.address)}</p>
+                <p style="margin-bottom: 8px;">👤 <strong>Cliente:</strong> ${sanitizeInput(customerName)}</p>
+                <p style="margin-bottom: 8px;">📍 <strong>Dirección:</strong> ${sanitizeInput(customerAddress)}</p>
                 <p style="margin-bottom: 8px;">🚚 <strong>Método:</strong> ${deliveryLabel}</p>
-                <p style="margin-bottom: 8px;">💰 <strong>Monto Total:</strong> $${formatNumber(order.total)}</p>
+                <p style="margin-bottom: 8px;">💰 <strong>Monto Total:</strong> $${formatNumber(order.total || 0)}</p>
                 <p style="margin-top: 12px; padding: 12px; background-color: var(--color-bg-light); border-left: 4px solid var(--color-primary); border-radius: var(--border-radius); font-weight: 700;">
                     Estado Actual: ${statusEmoji} ${statusLabel}
                 </p>
@@ -4670,11 +4672,16 @@ async function submitCheckout() {
 
 // Calculates and sets KPI Metric widgets across all active displays
 function calculateKPIs() {
-    const orders = getOrders();
+    const orders = getOrders() || [];
     let revenueSum = 0;
     
     orders.forEach(order => {
-        revenueSum += order.total;
+        if (order && typeof order.total === 'number') {
+            revenueSum += order.total;
+        } else if (order && order.total) {
+            const parsed = Number(order.total);
+            if (!isNaN(parsed)) revenueSum += parsed;
+        }
     });
 
     const totalOrders = orders.length;
@@ -4694,8 +4701,9 @@ function calculateKPIs() {
 
 // Renders the orders management table
 function renderAdminOrdersTable() {
-    const orders = getOrders();
+    const orders = getOrders() || [];
     const tbody = DOM.adminOrdersTable.querySelector('tbody');
+    if (!tbody) return;
 
     if (orders.length === 0) {
         tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--color-text-muted);">No hay pedidos registrados en el sistema.</td></tr>`;
@@ -4704,7 +4712,9 @@ function renderAdminOrdersTable() {
 
     const rowsHTML = orders.map(order => {
         const orderDateStr = formatDateString(order.date);
-        const nameShort = order.customer.name.length > 25 ? order.customer.name.substring(0, 22) + '...' : order.customer.name;
+        const customerName = (order.customer && order.customer.name) ? order.customer.name : 'Cliente Sin Nombre';
+        const customerRut = (order.customer && order.customer.rut) ? order.customer.rut : 'Sin RUT';
+        const nameShort = customerName.length > 25 ? customerName.substring(0, 22) + '...' : customerName;
         const methodBadge = order.method === 'retiro' 
             ? `<span class="order-badge-status success">Retiro</span>` 
             : `<span class="order-badge-status pending">Despacho</span>`;
@@ -4712,11 +4722,11 @@ function renderAdminOrdersTable() {
         return `
             <tr>
                 <td>${orderDateStr}</td>
-                <td><strong>${order.id}</strong></td>
-                <td title="${sanitizeInput(order.customer.name)}">${sanitizeInput(nameShort)}</td>
-                <td>${sanitizeInput(order.customer.rut)}</td>
+                <td><strong>${order.id || 'Sin ID'}</strong></td>
+                <td title="${sanitizeInput(customerName)}">${sanitizeInput(nameShort)}</td>
+                <td>${sanitizeInput(customerRut)}</td>
                 <td>${methodBadge}</td>
-                <td><strong>$${formatNumber(order.total)}</strong></td>
+                <td><strong>$${formatNumber(order.total || 0)}</strong></td>
                 <td>
                     <button class="btn btn-outline-sm btn-view-order" data-order-id="${order.id}">
                         Ver Detalle
@@ -4751,16 +4761,16 @@ function openOrderDetailModal(orderId) {
     const order = orders.find(o => o.id === orderId);
     if (!order) return;
 
-    document.getElementById('detId').textContent = order.id;
+    document.getElementById('detId').textContent = order.id || '';
     document.getElementById('detDate').textContent = formatDateString(order.date);
-    document.getElementById('detName').textContent = order.customer.name;
-    document.getElementById('detRut').textContent = order.customer.rut;
-    document.getElementById('detPhone').textContent = order.customer.phone;
-    document.getElementById('detEmail').textContent = order.customer.email;
-    document.getElementById('detAddress').textContent = order.customer.address;
+    document.getElementById('detName').textContent = (order.customer && order.customer.name) ? order.customer.name : 'Cliente Sin Nombre';
+    document.getElementById('detRut').textContent = (order.customer && order.customer.rut) ? order.customer.rut : 'Sin RUT';
+    document.getElementById('detPhone').textContent = (order.customer && order.customer.phone) ? order.customer.phone : 'Sin Teléfono';
+    document.getElementById('detEmail').textContent = (order.customer && order.customer.email) ? order.customer.email : 'Sin Email';
+    document.getElementById('detAddress').textContent = (order.customer && order.customer.address) ? order.customer.address : 'Sin Dirección';
     document.getElementById('detMethod').textContent = order.method === 'retiro' ? 'Retiro en Bodega Renca' : 'Despacho a Domicilio';
-    document.getElementById('detPayment').textContent = order.payment.toUpperCase();
-    document.getElementById('detTotal').textContent = `$${formatNumber(order.total)}`;
+    document.getElementById('detPayment').textContent = order.payment ? order.payment.toUpperCase() : 'TRANSFERENCIA';
+    document.getElementById('detTotal').textContent = `$${formatNumber(order.total || 0)}`;
 
     const tbody = document.getElementById('detItemsTable').querySelector('tbody');
     let itemsHTML = order.items.map(item => {
@@ -4959,16 +4969,16 @@ function exportSalesToCSV() {
 
     orders.forEach(order => {
         const orderDate = formatDateString(order.date).replace(/;/g, ',');
-        const id = order.id;
-        const client = order.customer.name.replace(/;/g, ',');
-        const rut = order.customer.rut.replace(/;/g, ',');
-        const email = order.customer.email.replace(/;/g, ',');
-        const phone = order.customer.phone.replace(/;/g, ',');
-        const address = order.customer.address.replace(/;/g, ',');
+        const id = order.id || 'Sin ID';
+        const client = (order.customer && order.customer.name) ? order.customer.name.replace(/;/g, ',') : 'Cliente Sin Nombre';
+        const rut = (order.customer && order.customer.rut) ? order.customer.rut.replace(/;/g, ',') : 'Sin RUT';
+        const email = (order.customer && order.customer.email) ? order.customer.email.replace(/;/g, ',') : 'Sin Email';
+        const phone = (order.customer && order.customer.phone) ? order.customer.phone.replace(/;/g, ',') : 'Sin Telefono';
+        const address = (order.customer && order.customer.address) ? order.customer.address.replace(/;/g, ',') : 'Sin Direccion';
         const method = order.method === 'retiro' ? 'Retiro Renca' : 'Despacho Domicilio';
-        const payment = order.payment.toUpperCase();
-        const shipCost = order.shippingCost;
-        const total = order.total;
+        const payment = order.payment ? order.payment.toUpperCase() : 'TRANSFERENCIA';
+        const shipCost = order.shippingCost || 0;
+        const total = order.total || 0;
 
         csvContent += `${orderDate};${id};${client};${rut};${email};${phone};${address};${method};${payment};${shipCost};${total}\n`;
     });
