@@ -3073,18 +3073,23 @@ const DOM = {
     clearSearchBtn: document.getElementById('clearSearchBtn'),
     
     // Navigation items
+    navDropdownCategories: document.getElementById('navDropdownCategories'),
     categoriesDropdown: document.getElementById('categoriesDropdown'),
     categoriesMenuBtn: document.getElementById('categoriesMenuBtn'),
     brandLogo: document.getElementById('brandLogo'),
     navLinkOffers: document.getElementById('navLinkOffers'),
     navLinkNew: document.getElementById('navLinkNew'),
     navLinkHowToBuy: document.getElementById('navLinkHowToBuy'),
+    navExtraInfo: document.getElementById('navExtraInfo'),
+    adminNavGroup: document.getElementById('adminNavGroup'),
     
     // Mobile Drawer
     mobileDrawer: document.getElementById('mobileDrawer'),
     mobileMenuBtn: document.getElementById('mobileMenuBtn'),
     mobileDrawerCloseBtn: document.getElementById('mobileDrawerCloseBtn'),
     drawerOverlay: document.getElementById('drawerOverlay'),
+    drawerNavStandard: document.getElementById('drawerNavStandard'),
+    drawerNavAdmin: document.getElementById('drawerNavAdmin'),
     
     // Cart elements
     cartDrawer: document.getElementById('cartDrawer'),

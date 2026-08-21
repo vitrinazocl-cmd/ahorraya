@@ -1906,6 +1906,13 @@ img {
 }
 .modal-overlay.active .modal-card { transform: translateY(0); }
 
+.modal-card form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
 .modal-header {
     background-color: var(--color-primary);
     color: var(--color-text-light);
