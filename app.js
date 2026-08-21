@@ -3661,43 +3661,54 @@ function setupEventListeners() {
         });
     }
 
-    DOM.mobileAdminLoginLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        closeMobileDrawer();
-        handleAdminRoute();
-    });
+    if (DOM.mobileAdminLoginLink) {
+        DOM.mobileAdminLoginLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeMobileDrawer();
+            handleAdminRoute();
+        });
+    }
 
     // Login Form Submit validation
-    DOM.adminLoginForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const username = DOM.adminUserField.value.trim();
-        const password = DOM.adminPassField.value;
+    if (DOM.adminLoginForm) {
+        DOM.adminLoginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = DOM.adminUserField.value.trim();
+            const password = DOM.adminPassField.value;
 
-        if (username === 'ahorraya' && password === '1234567') {
-            sessionStorage.setItem('ahorraya_admin_logged_in', 'true');
-            sessionStorage.setItem('ahorraya_admin_user', username);
-            
-            // Clean forms
-            DOM.adminUserField.value = '';
-            DOM.adminPassField.value = '';
-            DOM.loginErrorMsg.style.display = 'none';
-            
-            // Toggle menu tabs and navigate
-            updateNavigationUI();
-            navigateToView('admin-orders');
-        } else {
-            DOM.loginErrorMsg.style.display = 'block';
-            DOM.adminPassField.value = '';
-        }
-    });
+            if (username === 'ahorraya' && password === '1234567') {
+                sessionStorage.setItem('ahorraya_admin_logged_in', 'true');
+                sessionStorage.setItem('ahorraya_admin_user', username);
+                
+                // Clean forms
+                if (DOM.adminUserField) DOM.adminUserField.value = '';
+                if (DOM.adminPassField) DOM.adminPassField.value = '';
+                if (DOM.loginErrorMsg) DOM.loginErrorMsg.style.display = 'none';
+                
+                // Toggle menu tabs and navigate
+                updateNavigationUI();
+                navigateToView('admin-orders');
+            } else {
+                if (DOM.loginErrorMsg) DOM.loginErrorMsg.style.display = 'block';
+                if (DOM.adminPassField) DOM.adminPassField.value = '';
+            }
+        });
+    }
 
     // Back to shop button in login
-    DOM.adminLoginView.querySelector('.btn-back-home').addEventListener('click', () => {
-        navigateToView('home');
-    });
+    if (DOM.adminLoginView) {
+        const btnBackHome = DOM.adminLoginView.querySelector('.btn-back-home');
+        if (btnBackHome) {
+            btnBackHome.addEventListener('click', () => {
+                navigateToView('home');
+            });
+        }
+    }
 
     // Logout actions
-    const logoutActions = [DOM.btnHeaderAdminLogout, DOM.mobileAdminLogoutLink];
+    const logoutActions = [];
+    if (DOM.btnHeaderAdminLogout) logoutActions.push(DOM.btnHeaderAdminLogout);
+    if (DOM.mobileAdminLogoutLink) logoutActions.push(DOM.mobileAdminLogoutLink);
     document.querySelectorAll('.btnAdminLogout').forEach(btn => logoutActions.push(btn));
 
     logoutActions.forEach(btn => {
@@ -3714,50 +3725,64 @@ function setupEventListeners() {
     });
 
     // Separate views header clicks
-    DOM.navLinkAdminOrders.addEventListener('click', (e) => {
-        e.preventDefault();
-        navigateToView('admin-orders');
-    });
-    DOM.navLinkAdminSales.addEventListener('click', (e) => {
-        e.preventDefault();
-        navigateToView('admin-sales');
-    });
+    if (DOM.navLinkAdminOrders) {
+        DOM.navLinkAdminOrders.addEventListener('click', (e) => {
+            e.preventDefault();
+            navigateToView('admin-orders');
+        });
+    }
+    if (DOM.navLinkAdminSales) {
+        DOM.navLinkAdminSales.addEventListener('click', (e) => {
+            e.preventDefault();
+            navigateToView('admin-sales');
+        });
+    }
 
     // Separate views mobile drawer clicks
-    DOM.mobileAdminOrdersLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        closeMobileDrawer();
-        navigateToView('admin-orders');
-    });
-    DOM.mobileAdminSalesLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        closeMobileDrawer();
-        navigateToView('admin-sales');
-    });
+    if (DOM.mobileAdminOrdersLink) {
+        DOM.mobileAdminOrdersLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeMobileDrawer();
+            navigateToView('admin-orders');
+        });
+    }
+    if (DOM.mobileAdminSalesLink) {
+        DOM.mobileAdminSalesLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeMobileDrawer();
+            navigateToView('admin-sales');
+        });
+    }
 
     // Admin Sales Period Buttons
-    DOM.adminSalesView.querySelectorAll('.btn-period').forEach(btn => {
-        btn.addEventListener('click', () => {
-            DOM.adminSalesView.querySelectorAll('.btn-period').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            STATE.adminPeriod = btn.getAttribute('data-period');
-            renderAdminSalesDashboard();
+    if (DOM.adminSalesView) {
+        DOM.adminSalesView.querySelectorAll('.btn-period').forEach(btn => {
+            btn.addEventListener('click', () => {
+                DOM.adminSalesView.querySelectorAll('.btn-period').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                STATE.adminPeriod = btn.getAttribute('data-period');
+                renderAdminSalesDashboard();
+            });
         });
-    });
+    }
 
     // Export Excel Button
-    DOM.btnExportExcel.addEventListener('click', () => {
-        exportSalesToCSV();
-    });
+    if (DOM.btnExportExcel) {
+        DOM.btnExportExcel.addEventListener('click', () => {
+            exportSalesToCSV();
+        });
+    }
 
     // Orders detailed overlay viewer button
-    DOM.adminOrdersTable.addEventListener('click', (e) => {
-        const viewBtn = e.target.closest('.btn-view-order');
-        if (viewBtn) {
-            const orderId = viewBtn.getAttribute('data-order-id');
-            openOrderDetailModal(orderId);
-        }
-    });
+    if (DOM.adminOrdersTable) {
+        DOM.adminOrdersTable.addEventListener('click', (e) => {
+            const viewBtn = e.target.closest('.btn-view-order');
+            if (viewBtn) {
+                const orderId = viewBtn.getAttribute('data-order-id');
+                openOrderDetailModal(orderId);
+            }
+        });
+    }
 
     // Video Sound Mute/Unmute Toggle
     const soundToggleBtn = document.getElementById('videoSoundToggle');
