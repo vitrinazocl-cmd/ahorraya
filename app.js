@@ -3140,6 +3140,7 @@ const DOM = {
     adminLoginView: document.getElementById('adminLoginView'),
     adminOrdersView: document.getElementById('adminOrdersView'),
     adminSalesView: document.getElementById('adminSalesView'),
+    adminConsolidatedView: document.getElementById('adminConsolidatedView'),
     adminLoginForm: document.getElementById('adminLoginForm'),
     adminUserField: document.getElementById('adminUser'),
     adminPassField: document.getElementById('adminPass'),
@@ -3154,15 +3155,25 @@ const DOM = {
     chartYMid: document.getElementById('chartYMid'),
     salesSummaryTable: document.getElementById('salesSummaryTable'),
     
+    // Consolidated View DOM elements
+    adminConsolidatedTable: document.getElementById('adminConsolidatedTable'),
+    consolidatedSearchInput: document.getElementById('consolidatedSearchInput'),
+    btnExportConsolidatedExcel: document.getElementById('btnExportConsolidatedExcel'),
+    kpiConsolidatedDistinct: document.getElementById('kpiConsolidatedDistinct'),
+    kpiConsolidatedTotalUnits: document.getElementById('kpiConsolidatedTotalUnits'),
+    kpiConsolidatedTotalRevenue: document.getElementById('kpiConsolidatedTotalRevenue'),
+    
     // Navigation bar toggles
     navDropdownCategories: document.getElementById('navDropdownCategories'),
     adminNavGroup: document.getElementById('adminNavGroup'),
     navLinkAdminOrders: document.getElementById('navLinkAdminOrders'),
     navLinkAdminSales: document.getElementById('navLinkAdminSales'),
+    navLinkAdminConsolidated: document.getElementById('navLinkAdminConsolidated'),
     btnHeaderAdminLogout: document.getElementById('btnHeaderAdminLogout'),
     navExtraInfo: document.getElementById('navExtraInfo'),
     footerLinkAdmin: document.getElementById('footerLinkAdmin'),
     footerLinkAdminBottom: document.getElementById('footerLinkAdminBottom'),
+    footerLinkAdminConsolidado: document.getElementById('footerLinkAdminConsolidado'),
     
     // Mobile Drawer switchers
     drawerNavStandard: document.getElementById('drawerNavStandard'),
@@ -3171,6 +3182,7 @@ const DOM = {
     drawerCategoriesContent: document.getElementById('drawerCategoriesContent'),
     mobileAdminOrdersLink: document.getElementById('mobileAdminOrdersLink'),
     mobileAdminSalesLink: document.getElementById('mobileAdminSalesLink'),
+    mobileAdminConsolidatedLink: document.getElementById('mobileAdminConsolidatedLink'),
     mobileAdminLogoutLink: document.getElementById('mobileAdminLogoutLink'),
     mobileAdminLoginLink: document.getElementById('mobileAdminLoginLink')
 };
@@ -3661,6 +3673,14 @@ function setupEventListeners() {
         });
     }
 
+    // Footer admin consolidado link click
+    if (DOM.footerLinkAdminConsolidado) {
+        DOM.footerLinkAdminConsolidado.addEventListener('click', (e) => {
+            e.preventDefault();
+            handleAdminRoute('admin-consolidated');
+        });
+    }
+
     if (DOM.mobileAdminLoginLink) {
         DOM.mobileAdminLoginLink.addEventListener('click', (e) => {
             e.preventDefault();
@@ -3687,7 +3707,9 @@ function setupEventListeners() {
                 
                 // Toggle menu tabs and navigate
                 updateNavigationUI();
-                navigateToView('admin-orders');
+                const targetView = STATE.pendingAdminView || 'admin-orders';
+                STATE.pendingAdminView = null;
+                navigateToView(targetView);
             } else {
                 if (DOM.loginErrorMsg) DOM.loginErrorMsg.style.display = 'block';
                 if (DOM.adminPassField) DOM.adminPassField.value = '';
@@ -3737,6 +3759,12 @@ function setupEventListeners() {
             navigateToView('admin-sales');
         });
     }
+    if (DOM.navLinkAdminConsolidated) {
+        DOM.navLinkAdminConsolidated.addEventListener('click', (e) => {
+            e.preventDefault();
+            navigateToView('admin-consolidated');
+        });
+    }
 
     // Separate views mobile drawer clicks
     if (DOM.mobileAdminOrdersLink) {
@@ -3751,6 +3779,27 @@ function setupEventListeners() {
             e.preventDefault();
             closeMobileDrawer();
             navigateToView('admin-sales');
+        });
+    }
+    if (DOM.mobileAdminConsolidatedLink) {
+        DOM.mobileAdminConsolidatedLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeMobileDrawer();
+            navigateToView('admin-consolidated');
+        });
+    }
+
+    // Search input listener for consolidated view
+    if (DOM.consolidatedSearchInput) {
+        DOM.consolidatedSearchInput.addEventListener('input', () => {
+            renderAdminConsolidatedDashboard();
+        });
+    }
+
+    // Export Excel Button for consolidated view
+    if (DOM.btnExportConsolidatedExcel) {
+        DOM.btnExportConsolidatedExcel.addEventListener('click', () => {
+            exportConsolidatedToCSV();
         });
     }
 
@@ -3840,11 +3889,12 @@ function setupEventListeners() {
 }
 
 // Redirects to correct Admin section based on auth state
-function handleAdminRoute() {
+function handleAdminRoute(targetView = 'admin-orders') {
     const isLoggedIn = sessionStorage.getItem('ahorraya_admin_logged_in') === 'true';
     if (isLoggedIn) {
-        navigateToView('admin-orders');
+        navigateToView(targetView);
     } else {
+        STATE.pendingAdminView = targetView;
         navigateToView('admin-login');
     }
 }
@@ -3875,6 +3925,7 @@ function navigateToView(viewName, options = {}) {
     DOM.adminLoginView.classList.remove('active');
     DOM.adminOrdersView.classList.remove('active');
     DOM.adminSalesView.classList.remove('active');
+    if (DOM.adminConsolidatedView) DOM.adminConsolidatedView.classList.remove('active');
     
     // Reset standard links active state
     DOM.navLinkOffers.classList.remove('active');
@@ -3883,6 +3934,7 @@ function navigateToView(viewName, options = {}) {
     // Reset admin header links active state
     DOM.navLinkAdminOrders.classList.remove('active');
     DOM.navLinkAdminSales.classList.remove('active');
+    if (DOM.navLinkAdminConsolidated) DOM.navLinkAdminConsolidated.classList.remove('active');
 
     // Scroll to top unless we are scrolling to a specific product
     if (!options.scrollToProduct) {
@@ -3969,6 +4021,18 @@ function navigateToView(viewName, options = {}) {
         syncDatabaseWithLocal().then(() => {
             calculateKPIs();
             renderAdminSalesDashboard();
+        });
+    }
+    else if (viewName === 'admin-consolidated') {
+        if (DOM.adminConsolidatedView) DOM.adminConsolidatedView.classList.add('active');
+        if (DOM.navLinkAdminConsolidated) DOM.navLinkAdminConsolidated.classList.add('active');
+        calculateKPIs();
+        renderAdminConsolidatedDashboard();
+        
+        // Sync in background, then recalculate & re-render to display the absolute latest database state
+        syncDatabaseWithLocal().then(() => {
+            calculateKPIs();
+            renderAdminConsolidatedDashboard();
         });
     }
 }
@@ -5014,6 +5078,206 @@ function exportSalesToCSV() {
     
     link.setAttribute("href", url);
     link.setAttribute("download", `reporte_ventas_ahorraya_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// 18. CONSOLIDATED PRODUCTS ENGINE
+function renderAdminConsolidatedDashboard() {
+    const orders = getOrders() || [];
+    if (!DOM.adminConsolidatedTable) return;
+    const tbody = DOM.adminConsolidatedTable.querySelector('tbody');
+    if (!tbody) return;
+
+    const summaryMap = {};
+
+    // Seed catalog products
+    PRODUCTS.forEach(p => {
+        summaryMap[p.id] = {
+            id: p.id,
+            brand: p.brand || 'Genérico',
+            name: p.name,
+            category: getCategoryLabel(p.category),
+            totalQuantity: 0,
+            totalRevenue: 0,
+            orderIds: new Set()
+        };
+    });
+
+    // Accumulate orders
+    orders.forEach(order => {
+        if (!order.items || !Array.isArray(order.items)) return;
+        order.items.forEach(item => {
+            const pKey = item.productId || item.name;
+            if (!summaryMap[pKey]) {
+                const catalogProd = PRODUCTS.find(p => p.id === item.productId || p.name === item.name);
+                summaryMap[pKey] = {
+                    id: pKey,
+                    brand: (catalogProd && catalogProd.brand) || item.brand || 'Genérico',
+                    name: (catalogProd && catalogProd.name) || item.name || 'Producto',
+                    category: (catalogProd && catalogProd.category) ? getCategoryLabel(catalogProd.category) : (item.category || 'General'),
+                    totalQuantity: 0,
+                    totalRevenue: 0,
+                    orderIds: new Set()
+                };
+            }
+            const qty = Number(item.quantity) || 0;
+            const unitPrice = Number(item.unitPrice) || 0;
+            summaryMap[pKey].totalQuantity += qty;
+            summaryMap[pKey].totalRevenue += (qty * unitPrice);
+            if (order.id) {
+                summaryMap[pKey].orderIds.add(order.id);
+            }
+        });
+    });
+
+    let itemsArray = Object.values(summaryMap);
+
+    // Apply search filter if query entered
+    const searchVal = DOM.consolidatedSearchInput ? DOM.consolidatedSearchInput.value.trim().toLowerCase() : '';
+    if (searchVal) {
+        itemsArray = itemsArray.filter(item => 
+            item.name.toLowerCase().includes(searchVal) || 
+            item.brand.toLowerCase().includes(searchVal) ||
+            item.category.toLowerCase().includes(searchVal)
+        );
+    }
+
+    // Sort items: products with demand first (quantity desc, revenue desc), then name asc
+    itemsArray.sort((a, b) => {
+        if (b.totalQuantity !== a.totalQuantity) {
+            return b.totalQuantity - a.totalQuantity;
+        }
+        if (b.totalRevenue !== a.totalRevenue) {
+            return b.totalRevenue - a.totalRevenue;
+        }
+        return a.name.localeCompare(b.name);
+    });
+
+    // Compute metrics for KPIs
+    let distinctProductsSold = 0;
+    let globalTotalUnits = 0;
+    let globalTotalRevenue = 0;
+
+    Object.values(summaryMap).forEach(item => {
+        if (item.totalQuantity > 0) {
+            distinctProductsSold++;
+            globalTotalUnits += item.totalQuantity;
+            globalTotalRevenue += item.totalRevenue;
+        }
+    });
+
+    if (DOM.kpiConsolidatedDistinct) DOM.kpiConsolidatedDistinct.textContent = formatNumber(distinctProductsSold);
+    if (DOM.kpiConsolidatedTotalUnits) DOM.kpiConsolidatedTotalUnits.textContent = formatNumber(globalTotalUnits);
+    if (DOM.kpiConsolidatedTotalRevenue) DOM.kpiConsolidatedTotalRevenue.textContent = `$${formatNumber(globalTotalRevenue)}`;
+
+    if (itemsArray.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--color-text-muted);">No se encontraron productos que coincidan con la búsqueda.</td></tr>`;
+        return;
+    }
+
+    const rowsHTML = itemsArray.map(item => {
+        const orderCount = item.orderIds.size;
+        
+        let cajasApprox = '-';
+        if (item.totalQuantity > 0) {
+            const numCajas = Math.floor(item.totalQuantity / 12);
+            const restUnidades = item.totalQuantity % 12;
+            if (numCajas > 0 && restUnidades > 0) {
+                cajasApprox = `${numCajas} cj + ${restUnidades} un.`;
+            } else if (numCajas > 0) {
+                cajasApprox = `${numCajas} cj`;
+            } else {
+                cajasApprox = `${item.totalQuantity} un.`;
+            }
+        }
+
+        const badgeSales = item.totalQuantity > 0 
+            ? `<span class="order-badge-status success">${formatNumber(item.totalQuantity)} un.</span>` 
+            : `<span class="order-badge-status pending" style="background-color: #f1f5f9; color: #64748b;">Sin pedidos</span>`;
+
+        return `
+            <tr>
+                <td><strong>${sanitizeInput(item.brand)}</strong></td>
+                <td>${sanitizeInput(item.name)}</td>
+                <td><span class="category-tag">${sanitizeInput(item.category)}</span></td>
+                <td>${badgeSales}</td>
+                <td>${cajasApprox}</td>
+                <td><strong>${orderCount}</strong> ${orderCount === 1 ? 'pedido' : 'pedidos'}</td>
+                <td><strong>$${formatNumber(item.totalRevenue)}</strong></td>
+            </tr>
+        `;
+    }).join('');
+
+    tbody.innerHTML = rowsHTML;
+}
+
+function exportConsolidatedToCSV() {
+    const orders = getOrders() || [];
+    const summaryMap = {};
+
+    PRODUCTS.forEach(p => {
+        summaryMap[p.id] = {
+            id: p.id,
+            brand: p.brand || 'Genérico',
+            name: p.name,
+            category: getCategoryLabel(p.category),
+            totalQuantity: 0,
+            totalRevenue: 0,
+            orderIds: new Set()
+        };
+    });
+
+    orders.forEach(order => {
+        if (!order.items || !Array.isArray(order.items)) return;
+        order.items.forEach(item => {
+            const pKey = item.productId || item.name;
+            if (!summaryMap[pKey]) {
+                const catalogProd = PRODUCTS.find(p => p.id === item.productId || p.name === item.name);
+                summaryMap[pKey] = {
+                    id: pKey,
+                    brand: (catalogProd && catalogProd.brand) || item.brand || 'Genérico',
+                    name: (catalogProd && catalogProd.name) || item.name || 'Producto',
+                    category: (catalogProd && catalogProd.category) ? getCategoryLabel(catalogProd.category) : (item.category || 'General'),
+                    totalQuantity: 0,
+                    totalRevenue: 0,
+                    orderIds: new Set()
+                };
+            }
+            const qty = Number(item.quantity) || 0;
+            const unitPrice = Number(item.unitPrice) || 0;
+            summaryMap[pKey].totalQuantity += qty;
+            summaryMap[pKey].totalRevenue += (qty * unitPrice);
+            if (order.id) summaryMap[pKey].orderIds.add(order.id);
+        });
+    });
+
+    let itemsArray = Object.values(summaryMap);
+    itemsArray.sort((a, b) => b.totalQuantity - a.totalQuantity);
+
+    let csvContent = "ID Producto;Marca;Nombre Producto;Categoria;Unidades Totales;N° Pedidos;Total Ventas ($)\n";
+
+    itemsArray.forEach(item => {
+        const id = item.id;
+        const brand = item.brand.replace(/;/g, ',');
+        const name = item.name.replace(/;/g, ',');
+        const category = item.category.replace(/;/g, ',');
+        const units = item.totalQuantity;
+        const numOrders = item.orderIds.size;
+        const revenue = item.totalRevenue;
+
+        csvContent += `${id};${brand};${name};${category};${units};${numOrders};${revenue}\n`;
+    });
+
+    const blob = new Blob(["\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    
+    link.setAttribute("href", url);
+    link.setAttribute("download", `consolidado_productos_ahorraya_${new Date().toISOString().split('T')[0]}.csv`);
     link.style.visibility = 'hidden';
     
     document.body.appendChild(link);
