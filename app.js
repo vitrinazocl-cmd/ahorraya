@@ -19,6 +19,9 @@ function sanitizeInput(str) {
         .trim();
 }
 
+// SERVICED COMMUNES (5 Communes neighboring Recoleta for delivery)
+const SERVICED_COMMUNES = ['Recoleta', 'Independencia', 'Conchalí', 'Huechuraba', 'Santiago Centro'];
+
 // 2. PRODUCT DATABASE (Local Grocery Database with Volume Pricing Tiers)
 const PRODUCTS = [
     {
@@ -3548,6 +3551,49 @@ function setupEventListeners() {
         cardTransferencia.addEventListener('click', () => selectPaymentMethod('transferencia'));
     }
 
+    // Commune & Despacho Territory Restriction Listener
+    const checkCommune = document.getElementById('checkCommune');
+    const checkMethod = document.getElementById('checkMethod');
+    const communeRestrictionWrapper = document.getElementById('communeRestrictionWrapper');
+
+    function validateCommuneRestriction() {
+        const methodVal = checkMethod ? checkMethod.value : 'domicilio';
+        const communeVal = checkCommune ? checkCommune.value : '';
+
+        if (methodVal === 'domicilio' && communeVal && !SERVICED_COMMUNES.includes(communeVal)) {
+            if (communeRestrictionWrapper) communeRestrictionWrapper.style.display = 'block';
+            if (confirmBtn) {
+                confirmBtn.disabled = true;
+                confirmBtn.style.opacity = '0.5';
+                confirmBtn.style.cursor = 'not-allowed';
+            }
+        } else {
+            if (communeRestrictionWrapper) communeRestrictionWrapper.style.display = 'none';
+            if (confirmBtn) {
+                confirmBtn.disabled = false;
+                confirmBtn.style.opacity = '1';
+                confirmBtn.style.cursor = 'pointer';
+            }
+        }
+    }
+
+    if (checkCommune) checkCommune.addEventListener('change', validateCommuneRestriction);
+    if (checkMethod) checkMethod.addEventListener('change', validateCommuneRestriction);
+
+    // Document Type Selector (Boleta vs Factura) Listener
+    const docTypeRadios = document.querySelectorAll('input[name="checkDocType"]');
+    const facturaFormSection = document.getElementById('facturaFormSection');
+
+    docTypeRadios.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            if (e.target.value === 'factura') {
+                if (facturaFormSection) facturaFormSection.style.display = 'block';
+            } else {
+                if (facturaFormSection) facturaFormSection.style.display = 'none';
+            }
+        });
+    });
+
     // Set initial state
     if (confirmBtn) {
         confirmBtn.textContent = 'Confirmar y Enviar a WhatsApp';
@@ -4518,7 +4564,7 @@ function updateCartUI() {
         deliveryCost = 0;
         DOM.cartDeliveryCost.innerHTML = `<span class="free-badge">Gratis</span>`;
     } else {
-        deliveryCost = 4990;
+        deliveryCost = 3000;
         DOM.cartDeliveryCost.innerHTML = `$${formatNumber(deliveryCost)}`;
     }
 
@@ -4584,12 +4630,52 @@ async function submitCheckout() {
     const phone = sanitizeInput(document.getElementById('checkPhone').value);
     const email = sanitizeInput(document.getElementById('checkEmail').value);
     const address = sanitizeInput(document.getElementById('checkAddress').value);
+    const communeVal = sanitizeInput(document.getElementById('checkCommune') ? document.getElementById('checkCommune').value : '');
     const methodVal = document.getElementById('checkMethod').value;
     const paymentVal = document.getElementById('checkPayment').value;
+    const docTypeRadio = document.querySelector('input[name="checkDocType"]:checked');
+    const docTypeVal = docTypeRadio ? docTypeRadio.value : 'boleta';
     
     if (!name || !rut || !phone || !email || !address) {
         alert("Por favor, rellene todos los campos obligatorios.");
         return;
+    }
+
+    // Validate Commune Restriction for Despacho a Domicilio
+    if (methodVal === 'domicilio') {
+        if (!communeVal) {
+            alert("Por favor, selecciona tu comuna de despacho.");
+            return;
+        }
+        if (!SERVICED_COMMUNES.includes(communeVal)) {
+            alert("🚫 Lo sentimos. Nuestra red logística a domicilio actualmente solo abarca las comunas de Recoleta, Independencia, Conchalí, Huechuraba y Santiago Centro. Para continuar con tu compra, puedes seleccionar una comuna dentro de la zona de cobertura o cambiar el método a 'Retiro en Sala de Ventas Recoleta (Gratis)'.");
+            return;
+        }
+    }
+
+    // Validate SII Factura fields if selected
+    let taxData = null;
+    if (docTypeVal === 'factura') {
+        const razonSocial = sanitizeInput(document.getElementById('facturaRazonSocial') ? document.getElementById('facturaRazonSocial').value : '');
+        const rutEmpresa = sanitizeInput(document.getElementById('facturaRut') ? document.getElementById('facturaRut').value : '');
+        const giro = sanitizeInput(document.getElementById('facturaGiro') ? document.getElementById('facturaGiro').value : '');
+        const emailDTE = sanitizeInput(document.getElementById('facturaEmailDTE') ? document.getElementById('facturaEmailDTE').value : '');
+        const dirTributaria = sanitizeInput(document.getElementById('facturaDireccion') ? document.getElementById('facturaDireccion').value : '');
+        const comTributaria = sanitizeInput(document.getElementById('facturaComuna') ? document.getElementById('facturaComuna').value : '');
+
+        if (!razonSocial || !rutEmpresa || !giro || !emailDTE || !dirTributaria || !comTributaria) {
+            alert("Por favor, completa todos los campos obligatorios del Servicio de Impuestos Internos (SII) para la emisión de la Factura Electrónica.");
+            return;
+        }
+
+        taxData = {
+            razonSocial,
+            rut: rutEmpresa,
+            giro,
+            emailDTE,
+            direccion: dirTributaria,
+            comuna: comTributaria
+        };
     }
 
     const submitBtn = document.getElementById('btnConfirmSendWhatsApp');
@@ -4638,7 +4724,7 @@ async function submitCheckout() {
     const deliveryText = methodVal === 'retiro' ? 'Retiro en Sala de Ventas Recoleta' : 'Despacho a Domicilio';
     let shippingCost = 0;
     if (methodVal === 'domicilio') {
-        shippingCost = totalDiscountedValue >= 100000 ? 0 : 4990;
+        shippingCost = totalDiscountedValue >= 100000 ? 0 : 3000;
     }
     
     const finalBill = totalDiscountedValue + shippingCost;
@@ -4650,7 +4736,9 @@ async function submitCheckout() {
     const newOrderObj = {
         id: orderId,
         date: new Date().toISOString(),
-        customer: { name, rut, phone, email, address },
+        customer: { name, rut, phone, email, address, commune: communeVal },
+        docType: docTypeVal,
+        taxInfo: taxData,
         method: methodVal,
         payment: paymentVal,
         shippingCost: shippingCost,
@@ -4678,7 +4766,21 @@ async function submitCheckout() {
         msg += `• *RUT:* ${rut}\n`;
         msg += `• *Teléfono:* ${phone}\n`;
         msg += `• *Email:* ${email}\n`;
+        msg += `• *Comuna Despacho:* ${communeVal || (methodVal === 'retiro' ? 'Recoleta' : 'N/A')}\n`;
         msg += `• *Dirección:* ${address}\n`;
+        msg += `---------------------------------\n\n`;
+
+        msg += `📋 *DOCUMENTO TRIBUTARIO (SII):*\n`;
+        if (docTypeVal === 'factura' && taxData) {
+            msg += `• *Tipo:* FACTURA ELECTRÓNICA\n`;
+            msg += `• *Razón Social:* ${taxData.razonSocial}\n`;
+            msg += `• *RUT Empresa:* ${taxData.rut}\n`;
+            msg += `• *Giro Comercial:* ${taxData.giro}\n`;
+            msg += `• *Email DTE:* ${taxData.emailDTE}\n`;
+            msg += `• *Dirección Tributaria:* ${taxData.direccion}, ${taxData.comuna}\n`;
+        } else {
+            msg += `• *Tipo:* BOLETA ELECTRÓNICA\n`;
+        }
         msg += `---------------------------------\n\n`;
 
         msg += `📦 *DETALLE DE PRODUCTOS:*\n`;
@@ -4880,6 +4982,32 @@ function openOrderDetailModal(orderId) {
     document.getElementById('detMethod').textContent = order.method === 'retiro' ? 'Retiro en Sala de Ventas Recoleta' : 'Despacho a Domicilio';
     document.getElementById('detPayment').textContent = order.payment ? order.payment.toUpperCase() : 'TRANSFERENCIA';
     document.getElementById('detTotal').textContent = `$${formatNumber(order.total || 0)}`;
+
+    const communeEl = document.getElementById('detCommune');
+    if (communeEl) communeEl.textContent = (order.customer && order.customer.commune) ? order.customer.commune : (order.method === 'retiro' ? 'Recoleta' : 'N/A');
+
+    const docTypeEl = document.getElementById('detDocType');
+    const facturaInfoEl = document.getElementById('detFacturaInfo');
+    const facturaDetailsEl = document.getElementById('detFacturaDetails');
+
+    if (docTypeEl) {
+        docTypeEl.textContent = order.docType === 'factura' ? 'Factura Electrónica (SII)' : 'Boleta Electrónica';
+    }
+
+    if (order.docType === 'factura' && order.taxInfo) {
+        if (facturaInfoEl) facturaInfoEl.style.display = 'block';
+        if (facturaDetailsEl) {
+            facturaDetailsEl.innerHTML = `
+                <strong>Razón Social:</strong> ${sanitizeInput(order.taxInfo.razonSocial)} | 
+                <strong>RUT:</strong> ${sanitizeInput(order.taxInfo.rut)}<br>
+                <strong>Giro Comercial:</strong> ${sanitizeInput(order.taxInfo.giro)} | 
+                <strong>Email DTE:</strong> ${sanitizeInput(order.taxInfo.emailDTE)}<br>
+                <strong>Dirección Tributaria:</strong> ${sanitizeInput(order.taxInfo.direccion)}, ${sanitizeInput(order.taxInfo.comuna)}
+            `;
+        }
+    } else {
+        if (facturaInfoEl) facturaInfoEl.style.display = 'none';
+    }
 
     const tbody = document.getElementById('detItemsTable').querySelector('tbody');
     let itemsHTML = order.items.map(item => {
