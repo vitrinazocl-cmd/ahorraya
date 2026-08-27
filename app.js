@@ -4080,12 +4080,21 @@ function setupCarousel() {
 
 // 10. PRODUCT CARDS
 function createProductCardHTML(product, isHome = false) {
-    const priceDetail = product.prices[1];
-    // In Home, remove the "A Pedido" and "Nuevo" badges (keep only "Oferta")
+    const priceUnit1 = product.prices[1];
+    const bestPrice = isHome ? (product.prices[12] || product.prices[6] || priceUnit1) : priceUnit1;
+    const bestTierQty = product.prices[12] ? 12 : (product.prices[6] ? 6 : 1);
+    const unitSavings = priceUnit1 - bestPrice;
+    const pctSavings = unitSavings > 0 ? Math.round((unitSavings / priceUnit1) * 100) : 0;
+    const totalBoxSavings = unitSavings * bestTierQty;
+
+    // In Home, remove the "A Pedido" and "Nuevo" badges (keep "Oferta" and show savings badge)
     const avBadge = (!isHome && product.availability === 'order')
         ? `<span class="badge badge-new" style="background-color: var(--color-primary-light); color: white;">📦 A Pedido</span>` 
         : '';
     const saleBadge = product.isOffer ? `<span class="badge badge-sale">🔥 Oferta</span>` : '';
+    const savingsBadge = (isHome && pctSavings > 0) 
+        ? `<span class="badge badge-sale" style="background-color: var(--color-success); color: white; font-weight: 700;">🔥 ¡Ahorras ${pctSavings}%!</span>` 
+        : '';
     const newBadge = (!isHome && product.isNew) ? `<span class="badge badge-new">✨ Nuevo</span>` : '';
 
     const bodyContent = isHome ? `
@@ -4093,11 +4102,21 @@ function createProductCardHTML(product, isHome = false) {
         <h3 class="product-desc" title="${sanitizeInput(product.name)}">${sanitizeInput(product.name)}</h3>
         
         <div class="price-display-wrapper">
-            <span class="price-from-label" style="font-size: 0.85rem; color: var(--color-text-muted); font-weight: 500; display: block; margin-bottom: 2px;">Precio desde</span>
+            <div style="font-size: 0.75rem; font-weight: 700; color: var(--color-primary-dark); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;">
+                ⭐ Mejor Precio x ${bestTierQty} u.
+            </div>
             <div class="price-unit-row">
-                <span class="price-value" data-unit-price="${priceDetail}">$${formatNumber(priceDetail)}</span>
+                <span class="price-value" data-unit-price="${bestPrice}">$${formatNumber(bestPrice)}</span>
                 <span class="price-subtext">por unidad</span>
             </div>
+            ${unitSavings > 0 ? `
+            <div style="font-size: 0.8rem; color: var(--color-text-muted); margin-top: 2px; display: flex; align-items: center; gap: 6px;">
+                <span>Normal 1 u: <span style="text-decoration: line-through;">$${formatNumber(priceUnit1)}</span></span>
+            </div>
+            <div class="price-bulk-saving" style="margin-top: 6px; padding: 4px 8px; background-color: rgba(40, 167, 69, 0.1); border-left: 3px solid var(--color-success); border-radius: 4px; font-size: 0.78rem; color: #1e7e34; font-weight: 700;">
+                💡 Ahorras $${formatNumber(unitSavings)} c/u ($${formatNumber(totalBoxSavings)} por ${bestTierQty} u.)
+            </div>
+            ` : ''}
         </div>
     ` : `
         <span class="product-brand">${sanitizeInput(product.brand)}</span>
@@ -4111,11 +4130,11 @@ function createProductCardHTML(product, isHome = false) {
         
         <div class="price-display-wrapper">
             <div class="price-unit-row">
-                <span class="price-value" data-unit-price="${priceDetail}">$${formatNumber(priceDetail)}</span>
+                <span class="price-value" data-unit-price="${priceUnit1}">$${formatNumber(priceUnit1)}</span>
                 <span class="price-subtext">por unidad</span>
             </div>
             <div class="price-total-row">
-                <span>Total: <strong class="total-amount">$${formatNumber(priceDetail)}</strong></span>
+                <span>Total: <strong class="total-amount">$${formatNumber(priceUnit1)}</strong></span>
             </div>
         </div>
         
@@ -4134,6 +4153,7 @@ function createProductCardHTML(product, isHome = false) {
         <div class="product-card ${isHome ? 'simplified-home-card' : ''}" data-product-id="${product.id}" id="card-${product.id}">
             <div class="product-badge-container">
                 ${saleBadge}
+                ${savingsBadge}
                 ${newBadge}
                 ${avBadge}
             </div>
