@@ -4231,7 +4231,7 @@ function createProductCardHTML(product, isHome = false) {
             </div>
             
             <div class="product-img-wrapper">
-                <img src="productos/${product.image}" alt="${sanitizeInput(product.name)}" class="product-img" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <img src="productos/${encodeURI(product.image)}" alt="${sanitizeInput(product.name)}" class="product-img" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                 <div class="svg-fallback" style="display: none; width: 100%; height: 100%;">
                     ${getProductSvg(product.category, product.name)}
                 </div>
@@ -4555,7 +4555,7 @@ function updateCartUI() {
 
         return `
             <div class="cart-row" data-product-id="${product.id}">
-                <img src="productos/${product.image}" alt="${sanitizeInput(product.name)}" class="cart-row-img">
+                <img src="productos/${encodeURI(product.image)}" alt="${sanitizeInput(product.name)}" class="cart-row-img">
                 <div class="cart-row-details">
                     <span class="cart-row-desc">${sanitizeInput(product.name)}</span>
                     <div class="cart-row-meta">
@@ -5534,7 +5534,7 @@ function openProductDetailModal(product) {
     
     content.innerHTML = `
         <div class="modal-product-img-wrapper">
-            <img src="productos/${product.image}" alt="${sanitizeInput(product.name)}" class="modal-product-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <img src="productos/${encodeURI(product.image)}" alt="${sanitizeInput(product.name)}" class="modal-product-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
             <div class="svg-fallback" style="display: none; width: 100%; height: 100%; padding: 20px;">
                 ${getProductSvg(product.category, product.name)}
             </div>
