@@ -1035,9 +1035,16 @@ img {
 .add-cart-btn {
     flex: 1;
     height: 38px;
-    padding: 0;
+    padding: 0 10px;
     border-radius: var(--border-radius-sm);
     gap: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-text-desktop {
+    display: inline;
 }
 
 
@@ -2302,7 +2309,8 @@ img {
     .quantity-counter { height: 28px; width: 75px; }
     .qty-btn { width: 22px; font-size: 0.8rem; }
     .qty-input { font-size: 0.75rem; }
-    .add-cart-btn { padding: 0 10px; font-size: 0.75rem; height: 28px; }
+    .btn-text-desktop { display: none; }
+    .add-cart-btn { padding: 0 6px; font-size: 0.75rem; height: 28px; min-width: 32px; flex: none; display: inline-flex; align-items: center; justify-content: center; }
     
     .cart-drawer { width: 100%; right: -100%; }
     .cart-drawer.open,

@@ -2824,6 +2824,25 @@ const STATE = {
 // 4. HISTORICAL SIMULATED ORDERS (localStorage database)
 const MOCK_HISTORICAL_ORDERS = [
     {
+        id: 'AY-98328-2026',
+        date: '2026-08-01T09:30:00.000Z',
+        customer: {
+            name: 'Carlos Mendoza (Almacén San José)',
+            rut: '76.543.210-1',
+            phone: '+56 9 3130 9393',
+            email: 'ventas@superahorraya.cl',
+            address: 'Artesanos 669, Recoleta, Santiago'
+        },
+        method: 'domicilio',
+        payment: 'transferencia',
+        shippingCost: 0,
+        items: [
+            { productId: 'p1', quantity: 12, unitPrice: 13613 },
+            { productId: 'p2', quantity: 24, unitPrice: 3125 }
+        ],
+        total: 238356
+    },
+    {
         id: 'AY-10492-2026',
         date: '2026-07-22T10:15:00.000Z',
         customer: {
@@ -3110,6 +3129,8 @@ const DOM = {
     cartTotal: document.getElementById('cartTotal'),
     cartSavingAlert: document.getElementById('cartSavingAlert'),
     cartSavingsAmount: document.getElementById('cartSavingsAmount'),
+    freeShippingAlert: document.getElementById('freeShippingAlert'),
+    freeShippingNeededAmount: document.getElementById('freeShippingNeededAmount'),
     btnCheckout: document.getElementById('btnCheckout'),
     
     // PLP filters & widgets
@@ -4133,15 +4154,20 @@ function createProductCardHTML(product, isHome = false) {
     const pctSavings = unitSavings > 0 ? Math.round((unitSavings / priceUnit1) * 100) : 0;
     const totalBoxSavings = unitSavings * bestTierQty;
 
-    // In Home, remove the "A Pedido" and "Nuevo" badges (keep "Oferta" and show savings badge)
     const avBadge = (!isHome && product.availability === 'order')
         ? `<span class="badge badge-new" style="background-color: var(--color-primary-light); color: white;">📦 A Pedido</span>` 
         : '';
     const saleBadge = product.isOffer ? `<span class="badge badge-sale">🔥 Oferta</span>` : '';
-    const savingsBadge = (isHome && pctSavings > 0) 
-        ? `<span class="badge badge-sale" style="background-color: var(--color-success); color: white; font-weight: 700;">🔥 ¡Ahorras ${pctSavings}%!</span>` 
-        : '';
+    const savingsBadge = '';
     const newBadge = (!isHome && product.isNew) ? `<span class="badge badge-new">✨ Nuevo</span>` : '';
+
+    // Build dynamic pricing tier buttons for PLP cards
+    const priceTiers = Object.keys(product.prices).map(Number).sort((a, b) => a - b);
+    const tierButtonsHTML = priceTiers.map((qty, idx) => {
+        const isLast = (idx === priceTiers.length - 1 && priceTiers.length > 1);
+        const label = isLast ? `${qty} u.+` : `${qty} u.`;
+        return `<button class="tier-btn ${idx === 0 ? 'active' : ''}" data-tier="${qty}" role="tab" aria-selected="${idx === 0}">${label}</button>`;
+    }).join('');
 
     const bodyContent = isHome ? `
         <span class="product-brand">${sanitizeInput(product.brand)}</span>
@@ -4149,7 +4175,7 @@ function createProductCardHTML(product, isHome = false) {
         
         <div class="price-display-wrapper">
             <div style="font-size: 0.75rem; font-weight: 700; color: var(--color-primary-dark); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;">
-                ⭐ Mejor Precio x ${bestTierQty} u.
+                Precio desde
             </div>
             <div class="price-unit-row">
                 <span class="price-value" data-unit-price="${bestPrice}">$${formatNumber(bestPrice)}</span>
@@ -4159,9 +4185,6 @@ function createProductCardHTML(product, isHome = false) {
             <div style="font-size: 0.8rem; color: var(--color-text-muted); margin-top: 2px; display: flex; align-items: center; gap: 6px;">
                 <span>Normal 1 u: <span style="text-decoration: line-through;">$${formatNumber(priceUnit1)}</span></span>
             </div>
-            <div class="price-bulk-saving" style="margin-top: 6px; padding: 4px 8px; background-color: rgba(40, 167, 69, 0.1); border-left: 3px solid var(--color-success); border-radius: 4px; font-size: 0.78rem; color: #1e7e34; font-weight: 700;">
-                💡 Ahorras $${formatNumber(unitSavings)} c/u ($${formatNumber(totalBoxSavings)} por ${bestTierQty} u.)
-            </div>
             ` : ''}
         </div>
     ` : `
@@ -4169,9 +4192,7 @@ function createProductCardHTML(product, isHome = false) {
         <h3 class="product-desc" title="${sanitizeInput(product.name)}">${sanitizeInput(product.name)}</h3>
         
         <div class="pricing-tiers-tab" role="tablist">
-            <button class="tier-btn active" data-tier="1" role="tab" aria-selected="true">1 u.</button>
-            <button class="tier-btn" data-tier="6" role="tab" aria-selected="false">6 u.</button>
-            <button class="tier-btn" data-tier="12" role="tab" aria-selected="false">12 u.+</button>
+            ${tierButtonsHTML}
         </div>
         
         <div class="price-display-wrapper">
@@ -4191,7 +4212,12 @@ function createProductCardHTML(product, isHome = false) {
                 <button class="qty-btn plus">+</button>
             </div>
             
-            <button class="btn btn-primary add-cart-btn ripple">Agregar</button>
+            <button class="btn btn-primary add-cart-btn ripple" aria-label="Agregar al carrito" title="Agregar al carrito">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" style="display: inline-block; vertical-align: middle;">
+                    <path d="M17,18A2,2 0 0,1 19,20A2,2 0 0,1 17,22A2,2 0 0,1 15,20A2,2 0 0,1 17,18M7,18A2,2 0 0,1 9,20A2,2 0 0,1 7,22A2,2 0 0,1 5,20A2,2 0 0,1 7,18M7.2,14.63L7.17,14.56L9,11H15.55C16.3,11 17,10.59 17.3,10L21.08,3.15L19.34,2.2L15.55,9H9.7L8.38,6.2L4.27,2H1V4H3L6.6,11.59L5.25,14.04C5.1,14.33 5,14.65 5,15A2,2 0 0,0 7,17H19V15H7.42C7.29,15 7.17,14.89 7.2,14.63Z"/>
+                </svg>
+                <span class="btn-text-desktop">Agregar</span>
+            </button>
         </div>
     `;
 
@@ -4269,7 +4295,8 @@ function bindCardInteractions(container) {
                 } else {
                     cat = product.category;
                 }
-                navigateToView('plp', { category: cat, filter: filter, scrollToProduct: productId });
+                navigateToView('plp', { category: cat, filter: filter });
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             });
             return;
         }
@@ -4504,7 +4531,6 @@ function addToCart(productId, quantity) {
 
     saveCartToStorage();
     updateCartUI();
-    openCartDrawer();
 }
 
 function updateCartUI() {
@@ -4570,6 +4596,25 @@ function updateCartUI() {
 
     const finalTotal = subtotalWholesale + deliveryCost;
     DOM.cartTotal.textContent = `$${formatNumber(finalTotal)}`;
+
+    const freeShippingNeeded = 100000 - subtotalWholesale;
+    if (DOM.freeShippingAlert) {
+        if (subtotalWholesale > 0 && freeShippingNeeded > 0) {
+            DOM.freeShippingAlert.style.display = 'block';
+            DOM.freeShippingAlert.style.backgroundColor = 'rgba(3, 105, 161, 0.1)';
+            DOM.freeShippingAlert.style.borderLeftColor = '#0284c7';
+            DOM.freeShippingAlert.style.color = '#0369a1';
+            DOM.freeShippingAlert.innerHTML = `🚚 Agrega <strong>$${formatNumber(freeShippingNeeded)}</strong> más para obtener <strong>Despacho GRATIS</strong>.`;
+        } else if (subtotalWholesale >= 100000) {
+            DOM.freeShippingAlert.style.display = 'block';
+            DOM.freeShippingAlert.style.backgroundColor = 'rgba(40, 167, 69, 0.1)';
+            DOM.freeShippingAlert.style.borderLeftColor = 'var(--color-success)';
+            DOM.freeShippingAlert.style.color = '#1e7e34';
+            DOM.freeShippingAlert.innerHTML = `✅ ¡Felicitaciones! Tu pedido tiene <strong>Despacho GRATIS</strong>.`;
+        } else {
+            DOM.freeShippingAlert.style.display = 'none';
+        }
+    }
 
     const savings = subtotalNormal - subtotalWholesale;
     if (savings > 0) {
@@ -4803,7 +4848,7 @@ async function submitCheckout() {
         msg += `=================================`;
 
         const encodedText = encodeURIComponent(msg);
-        const whatsappUrl = `https://wa.me/56951496392?text=${encodedText}`;
+        const whatsappUrl = `https://wa.me/56931309393?text=${encodedText}`;
 
         STATE.cart = [];
         saveCartToStorage();

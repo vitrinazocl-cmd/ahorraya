@@ -309,7 +309,7 @@
 
                 document.getElementById('btnSendWhatsappSupport').addEventListener('click', () => {
                     const text = encodeURIComponent(`Hola, mi pago con Webpay para el pedido ${orderId} fue rechazado. Quisiera coordinar el pago mediante transferencia bancaria.`);
-                    window.open(`https://wa.me/56951496392?text=${text}`, '_blank');
+                    window.open(`https://wa.me/56931309393?text=${text}`, '_blank');
                 });
 
             } else if (status === 'aborted') {
@@ -341,7 +341,7 @@
 
                 document.getElementById('btnSendWhatsappAbort').addEventListener('click', () => {
                     const text = encodeURIComponent(`Hola, cancelé el pago con Webpay de mi pedido ${orderId}. Quisiera ver opciones para realizar la compra.`);
-                    window.open(`https://wa.me/56951496392?text=${text}`, '_blank');
+                    window.open(`https://wa.me/56931309393?text=${text}`, '_blank');
                 });
             } else {
                 // Generic Error
@@ -385,7 +385,7 @@
             msg += `\n_Comprobante automático generado de forma segura. Gracias por tu compra en AhorraYa!_`;
             
             const encodedText = encodeURIComponent(msg);
-            window.open(`https://wa.me/56951496392?text=${encodedText}`, '_blank');
+            window.open(`https://wa.me/56931309393?text=${encodedText}`, '_blank');
         }
 
         init();

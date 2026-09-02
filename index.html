@@ -228,7 +228,7 @@
                     </div>
                     <div class="info-card-text">
                         <h4>Medios de Pago</h4>
-                        <p>WebPay, Transferencia y Crédito Almacén</p>
+                        <p>WebPay, Transferencia y WhatsApp Tienda</p>
                     </div>
                 </div>
                 
@@ -792,8 +792,13 @@
                 <span id="cartTotal">$0</span>
             </div>
             
+            <!-- Dynamic Free Shipping Threshold Alert -->
+            <div class="free-shipping-progress-alert" id="freeShippingAlert" style="margin-top: 10px; padding: 8px 12px; background-color: rgba(3, 105, 161, 0.1); border-left: 3px solid #0284c7; border-radius: 4px; font-size: 0.8rem; color: #0369a1; font-weight: 600;">
+                🚚 Agrega <strong id="freeShippingNeededAmount">$0</strong> más para obtener <strong>Despacho GRATIS</strong>.
+            </div>
+
             <div class="cart-saving-alert" id="cartSavingAlert">
-                🎉 ¡Estás ahorrando <strong id="cartSavingsAmount">$0</strong> por comprar al por mayor!
+                🎉 ¡Estás ahorrando <strong id="cartSavingsAmount">$0</strong> comprando al por mayor (respecto al precio normal por 1 unidad)!
             </div>
             
             <button class="btn btn-primary btn-block checkout-btn" id="btnCheckout">
@@ -802,12 +807,16 @@
                     <path fill="currentColor" d="M12.004 2C6.48 2 2 6.48 2 12.004c0 1.91.536 3.693 1.47 5.21L2 22l4.928-1.295a9.92 9.92 0 0 0 5.076 1.393c5.524 0 10.004-4.48 10.004-10.004C22.008 6.48 17.528 2 12.004 2zm.004 18.004c-1.657 0-3.21-.443-4.562-1.217l-.328-.188-3.066.804.819-2.991-.207-.33A7.954 7.954 0 0 1 3.5 12c0-4.41 3.589-8 8-8s8 3.59 8 8-3.59 8-8 8zm4.397-6.059c-.24-.12-1.423-.7-1.643-.78-.22-.08-.38-.12-.54.12-.16.24-.62.78-.76.94-.14.16-.28.18-.52.06a7.39 7.39 0 0 1-1.92-1.18c-.89-.793-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.58.14-.11.3-.35.45-.53.15-.17.2-.29.3-.47.1-.19.05-.36-.02-.5-.07-.15-.62-1.5-.85-2.05-.23-.55-.48-.47-.66-.48h-.56c-.2 0-.52.07-.79.37-.27.3-1.03 1.01-1.03 2.47s1.07 2.87 1.22 3.07c.15.2 2.11 3.22 5.11 4.52.71.31 1.27.49 1.7.63.72.23 1.37.2 1.89.12.58-.08 1.78-.73 2.03-1.43.25-.7.25-1.29.17-1.42-.08-.13-.28-.21-.52-.33z" />
                 </svg>
             </button>
+
+            <button class="btn btn-secondary btn-block close-cart-and-browse" style="margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                ← Seguir comprando / Ver productos
+            </button>
         </div>
     </aside>
     <div class="cart-overlay" id="cartOverlay"></div>
 
     <!-- FLOATING WHATSAPP BUTTON -->
-    <a href="https://wa.me/56951496392?text=Hola%2C%20quisiera%20coordinar%20mi%20pago%20con%20transferencia%20o%20hacer%20una%20consulta." 
+    <a href="https://wa.me/56931309393?text=Hola%2C%20quisiera%20coordinar%20mi%20pago%20con%20transferencia%20o%20hacer%20una%20consulta." 
        class="whatsapp-float-btn ripple" 
        target="_blank" 
        rel="noopener noreferrer" 
@@ -858,8 +867,6 @@
                     <li><a href="#" id="footerLinkPayments">Medios de Pago</a></li>
                     <li><a href="#" id="footerLinkDelivery">Zonas de Despacho</a></li>
                     <li><a href="#" id="footerLinkAdmin">Acceso Ejecutivo (Admin)</a></li>
-                    <li><a href="#" id="footerLinkAdminVentas" style="font-weight: 700; color: var(--color-secondary);">📊 Ventas y Pedidos</a></li>
-                    <li><a href="#" id="footerLinkAdminConsolidado" style="font-weight: 700; color: var(--color-primary-dark);">📦 Consolidado de Productos</a></li>
                 </ul>
             </div>
 
@@ -868,19 +875,19 @@
                 <h3>Contacto y Soporte</h3>
                 <ul class="contact-links">
                     <li>
-                        <a href="tel:+56951496392" class="contact-item">
+                        <a href="tel:+56931309393" class="contact-item">
                             <span class="icon">
                                 <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82 16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21A17,17 0 0,1 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z"/></svg>
                             </span>
-                            <span>Llámanos: +56 9 5149 6392</span>
+                            <span>Llámanos: +56 9 3130 9393</span>
                         </a>
                     </li>
                     <li>
-                        <a href="mailto:ventas@ahorraya.cl" class="contact-item">
+                        <a href="mailto:ventas@superahorraya.cl" class="contact-item">
                             <span class="icon">
                                 <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4M20,8L12,13L4,8V6L12,11L20,6V8Z"/></svg>
                             </span>
-                            <span>ventas@ahorraya.cl</span>
+                            <span>ventas@superahorraya.cl</span>
                         </a>
                     </li>
                     <li>
@@ -921,7 +928,7 @@
                     <li>
                         <div class="step-num">2</div>
                         <div class="step-text">
-                            <strong>Ahorra por Volumen:</strong> Ajusta las cantidades. Verás cómo el precio unitario baja automáticamente al alcanzar 12 unidades (Caja) o 24 unidades (Palet).
+                            <strong>Ahorra por Volumen:</strong> Ajusta las cantidades. Verás cómo el precio baja automáticamente al aumentar las cantidades de compra.
                         </div>
                     </li>
                     <li>
@@ -976,11 +983,11 @@
                         <strong>Transferencia Electrónica</strong>
                         <p>Transfiere directo a nuestra cuenta corriente para un despacho ultra veloz.</p>
                     </div>
-                    <div class="payment-method-item">
-                        <div class="pay-icon">🤝</div>
-                        <strong>Crédito Almacén</strong>
-                        <p>Línea de crédito exclusiva para clientes frecuentes con facturación a 30 días (Sujeto a evaluación comercial).</p>
-                    </div>
+                    <a href="https://wa.me/56931309393?text=Hola%2C%20quisiera%20contactar%20a%20un%20vendedor%20en%20tienda%20f%C3%ADsica." target="_blank" rel="noopener noreferrer" class="payment-method-item" style="text-decoration: none; color: inherit; border: 1px solid #25D366; background-color: rgba(37, 211, 102, 0.05); border-radius: var(--border-radius-sm); padding: 15px; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                        <div class="pay-icon">💬</div>
+                        <strong style="color: #128C7E;">Vendedor Tienda Física (WhatsApp)</strong>
+                        <p>Contacta directo al vendedor en la tienda física para atención personalizada y cotizaciones.</p>
+                    </a>
                 </div>
             </div>
             <div class="modal-footer">
@@ -997,7 +1004,7 @@
                 <button class="modal-close-btn">&times;</button>
             </div>
             <div class="modal-body">
-                <p>Nuestra red logística está optimizada para el movimiento de abarrotes en las siguientes 5 comunas aledañas a Recoleta (<strong>Recoleta, Independencia, Conchalí, Huechuraba y Santiago Centro</strong>):</p>
+                <p style="margin-bottom: 14px; line-height: 1.5; color: var(--color-text-body);">En esta primera etapa solo cubrimos algunas comunas de Santiago, las cuales se describen abajo e iremos avisando en la medida que se incorporen nuevas zonas. Para retiro en tienda puedes solicitar pedidos desde cualquier comuna.</p>
                 <table class="delivery-table">
                     <thead>
                         <tr>
@@ -1008,14 +1015,18 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>5 Comunas Aledañas a Recoleta</td>
-                            <td>24 - 48 Horas Hábiles</td>
-                            <td>Gratis > $100.000 / $3.000 menor valor</td>
+                            <td><strong>Despacho a Domicilio</strong><br><small style="color: var(--color-text-muted);">Comunas habilitadas: Recoleta, Independencia, Conchalí, Huechuraba, Santiago Centro</small></td>
+                            <td>48 a 72 hrs de lunes a sábado</td>
+                            <td>
+                                • Compra mínima $60.000<br>
+                                • Despacho gratis sobre $100.000<br>
+                                • Delivery por compras menores $3.990
+                            </td>
                         </tr>
                         <tr>
-                            <td>Retiro en Sala de Ventas (Recoleta)</td>
-                            <td>Mismo día (Listo en 2 horas)</td>
-                            <td>Siempre Gratis</td>
+                            <td><strong>Retiro en Sala de Ventas (Recoleta)</strong></td>
+                            <td>Retiro en tienda en 24 hrs de lunes a viernes de 10:00 a 17:00 hrs</td>
+                            <td><strong style="color: var(--color-success);">Siempre gratis</strong></td>
                         </tr>
                     </tbody>
                 </table>
