@@ -3551,26 +3551,42 @@ function setupEventListeners() {
     // Dynamic payment method select cards click events
     const checkPaymentHidden = document.getElementById('checkPayment');
     const confirmBtn = document.getElementById('btnConfirmSendWhatsApp');
-    const cardWebpay = document.getElementById('paymentCardWebpay');
+    const cardGetnet = document.getElementById('paymentCardGetnet') || document.getElementById('paymentCardWebpay');
     const cardTransferencia = document.getElementById('paymentCardTransferencia');
 
     window.selectPaymentMethod = function(method) {
         if (!checkPaymentHidden) return;
         checkPaymentHidden.value = method;
 
-        if (method === 'webpay') {
-            if (cardWebpay) cardWebpay.classList.add('active');
-            if (cardTransferencia) cardTransferencia.classList.remove('active');
-            if (confirmBtn) confirmBtn.textContent = 'Pagar de forma segura con Webpay';
+        if (method === 'getnet' || method === 'webpay') {
+            if (cardGetnet) {
+                cardGetnet.classList.add('active');
+                cardGetnet.style.borderColor = 'var(--color-primary)';
+                cardGetnet.style.borderWidth = '2px';
+            }
+            if (cardTransferencia) {
+                cardTransferencia.classList.remove('active');
+                cardTransferencia.style.borderColor = 'var(--color-border)';
+                cardTransferencia.style.borderWidth = '1px';
+            }
+            if (confirmBtn) confirmBtn.textContent = '💳 Pagar con Tarjeta (Getnet Web Checkout)';
         } else {
-            if (cardWebpay) cardWebpay.classList.remove('active');
-            if (cardTransferencia) cardTransferencia.classList.add('active');
-            if (confirmBtn) confirmBtn.textContent = 'Confirmar y Enviar a WhatsApp';
+            if (cardGetnet) {
+                cardGetnet.classList.remove('active');
+                cardGetnet.style.borderColor = 'var(--color-border)';
+                cardGetnet.style.borderWidth = '1px';
+            }
+            if (cardTransferencia) {
+                cardTransferencia.classList.add('active');
+                cardTransferencia.style.borderColor = '#25D366';
+                cardTransferencia.style.borderWidth = '2px';
+            }
+            if (confirmBtn) confirmBtn.textContent = '💬 Confirmar y Enviar a WhatsApp';
         }
     };
 
-    if (cardWebpay) {
-        cardWebpay.addEventListener('click', () => selectPaymentMethod('webpay'));
+    if (cardGetnet) {
+        cardGetnet.addEventListener('click', () => selectPaymentMethod('getnet'));
     }
     if (cardTransferencia) {
         cardTransferencia.addEventListener('click', () => selectPaymentMethod('transferencia'));
@@ -5016,12 +5032,12 @@ async function submitCheckout() {
         
         // Redirect tab to trigger WhatsApp directly (popup blocker proof)
         window.location.href = whatsappUrl;
-    } else if (paymentVal === 'webpay') {
+    } else if (paymentVal === 'getnet' || paymentVal === 'webpay') {
         try {
             if (submitBtn) {
-                submitBtn.textContent = 'Conectando con Transbank...';
+                submitBtn.textContent = 'Conectando con Getnet Web Checkout...';
             }
-            const res = await fetch('/.netlify/functions/webpay', {
+            const res = await fetch('/.netlify/functions/getnet', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -5029,35 +5045,32 @@ async function submitCheckout() {
                 body: JSON.stringify({
                     action: 'create',
                     orderId: orderId,
-                    amount: finalBill
+                    amount: finalBill,
+                    customer: { name, rut, phone, email, address, commune: communeVal },
+                    items: orderItems
                 })
             });
 
             const resData = await res.json();
 
-            if (res.ok && resData.token && resData.url) {
+            if (res.ok && resData.processUrl) {
                 STATE.cart = [];
                 saveCartToStorage();
                 updateCartUI();
 
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = resData.url;
-                
-                const inputToken = document.createElement('input');
-                inputToken.type = 'hidden';
-                inputToken.name = 'token_ws';
-                inputToken.value = resData.token;
-                
-                form.appendChild(inputToken);
-                document.body.appendChild(form);
-                form.submit();
+                // Redirect to Getnet Web Checkout page
+                window.location.href = resData.processUrl;
+                return;
             } else {
-                throw new Error(resData.error || 'Respuesta inválida del servidor');
+                alert("🚫 No se pudo iniciar el pago con Getnet: " + (resData.error || resData.details?.status?.message || "Por favor intenta con Transferencia Bancaria."));
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalBtnText;
+                }
             }
         } catch (err) {
-            console.error('Webpay initialization error:', err);
-            alert("No pudimos conectar con Webpay. Por favor, selecciona Pago con Transferencia.");
+            console.error('Error de conexión con Getnet Web Checkout:', err);
+            alert('Error al conectar con la pasarela de pago Getnet. Por favor intenta nuevamente o selecciona Transferencia Bancaria.');
             if (submitBtn) {
                 submitBtn.disabled = false;
                 submitBtn.textContent = originalBtnText;
