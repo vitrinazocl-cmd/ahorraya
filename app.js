@@ -3585,6 +3585,29 @@ function setupEventListeners() {
         const methodVal = checkMethod ? checkMethod.value : 'domicilio';
         const communeVal = checkCommune ? checkCommune.value : '';
 
+        const checkCommuneGroup = document.getElementById('checkCommuneGroup');
+        const checkAddressGroup = document.getElementById('checkAddressGroup');
+        const checkAddress = document.getElementById('checkAddress');
+
+        if (methodVal === 'retiro') {
+            if (checkCommuneGroup) checkCommuneGroup.style.display = 'none';
+            if (checkAddressGroup) checkAddressGroup.style.display = 'none';
+            if (checkCommune) checkCommune.removeAttribute('required');
+            if (checkAddress) checkAddress.removeAttribute('required');
+            if (communeRestrictionWrapper) communeRestrictionWrapper.style.display = 'none';
+            if (confirmBtn) {
+                confirmBtn.disabled = false;
+                confirmBtn.style.opacity = '1';
+                confirmBtn.style.cursor = 'pointer';
+            }
+            return;
+        }
+
+        if (checkCommuneGroup) checkCommuneGroup.style.display = 'block';
+        if (checkAddressGroup) checkAddressGroup.style.display = 'block';
+        if (checkCommune) checkCommune.setAttribute('required', 'required');
+        if (checkAddress) checkAddress.setAttribute('required', 'required');
+
         if (methodVal === 'domicilio' && communeVal && !SERVICED_COMMUNES.includes(communeVal)) {
             if (communeRestrictionWrapper) communeRestrictionWrapper.style.display = 'block';
             if (confirmBtn) {
@@ -4791,14 +4814,19 @@ async function submitCheckout() {
     const rut = sanitizeInput(document.getElementById('checkRut').value);
     const phone = sanitizeInput(document.getElementById('checkPhone').value);
     const email = sanitizeInput(document.getElementById('checkEmail').value);
-    const address = sanitizeInput(document.getElementById('checkAddress').value);
-    const communeVal = sanitizeInput(document.getElementById('checkCommune') ? document.getElementById('checkCommune').value : '');
+    let address = sanitizeInput(document.getElementById('checkAddress') ? document.getElementById('checkAddress').value : '');
+    let communeVal = sanitizeInput(document.getElementById('checkCommune') ? document.getElementById('checkCommune').value : '');
     const methodVal = document.getElementById('checkMethod').value;
     const paymentVal = document.getElementById('checkPayment').value;
     const docTypeRadio = document.querySelector('input[name="checkDocType"]:checked');
     const docTypeVal = docTypeRadio ? docTypeRadio.value : 'boleta';
     
-    if (!name || !rut || !phone || !email || !address) {
+    if (methodVal === 'retiro') {
+        if (!address) address = 'Retiro en Sala de Ventas (Artesanos 669, Recoleta)';
+        if (!communeVal) communeVal = 'Recoleta';
+    }
+
+    if (!name || !rut || !phone || !email || (methodVal === 'domicilio' && (!address || !communeVal))) {
         alert("Por favor, rellene todos los campos obligatorios.");
         return;
     }
