@@ -109,7 +109,7 @@
             </div>
  
             <div class="nav-extra-info" id="navExtraInfo" style="display: flex; align-items: center; gap: 15px;">
-                <span>📍 Envío gratis sobre $100.000 en 5 comunas aledañas a Recoleta</span>
+                <span>📍 Envío gratis sobre $100.000 en comunas seleccionadas de Santiago</span>
             </div>
         </nav>
     </header>
@@ -174,7 +174,7 @@
                 <div class="carousel-track" id="carouselTrack">
                     <!-- Slide 1 (Video Coca-Cola loops) -->
                     <div class="carousel-slide">
-                        <video autoplay loop muted playsinline preload="metadata" class="carousel-video" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                        <video autoplay muted playsinline preload="metadata" class="carousel-video" style="width: 100%; height: 100%; object-fit: cover; display: block;">
                             <source src="cocavideo1.mp4" type="video/mp4">
                             Tu navegador no soporta reproducción de videos.
                         </video>
@@ -557,9 +557,18 @@
                     </div>
                 </div>
 
-                <div class="pane-header-action">
-                    <h3>Registro Histórico de Pedidos</h3>
-                    <p>Lista de órdenes procesadas en el portal y enviadas a WhatsApp.</p>
+                <div class="pane-header-action" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 15px; margin-bottom: 15px;">
+                    <div>
+                        <h3>Registro Histórico de Pedidos</h3>
+                        <p>Monitoreo en tiempo real del estado de preparación, despacho y entrega.</p>
+                    </div>
+                    <!-- Order Status Filter Toolbar -->
+                    <div class="orders-filter-toolbar" id="ordersFilterToolbar">
+                        <button class="filter-tab-btn active" data-status-filter="all">📦 Todos</button>
+                        <button class="filter-tab-btn" data-status-filter="preparacion">⏳ En Preparación</button>
+                        <button class="filter-tab-btn" data-status-filter="despachado">🚚 Despachados</button>
+                        <button class="filter-tab-btn" data-status-filter="entregado">✅ Entregados</button>
+                    </div>
                 </div>
                 
                 <div class="table-responsive">
@@ -571,7 +580,8 @@
                                 <th>Cliente</th>
                                 <th>RUT</th>
                                 <th>Despacho</th>
-                                <th>Total Pedido</th>
+                                <th>Total</th>
+                                <th>Estado del Pedido</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -722,15 +732,39 @@
                     </div>
                 </div>
 
+                <!-- Date & Picking Cutoff Toolbar -->
+                <div class="pane-header-action" style="background: var(--color-bg-light); padding: 15px 20px; border-radius: var(--border-radius); border: 1px solid var(--color-border); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px;">
+                    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                        <label for="consolidatedDateInput" style="font-weight: 700; font-size: 0.9rem; color: var(--color-primary-dark); display: flex; align-items: center; gap: 6px;">
+                            📅 Fecha de Consolidado:
+                        </label>
+                        <input type="date" id="consolidatedDateInput" style="padding: 7px 12px; border: 1px solid var(--color-border); border-radius: var(--border-radius-sm); font-size: 0.88rem; font-weight: 600; color: var(--color-text-dark);">
+                        <button class="btn btn-outline-sm" id="btnConsolidatedToday" style="font-size: 0.8rem; padding: 6px 12px;">📅 Hoy</button>
+                        <button class="btn btn-outline-sm" id="btnConsolidatedAll" style="font-size: 0.8rem; padding: 6px 12px;">🌐 Histórico Total</button>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                        <button class="btn btn-primary" id="btnGenerateDailyPicking" style="background: linear-gradient(135deg, #16a34a, #15803d); border: none; font-size: 0.85rem; padding: 9px 18px; font-weight: 700; box-shadow: var(--shadow-sm); display: inline-flex; align-items: center; gap: 8px;">
+                            📦 Generar Consolidado Diario (Corte 20:00 hrs)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Active Filter Banner -->
+                <div id="consolidatedBanner" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; background: #e0f2fe; border: 1px solid #7dd3fc; border-radius: var(--border-radius-sm); color: #0369a1; font-weight: 700; margin-bottom: 20px; font-size: 0.9rem;">
+                    <span id="consolidatedBannerText">📋 Consolidado Diario de Picking: Ventas del día (Corte 20:00 hrs)</span>
+                    <span id="consolidatedBannerSub" style="font-size: 0.8rem; font-weight: 500; opacity: 0.9;">Listo para proceso de armado en bodega</span>
+                </div>
+
                 <div class="pane-header-action">
                     <div>
-                        <h3>Consolidado Total por Producto</h3>
-                        <p>Acumulado total de unidades pedidas e ingresos generados por cada producto.</p>
+                        <h3 id="consolidatedTitleText">Demanda Acumulada de Productos</h3>
+                        <p id="consolidatedSubText">Resumen de unidades requeridas para picking y despacho.</p>
                     </div>
                     <div class="pane-actions" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
                         <input type="text" id="consolidatedSearchInput" placeholder="🔍 Buscar por producto o marca..." style="padding: 8px 12px; border: 1px solid var(--color-border); border-radius: var(--border-radius-sm); font-size: 0.85rem; width: 230px;">
-                        <button class="btn btn-primary" id="btnExportConsolidatedExcel" style="font-size: 0.85rem; height: 36px; padding: 0 16px;">
-                            📊 Descargar Consolidado Excel (CSV)
+                        <button class="btn btn-secondary" id="btnExportConsolidatedExcel" style="font-size: 0.85rem; height: 36px; padding: 0 16px;">
+                            📊 Exportar Consolidado Excel (CSV)
                         </button>
                     </div>
                 </div>
@@ -743,9 +777,10 @@
                                 <th>Producto</th>
                                 <th>Categoría</th>
                                 <th>Unidades Totales</th>
-                                <th>Cajas Aprox.</th>
+                                <th>Formato Picking (Cajas / Un.)</th>
                                 <th>N° Pedidos</th>
                                 <th>Total Venta ($)</th>
+                                <th>Estado Picking</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -795,10 +830,6 @@
             <!-- Dynamic Free Shipping Threshold Alert -->
             <div class="free-shipping-progress-alert" id="freeShippingAlert" style="margin-top: 10px; padding: 8px 12px; background-color: rgba(3, 105, 161, 0.1); border-left: 3px solid #0284c7; border-radius: 4px; font-size: 0.8rem; color: #0369a1; font-weight: 600;">
                 🚚 Agrega <strong id="freeShippingNeededAmount">$0</strong> más para obtener <strong>Despacho GRATIS</strong>.
-            </div>
-
-            <div class="cart-saving-alert" id="cartSavingAlert">
-                🎉 ¡Estás ahorrando <strong id="cartSavingsAmount">$0</strong> comprando al por mayor (respecto al precio normal por 1 unidad)!
             </div>
             
             <button class="btn btn-primary btn-block checkout-btn" id="btnCheckout">
@@ -888,6 +919,14 @@
                                 <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4M20,8L12,13L4,8V6L12,11L20,6V8Z"/></svg>
                             </span>
                             <span>ventas@superahorraya.cl</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="mailto:contacto@superahorraya.cl" class="contact-item">
+                            <span class="icon">
+                                <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4M20,8L12,13L4,8V6L12,11L20,6V8Z"/></svg>
+                            </span>
+                            <span>contacto@superahorraya.cl</span>
                         </a>
                     </li>
                     <li>
@@ -1015,7 +1054,7 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td><strong>Despacho a Domicilio</strong><br><small style="color: var(--color-text-muted);">Comunas habilitadas: Recoleta, Independencia, Conchalí, Huechuraba, Santiago Centro</small></td>
+                            <td><strong>Despacho a Domicilio</strong><br><small style="color: var(--color-text-muted);">Comunas habilitadas: Estación Central, Maipú, Santiago, Recoleta, Providencia, Las Condes, Vitacura, La Reina, Conchalí, San Miguel, Lo Barnechea, Huechuraba</small></td>
                             <td>48 a 72 hrs de lunes a sábado</td>
                             <td>
                                 • Compra mínima $60.000<br>
@@ -1119,7 +1158,7 @@
                         <div class="form-group full-width">
                             <label for="checkMethod">Método de Despacho *</label>
                             <select id="checkMethod" required>
-                                <option value="domicilio">Despacho a Domicilio ($3.000 / Gratis sobre $100.000)</option>
+                                <option value="domicilio">Despacho a Domicilio ($3.990 / Gratis sobre $100.000)</option>
                                 <option value="retiro">Retiro en Sala de Ventas Recoleta (Gratis)</option>
                             </select>
                         </div>
@@ -1127,11 +1166,19 @@
                             <label for="checkCommune">Comuna de Despacho *</label>
                             <select id="checkCommune" required>
                                 <option value="">-- Selecciona tu Comuna de Despacho * --</option>
-                                <option value="Recoleta">Recoleta (Cobertura Directa)</option>
-                                <option value="Independencia">Independencia (Cobertura Directa)</option>
                                 <option value="Conchalí">Conchalí (Cobertura Directa)</option>
+                                <option value="Estación Central">Estación Central (Cobertura Directa)</option>
                                 <option value="Huechuraba">Huechuraba (Cobertura Directa)</option>
+                                <option value="La Reina">La Reina (Cobertura Directa)</option>
+                                <option value="Las Condes">Las Condes (Cobertura Directa)</option>
+                                <option value="Lo Barnechea">Lo Barnechea (Cobertura Directa)</option>
+                                <option value="Maipú">Maipú (Cobertura Directa)</option>
+                                <option value="Providencia">Providencia (Cobertura Directa)</option>
+                                <option value="Recoleta">Recoleta (Cobertura Directa)</option>
+                                <option value="San Miguel">San Miguel (Cobertura Directa)</option>
+                                <option value="Santiago">Santiago (Cobertura Directa)</option>
                                 <option value="Santiago Centro">Santiago Centro (Cobertura Directa)</option>
+                                <option value="Vitacura">Vitacura (Cobertura Directa)</option>
                                 <option value="OTRA">Otra Comuna (Fuera de Cobertura)</option>
                             </select>
                         </div>
@@ -1141,7 +1188,7 @@
                         </div>
                         <div class="form-group full-width" id="communeRestrictionWrapper" style="display: none;">
                             <div id="communeRestrictionAlert" style="padding: 12px 14px; background-color: #fef2f2; border: 1px solid #fca5a5; border-radius: var(--border-radius-sm); font-size: 0.84rem; color: #991b1b; line-height: 1.4;">
-                                🚫 <strong>Comuna fuera de zona de despacho:</strong> Nuestra red logística a domicilio actualmente solo abarca las comunas de <strong>Recoleta, Independencia, Conchalí, Huechuraba y Santiago Centro</strong>.<br>Para continuar con tu compra, puedes seleccionar la modalidad <strong>'Retiro en Sala de Ventas Recoleta (Gratis)'</strong> o seleccionar una comuna dentro de la zona de cobertura.
+                                🚫 <strong>Comuna fuera de zona de despacho:</strong> Nuestra red logística a domicilio actualmente abarca las comunas de <strong>Estación Central, Maipú, Santiago, Recoleta, Providencia, Las Condes, Vitacura, La Reina, Conchalí, San Miguel, Lo Barnechea y Huechuraba</strong>.<br>Para continuar con tu compra, puedes seleccionar la modalidad <strong>'Retiro en Sala de Ventas Recoleta (Gratis)'</strong> o seleccionar una comuna dentro de la zona de cobertura.
                             </div>
                         </div>
                     </div>
@@ -1255,6 +1302,19 @@
                     <div id="detFacturaInfo" style="grid-column: span 2; display: none; padding: 10px 12px; background: #f8fafc; border: 1px solid var(--color-border); border-radius: var(--border-radius-sm); font-size: 0.82rem; margin-top: 5px;">
                         <strong style="color: var(--color-primary-dark); display: block; margin-bottom: 4px;">🏢 Datos de Facturación (SII):</strong>
                         <span id="detFacturaDetails">--</span>
+                    </div>
+                    <div style="grid-column: span 2; padding: 10px 14px; background: var(--color-bg-light); border: 1px solid var(--color-border); border-radius: var(--border-radius-sm); margin-top: 8px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+                        <div>
+                            <strong>Estado Actual:</strong> <span id="detStatusBadge" class="order-status-badge preparacion">⏳ En Preparación</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-text-muted);">Cambiar Estado:</span>
+                            <div class="status-btn-group" id="modalStatusBtnGroup">
+                                <button class="btn-status-toggle" data-modal-status="preparacion">⏳ Preparación</button>
+                                <button class="btn-status-toggle" data-modal-status="despachado">🚚 Despachado</button>
+                                <button class="btn-status-toggle" data-modal-status="entregado">✅ Entregado</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

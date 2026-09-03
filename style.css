@@ -226,11 +226,12 @@ img {
 .header-top-bar {
     max-width: 1200px;
     margin: 0 auto;
-    height: 70px;
+    min-height: 70px;
+    height: auto;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 20px;
+    padding: 8px 20px;
     gap: 20px;
 }
 
@@ -243,7 +244,8 @@ img {
 }
 
 .brand-logo {
-    height: 48px;
+    height: calc(48px + 1cm);
+    max-height: 86px;
     object-fit: contain;
     transition: var(--transition-fast);
 }
@@ -1591,6 +1593,101 @@ img {
 .order-badge-status.pending { background-color: rgba(255, 193, 7, 0.15); color: #B57D00; }
 .order-badge-status.success { background-color: rgba(40, 167, 69, 0.15); color: var(--color-success); }
 
+/* Order Status Control & Badges */
+.order-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+.order-status-badge.preparacion {
+    background-color: #fffbe6;
+    color: #d48806;
+    border: 1px solid #ffe58f;
+}
+.order-status-badge.despachado {
+    background-color: #e6f7ff;
+    color: #096dd9;
+    border: 1px solid #91d5ff;
+}
+.order-status-badge.entregado {
+    background-color: #f6ffed;
+    color: #389e0d;
+    border: 1px solid #b7eb8f;
+}
+
+/* Status Button Selector Group in Table & Modal */
+.status-btn-group {
+    display: inline-flex;
+    gap: 4px;
+    background: #f1f5f9;
+    padding: 3px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+}
+.btn-status-toggle {
+    border: none;
+    background: transparent;
+    padding: 5px 9px;
+    border-radius: 6px;
+    font-size: 0.73rem;
+    font-weight: 600;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+.btn-status-toggle:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+.btn-status-toggle.active.status-preparacion {
+    background: #f59e0b;
+    color: #ffffff;
+    box-shadow: 0 1px 3px rgba(245, 158, 11, 0.4);
+}
+.btn-status-toggle.active.status-despachado {
+    background: #0284c7;
+    color: #ffffff;
+    box-shadow: 0 1px 3px rgba(2, 132, 199, 0.4);
+}
+.btn-status-toggle.active.status-entregado {
+    background: #16a34a;
+    color: #ffffff;
+    box-shadow: 0 1px 3px rgba(22, 163, 74, 0.4);
+}
+
+/* Order Filter Tabs Toolbar */
+.orders-filter-toolbar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.filter-tab-btn {
+    padding: 6px 14px;
+    border-radius: var(--border-radius-sm);
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-light);
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--color-text);
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+.filter-tab-btn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary-dark);
+}
+.filter-tab-btn.active {
+    background: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary-dark);
+}
+
 
 /* ==========================================================================
    DYNAMIC BAR CHARTS
@@ -2146,7 +2243,7 @@ img {
         font-size: 0.85rem;
     }
 
-    .brand-logo { height: 34px; }
+    .brand-logo { height: calc(34px + 0.6cm); max-height: 56px; }
     .navigation-bar { display: none; }
     
     .carousel-container { height: 240px; margin: 10px auto; border-radius: 0; }

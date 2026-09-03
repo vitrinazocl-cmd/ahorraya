@@ -19,8 +19,12 @@ function sanitizeInput(str) {
         .trim();
 }
 
-// SERVICED COMMUNES (5 Communes neighboring Recoleta for delivery)
-const SERVICED_COMMUNES = ['Recoleta', 'Independencia', 'Conchalí', 'Huechuraba', 'Santiago Centro'];
+// SERVICED COMMUNES (Definitive coverage area for delivery)
+const SERVICED_COMMUNES = [
+    'Estación Central', 'Maipú', 'Maipu', 'Santiago', 'Santiago Centro',
+    'Recoleta', 'Providencia', 'Las Condes', 'Vitacura', 'La Reina',
+    'Conchalí', 'Conchali', 'San Miguel', 'Lo Barnechea', 'Huechuraba'
+];
 
 // 2. PRODUCT DATABASE (Local Grocery Database with Volume Pricing Tiers)
 const PRODUCTS = [
@@ -3863,6 +3867,43 @@ function setupEventListeners() {
         });
     }
 
+    // Consolidated Date Input & Picking Cutoff Buttons
+    const consolidatedDateInput = document.getElementById('consolidatedDateInput');
+    if (consolidatedDateInput) {
+        consolidatedDateInput.addEventListener('change', () => {
+            STATE.consolidatedMode = 'date';
+            renderAdminConsolidatedDashboard();
+        });
+    }
+
+    const btnConsolidatedToday = document.getElementById('btnConsolidatedToday');
+    if (btnConsolidatedToday) {
+        btnConsolidatedToday.addEventListener('click', () => {
+            if (consolidatedDateInput) consolidatedDateInput.value = getTodayDateString();
+            STATE.consolidatedMode = 'date';
+            renderAdminConsolidatedDashboard();
+        });
+    }
+
+    const btnConsolidatedAll = document.getElementById('btnConsolidatedAll');
+    if (btnConsolidatedAll) {
+        btnConsolidatedAll.addEventListener('click', () => {
+            STATE.consolidatedMode = 'all';
+            renderAdminConsolidatedDashboard();
+        });
+    }
+
+    const btnGenerateDailyPicking = document.getElementById('btnGenerateDailyPicking');
+    if (btnGenerateDailyPicking) {
+        btnGenerateDailyPicking.addEventListener('click', () => {
+            const todayStr = getTodayDateString();
+            if (consolidatedDateInput) consolidatedDateInput.value = todayStr;
+            STATE.consolidatedMode = 'daily_20';
+            renderAdminConsolidatedDashboard();
+            alert(`✅ Consolidado de Picking Diario (Corte 20:00 hrs) generado para la fecha ${todayStr}.\nLos productos y unidades acumulados se muestran en pantalla listos para el proceso de armado en bodega.`);
+        });
+    }
+
     // Export Excel Button for consolidated view
     if (DOM.btnExportConsolidatedExcel) {
         DOM.btnExportConsolidatedExcel.addEventListener('click', () => {
@@ -3889,9 +3930,24 @@ function setupEventListeners() {
         });
     }
 
-    // Orders detailed overlay viewer button
+    // Orders detailed overlay viewer & status toggle buttons
     if (DOM.adminOrdersTable) {
         DOM.adminOrdersTable.addEventListener('click', (e) => {
+            const statusBtn = e.target.closest('.btn-status-toggle');
+            if (statusBtn) {
+                e.preventDefault();
+                e.stopPropagation();
+                const group = statusBtn.closest('.status-btn-group');
+                if (group) {
+                    const orderId = group.getAttribute('data-order-id');
+                    const newStatus = statusBtn.getAttribute('data-status');
+                    if (orderId && newStatus) {
+                        updateOrderStatus(orderId, newStatus);
+                    }
+                }
+                return;
+            }
+
             const viewBtn = e.target.closest('.btn-view-order');
             if (viewBtn) {
                 const orderId = viewBtn.getAttribute('data-order-id');
@@ -3900,25 +3956,90 @@ function setupEventListeners() {
         });
     }
 
-    // Video Sound Mute/Unmute Toggle
+    // Orders Filter Toolbar (Todos / Preparación / Despachados / Entregados)
+    const ordersFilterToolbar = document.getElementById('ordersFilterToolbar');
+    if (ordersFilterToolbar) {
+        ordersFilterToolbar.addEventListener('click', (e) => {
+            const filterBtn = e.target.closest('.filter-tab-btn');
+            if (filterBtn) {
+                const statusFilter = filterBtn.getAttribute('data-status-filter');
+                STATE.adminStatusFilter = statusFilter;
+                
+                ordersFilterToolbar.querySelectorAll('.filter-tab-btn').forEach(b => b.classList.remove('active'));
+                filterBtn.classList.add('active');
+                
+                renderAdminOrdersTable();
+            }
+        });
+    }
+
+    // Modal Status Button Group (Inside order detail modal)
+    const modalStatusBtnGroup = document.getElementById('modalStatusBtnGroup');
+    if (modalStatusBtnGroup) {
+        modalStatusBtnGroup.addEventListener('click', (e) => {
+            const btn = e.target.closest('.btn-status-toggle');
+            if (btn) {
+                const orderId = modalStatusBtnGroup.getAttribute('data-order-id');
+                const newStatus = btn.getAttribute('data-modal-status');
+                if (orderId && newStatus) {
+                    updateOrderStatus(orderId, newStatus);
+                }
+            }
+        });
+    }
+
+    // Video Sound Mute/Unmute & Playback Management (Play sound once, then loop muted)
     const soundToggleBtn = document.getElementById('videoSoundToggle');
     const soundToggleIcon = document.getElementById('soundToggleIcon');
     const carouselVideo = document.querySelector('.carousel-video');
 
     if (soundToggleBtn && carouselVideo) {
-        soundToggleBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            const isMuted = carouselVideo.muted;
-            carouselVideo.muted = !isMuted;
-            
-            if (carouselVideo.muted) {
+        const updateSoundToggleUI = (isMuted) => {
+            if (isMuted) {
                 soundToggleBtn.setAttribute('aria-label', 'Activar Sonido');
                 soundToggleIcon.innerHTML = `<path d="M3.27,3L2,4.27L7.73,10H3V16H7L12,21V14.27L16.25,18.53C15.58,19.04 14.83,19.46 14,19.7V21.77C15.38,21.44 16.63,20.78 17.68,18.95L20.73,22L22,20.73L4.27,3M14,3.23V5.29C14.93,5.57 15.79,6.06 16.55,6.7L15.06,8.19C14.57,7.88 14.05,7.63 13.5,7.47M16.5,12C16.5,11.23 16.19,10.54 15.69,10.03L17.18,8.54C18.04,9.45 18.5,10.67 18.5,12c0,1.25-.41,2.4-1.12,3.33L15.89,13.84C16.27,13.33 16.5,12.7 16.5,12Z"/>`;
             } else {
                 soundToggleBtn.setAttribute('aria-label', 'Desactivar Sonido');
                 soundToggleIcon.innerHTML = `<path d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18,19.86 21,16.28 21,12C21,7.72 18,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16C15.5,15.29 16.5,13.77 16.5,12M3,9H7L12,4V20L7,15H3V9Z"/>`;
+            }
+        };
+
+        // Try playing with sound initially
+        carouselVideo.muted = false;
+        carouselVideo.loop = false;
+        const playPromise = carouselVideo.play();
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                updateSoundToggleUI(false);
+            }).catch(() => {
+                // Autoplay with sound blocked by browser policy; fall back to muted play
+                carouselVideo.muted = true;
+                updateSoundToggleUI(true);
+                carouselVideo.play().catch(() => {});
+            });
+        }
+
+        // When 1st reproduction ends, mute video and continue in loop mode
+        carouselVideo.addEventListener('ended', () => {
+            carouselVideo.muted = true;
+            carouselVideo.loop = true;
+            updateSoundToggleUI(true);
+            carouselVideo.play().catch(() => {});
+        });
+
+        // User manual toggle button click
+        soundToggleBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const willBeMuted = !carouselVideo.muted;
+            carouselVideo.muted = willBeMuted;
+            updateSoundToggleUI(willBeMuted);
+
+            if (!willBeMuted) {
+                // If user unmutes, play current cycle with audio then mute on ended
+                carouselVideo.loop = false;
+                carouselVideo.play().catch(() => {});
             }
         });
     }
@@ -4590,7 +4711,7 @@ function updateCartUI() {
         deliveryCost = 0;
         DOM.cartDeliveryCost.innerHTML = `<span class="free-badge">Gratis</span>`;
     } else {
-        deliveryCost = 3000;
+        deliveryCost = 3990;
         DOM.cartDeliveryCost.innerHTML = `$${formatNumber(deliveryCost)}`;
     }
 
@@ -4616,11 +4737,7 @@ function updateCartUI() {
         }
     }
 
-    const savings = subtotalNormal - subtotalWholesale;
-    if (savings > 0) {
-        DOM.cartSavingAlert.style.display = 'block';
-        DOM.cartSavingsAmount.textContent = `$${formatNumber(savings)}`;
-    } else {
+    if (DOM.cartSavingAlert) {
         DOM.cartSavingAlert.style.display = 'none';
     }
 
@@ -4693,7 +4810,7 @@ async function submitCheckout() {
             return;
         }
         if (!SERVICED_COMMUNES.includes(communeVal)) {
-            alert("🚫 Lo sentimos. Nuestra red logística a domicilio actualmente solo abarca las comunas de Recoleta, Independencia, Conchalí, Huechuraba y Santiago Centro. Para continuar con tu compra, puedes seleccionar una comuna dentro de la zona de cobertura o cambiar el método a 'Retiro en Sala de Ventas Recoleta (Gratis)'.");
+            alert("🚫 Lo sentimos. Nuestra red logística a domicilio actualmente abarca las comunas de Estación Central, Maipú, Santiago, Recoleta, Providencia, Las Condes, Vitacura, La Reina, Conchalí, San Miguel, Lo Barnechea y Huechuraba. Para continuar con tu compra, puedes seleccionar una comuna dentro de la zona de cobertura o cambiar el método a 'Retiro en Sala de Ventas Recoleta (Gratis)'.");
             return;
         }
     }
@@ -4769,7 +4886,7 @@ async function submitCheckout() {
     const deliveryText = methodVal === 'retiro' ? 'Retiro en Sala de Ventas Recoleta' : 'Despacho a Domicilio';
     let shippingCost = 0;
     if (methodVal === 'domicilio') {
-        shippingCost = totalDiscountedValue >= 100000 ? 0 : 3000;
+        shippingCost = totalDiscountedValue >= 100000 ? 0 : 3990;
     }
     
     const finalBill = totalDiscountedValue + shippingCost;
@@ -4955,25 +5072,72 @@ function calculateKPIs() {
     });
 }
 
-// Renders the orders management table
+// Order Status Normalizer Helper
+function normalizeOrderStatus(statusStr) {
+    if (!statusStr) return 'preparacion';
+    const s = String(statusStr).toLowerCase().trim();
+    if (s.includes('despach') || s.includes('ruta')) return 'despachado';
+    if (s.includes('entreg') || s.includes('complet')) return 'entregado';
+    return 'preparacion';
+}
+
+// Order Status Update Handler
+function updateOrderStatus(orderId, newStatus) {
+    const orders = getOrders() || [];
+    const idx = orders.findIndex(o => o.id === orderId);
+    if (idx !== -1) {
+        orders[idx].status = newStatus;
+        localStorage.setItem('ahorraya_orders', JSON.stringify(orders));
+        
+        // Pushes status update to server if available
+        try {
+            fetch('/.netlify/functions/orders', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: orderId, status: newStatus })
+            }).catch(() => {});
+        } catch (e) {}
+
+        // Re-render UI table
+        renderAdminOrdersTable();
+        renderAdminSalesDashboard();
+
+        // If detail modal is open for this order, update modal UI
+        if (DOM.modalOrderDetail && DOM.modalOrderDetail.classList.contains('active')) {
+            const currentDetId = document.getElementById('detId')?.textContent;
+            if (currentDetId === orderId) {
+                openOrderDetailModal(orderId);
+            }
+        }
+    }
+}
+
+// Renders the orders management table with status buttons and filtering
 function renderAdminOrdersTable() {
     const orders = getOrders() || [];
-    const tbody = DOM.adminOrdersTable.querySelector('tbody');
+    const tbody = DOM.adminOrdersTable ? DOM.adminOrdersTable.querySelector('tbody') : null;
     if (!tbody) return;
 
-    if (orders.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--color-text-muted);">No hay pedidos registrados en el sistema.</td></tr>`;
+    const activeFilter = STATE.adminStatusFilter || 'all';
+    const filteredOrders = activeFilter === 'all' 
+        ? orders 
+        : orders.filter(o => normalizeOrderStatus(o.status) === activeFilter);
+
+    if (filteredOrders.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 25px; color: var(--color-text-muted);">No hay pedidos registrados ${activeFilter !== 'all' ? 'en este estado' : ''}.</td></tr>`;
         return;
     }
 
-    const rowsHTML = orders.map(order => {
+    const rowsHTML = filteredOrders.map(order => {
         const orderDateStr = formatDateString(order.date);
         const customerName = (order.customer && order.customer.name) ? order.customer.name : 'Cliente Sin Nombre';
         const customerRut = (order.customer && order.customer.rut) ? order.customer.rut : 'Sin RUT';
-        const nameShort = customerName.length > 25 ? customerName.substring(0, 22) + '...' : customerName;
+        const nameShort = customerName.length > 22 ? customerName.substring(0, 20) + '...' : customerName;
         const methodBadge = order.method === 'retiro' 
             ? `<span class="order-badge-status success">Retiro</span>` 
             : `<span class="order-badge-status pending">Despacho</span>`;
+
+        const normStatus = normalizeOrderStatus(order.status);
 
         return `
             <tr>
@@ -4983,6 +5147,22 @@ function renderAdminOrdersTable() {
                 <td>${sanitizeInput(customerRut)}</td>
                 <td>${methodBadge}</td>
                 <td><strong>$${formatNumber(order.total || 0)}</strong></td>
+                <td>
+                    <div class="status-btn-group" data-order-id="${order.id}">
+                        <button class="btn-status-toggle ${normStatus === 'preparacion' ? 'active status-preparacion' : ''}" 
+                                data-status="preparacion">
+                            ⏳ Preparación
+                        </button>
+                        <button class="btn-status-toggle ${normStatus === 'despachado' ? 'active status-despachado' : ''}" 
+                                data-status="despachado">
+                            🚚 Despachado
+                        </button>
+                        <button class="btn-status-toggle ${normStatus === 'entregado' ? 'active status-entregado' : ''}" 
+                                data-status="entregado">
+                            ✅ Entregado
+                        </button>
+                    </div>
+                </td>
                 <td>
                     <button class="btn btn-outline-sm btn-view-order" data-order-id="${order.id}">
                         Ver Detalle
@@ -5052,6 +5232,25 @@ function openOrderDetailModal(orderId) {
         }
     } else {
         if (facturaInfoEl) facturaInfoEl.style.display = 'none';
+    }
+
+    // Set status badge and modal status buttons
+    const normStatus = normalizeOrderStatus(order.status);
+    const detStatusBadge = document.getElementById('detStatusBadge');
+    if (detStatusBadge) {
+        detStatusBadge.className = `order-status-badge ${normStatus}`;
+        if (normStatus === 'despachado') detStatusBadge.innerHTML = '🚚 Despachado';
+        else if (normStatus === 'entregado') detStatusBadge.innerHTML = '✅ Entregado';
+        else detStatusBadge.innerHTML = '⏳ En Preparación';
+    }
+
+    const modalStatusBtnGroup = document.getElementById('modalStatusBtnGroup');
+    if (modalStatusBtnGroup) {
+        modalStatusBtnGroup.setAttribute('data-order-id', order.id);
+        modalStatusBtnGroup.querySelectorAll('.btn-status-toggle').forEach(btn => {
+            const bStatus = btn.getAttribute('data-modal-status');
+            btn.className = `btn-status-toggle ${bStatus === normStatus ? `active status-${normStatus}` : ''}`;
+        });
     }
 
     const tbody = document.getElementById('detItemsTable').querySelector('tbody');
@@ -5278,12 +5477,97 @@ function exportSalesToCSV() {
     document.body.removeChild(link);
 }
 
-// 18. CONSOLIDATED PRODUCTS ENGINE
+// Helper to extract YYYY-MM-DD string from order date
+function getOrderLocalDateString(dateVal) {
+    if (!dateVal) return '';
+    const d = new Date(dateVal);
+    if (isNaN(d.getTime())) return String(dateVal).substring(0, 10);
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+}
+
+// Helper to get Today's date string (YYYY-MM-DD)
+function getTodayDateString() {
+    const d = new Date();
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+}
+
+// 18. CONSOLIDATED PRODUCTS & PICKING ENGINE (Corte 20:00 hrs)
 function renderAdminConsolidatedDashboard() {
     const orders = getOrders() || [];
     if (!DOM.adminConsolidatedTable) return;
     const tbody = DOM.adminConsolidatedTable.querySelector('tbody');
     if (!tbody) return;
+
+    // Initialize date input value if present
+    const dateInput = document.getElementById('consolidatedDateInput');
+    if (dateInput && !dateInput.value) {
+        dateInput.value = STATE.consolidatedDate || getTodayDateString();
+    }
+
+    const selectedDate = dateInput ? dateInput.value : (STATE.consolidatedDate || getTodayDateString());
+    STATE.consolidatedDate = selectedDate;
+
+    const mode = STATE.consolidatedMode || 'daily_20';
+
+    // Update banner UI
+    const banner = document.getElementById('consolidatedBanner');
+    const bannerText = document.getElementById('consolidatedBannerText');
+    const bannerSub = document.getElementById('consolidatedBannerSub');
+    const titleText = document.getElementById('consolidatedTitleText');
+    const subText = document.getElementById('consolidatedSubText');
+
+    let formattedDateLabel = selectedDate;
+    try {
+        const parts = selectedDate.split('-');
+        if (parts.length === 3) formattedDateLabel = `${parts[2]}/${parts[1]}/${parts[0]}`;
+    } catch (e) {}
+
+    if (mode === 'daily_20') {
+        if (banner) banner.style.display = 'flex';
+        if (bannerText) bannerText.innerHTML = `📋 Consolidado Diario de Picking: Ventas del <strong>${formattedDateLabel}</strong> (Corte 20:00 hrs)`;
+        if (bannerSub) bannerSub.textContent = 'Órdenes capturadas para el proceso de picking en bodega';
+        if (titleText) titleText.textContent = `Lista de Picking Diario (${formattedDateLabel})`;
+        if (subText) subText.textContent = 'Detalle de cajas y unidades acumuladas hasta el corte de las 20:00 hrs.';
+    } else if (mode === 'date') {
+        if (banner) banner.style.display = 'flex';
+        if (bannerText) bannerText.innerHTML = `📅 Consolidado por Fecha: Ventas del <strong>${formattedDateLabel}</strong>`;
+        if (bannerSub) bannerSub.textContent = 'Filtro específico por fecha seleccionada';
+        if (titleText) titleText.textContent = `Demanda Acumulada (${formattedDateLabel})`;
+        if (subText) subText.textContent = 'Resumen de productos pedidos en la fecha indicada.';
+    } else {
+        if (banner) banner.style.display = 'flex';
+        if (bannerText) bannerText.innerHTML = `🌐 Consolidado Histórico Acumulado (Todas las Fechas)`;
+        if (bannerSub) bannerSub.textContent = 'Totales históricos generales de la tienda';
+        if (titleText) titleText.textContent = 'Consolidado Histórico de Productos';
+        if (subText) subText.textContent = 'Acumulado histórico total de unidades e ingresos generados.';
+    }
+
+    // Filter orders according to selected mode & date
+    let filteredOrders = orders;
+    if (mode === 'daily_20' || mode === 'date') {
+        filteredOrders = orders.filter(order => {
+            const orderDateStr = getOrderLocalDateString(order.date);
+            if (orderDateStr !== selectedDate) return false;
+            
+            // If Corte 20:00 mode is active, filter orders up to 20:00 hrs (hour <= 20)
+            if (mode === 'daily_20' && order.date) {
+                try {
+                    const orderDate = new Date(order.date);
+                    if (!isNaN(orderDate.getTime())) {
+                        const hour = orderDate.getHours();
+                        if (hour > 20) return false;
+                    }
+                } catch (e) {}
+            }
+            return true;
+        });
+    }
 
     const summaryMap = {};
 
@@ -5300,8 +5584,8 @@ function renderAdminConsolidatedDashboard() {
         };
     });
 
-    // Accumulate orders
-    orders.forEach(order => {
+    // Accumulate filtered orders
+    filteredOrders.forEach(order => {
         if (!order.items || !Array.isArray(order.items)) return;
         order.items.forEach(item => {
             const pKey = item.productId || item.name;
@@ -5368,7 +5652,7 @@ function renderAdminConsolidatedDashboard() {
     if (DOM.kpiConsolidatedTotalRevenue) DOM.kpiConsolidatedTotalRevenue.textContent = `$${formatNumber(globalTotalRevenue)}`;
 
     if (itemsArray.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--color-text-muted);">No se encontraron productos que coincidan con la búsqueda.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 25px; color: var(--color-text-muted);">No hay productos registrados para los filtros seleccionados.</td></tr>`;
         return;
     }
 
@@ -5380,20 +5664,27 @@ function renderAdminConsolidatedDashboard() {
             const numCajas = Math.floor(item.totalQuantity / 12);
             const restUnidades = item.totalQuantity % 12;
             if (numCajas > 0 && restUnidades > 0) {
-                cajasApprox = `${numCajas} cj + ${restUnidades} un.`;
+                cajasApprox = `<strong>${numCajas} cj</strong> + ${restUnidades} un.`;
             } else if (numCajas > 0) {
-                cajasApprox = `${numCajas} cj`;
+                cajasApprox = `<strong>${numCajas} cj</strong>`;
             } else {
                 cajasApprox = `${item.totalQuantity} un.`;
             }
         }
 
         const badgeSales = item.totalQuantity > 0 
-            ? `<span class="order-badge-status success">${formatNumber(item.totalQuantity)} un.</span>` 
-            : `<span class="order-badge-status pending" style="background-color: #f1f5f9; color: #64748b;">Sin pedidos</span>`;
+            ? `<span class="order-badge-status success" style="font-size: 0.82rem;">${formatNumber(item.totalQuantity)} un.</span>` 
+            : `<span class="order-badge-status pending" style="background-color: #f1f5f9; color: #64748b;">Sin demanda</span>`;
+
+        const pickingCheckbox = item.totalQuantity > 0
+            ? `<label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 600; color: #166534;">
+                <input type="checkbox" class="picking-chk" style="width: 16px; height: 16px; accent-color: var(--color-success);">
+                Armado
+               </label>`
+            : `<span style="color: var(--color-text-muted); font-size: 0.78rem;">--</span>`;
 
         return `
-            <tr>
+            <tr class="${item.totalQuantity > 0 ? 'has-demand' : ''}">
                 <td><strong>${sanitizeInput(item.brand)}</strong></td>
                 <td>${sanitizeInput(item.name)}</td>
                 <td><span class="category-tag">${sanitizeInput(item.category)}</span></td>
@@ -5401,6 +5692,7 @@ function renderAdminConsolidatedDashboard() {
                 <td>${cajasApprox}</td>
                 <td><strong>${orderCount}</strong> ${orderCount === 1 ? 'pedido' : 'pedidos'}</td>
                 <td><strong>$${formatNumber(item.totalRevenue)}</strong></td>
+                <td>${pickingCheckbox}</td>
             </tr>
         `;
     }).join('');
@@ -5410,8 +5702,26 @@ function renderAdminConsolidatedDashboard() {
 
 function exportConsolidatedToCSV() {
     const orders = getOrders() || [];
-    const summaryMap = {};
+    const dateInput = document.getElementById('consolidatedDateInput');
+    const selectedDate = dateInput ? dateInput.value : (STATE.consolidatedDate || getTodayDateString());
+    const mode = STATE.consolidatedMode || 'daily_20';
 
+    let filteredOrders = orders;
+    if (mode === 'daily_20' || mode === 'date') {
+        filteredOrders = orders.filter(order => {
+            const orderDateStr = getOrderLocalDateString(order.date);
+            if (orderDateStr !== selectedDate) return false;
+            if (mode === 'daily_20' && order.date) {
+                try {
+                    const orderDate = new Date(order.date);
+                    if (!isNaN(orderDate.getTime()) && orderDate.getHours() > 20) return false;
+                } catch (e) {}
+            }
+            return true;
+        });
+    }
+
+    const summaryMap = {};
     PRODUCTS.forEach(p => {
         summaryMap[p.id] = {
             id: p.id,
@@ -5424,7 +5734,7 @@ function exportConsolidatedToCSV() {
         };
     });
 
-    orders.forEach(order => {
+    filteredOrders.forEach(order => {
         if (!order.items || !Array.isArray(order.items)) return;
         order.items.forEach(item => {
             const pKey = item.productId || item.name;
@@ -5449,9 +5759,11 @@ function exportConsolidatedToCSV() {
     });
 
     let itemsArray = Object.values(summaryMap);
+    itemsArray = itemsArray.filter(item => item.totalQuantity > 0);
     itemsArray.sort((a, b) => b.totalQuantity - a.totalQuantity);
 
-    let csvContent = "ID Producto;Marca;Nombre Producto;Categoria;Unidades Totales;N° Pedidos;Total Ventas ($)\n";
+    let csvContent = `Consolidado de Picking - Fecha: ${selectedDate} - Modo: ${mode === 'daily_20' ? 'Corte 20:00 hrs' : mode}\n`;
+    csvContent += "ID Producto;Marca;Nombre Producto;Categoria;Unidades Totales;Cajas Aprox;N° Pedidos;Total Ventas ($)\n";
 
     itemsArray.forEach(item => {
         const id = item.id;
@@ -5459,10 +5771,13 @@ function exportConsolidatedToCSV() {
         const name = item.name.replace(/;/g, ',');
         const category = item.category.replace(/;/g, ',');
         const units = item.totalQuantity;
+        const numCajas = Math.floor(units / 12);
+        const restUnidades = units % 12;
+        const formatoStr = `${numCajas} cj + ${restUnidades} un.`;
         const numOrders = item.orderIds.size;
         const revenue = item.totalRevenue;
 
-        csvContent += `${id};${brand};${name};${category};${units};${numOrders};${revenue}\n`;
+        csvContent += `${id};${brand};${name};${category};${units};${formatoStr};${numOrders};${revenue}\n`;
     });
 
     const blob = new Blob(["\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -5470,7 +5785,7 @@ function exportConsolidatedToCSV() {
     const link = document.createElement("a");
     
     link.setAttribute("href", url);
-    link.setAttribute("download", `consolidado_productos_ahorraya_${new Date().toISOString().split('T')[0]}.csv`);
+    link.setAttribute("download", `Consolidado_Picking_${selectedDate}_${mode}.csv`);
     link.style.visibility = 'hidden';
     
     document.body.appendChild(link);
