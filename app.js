@@ -1321,8 +1321,8 @@ const PRODUCTS = [
         "id": "p59",
         "brand": "Molinos Cañuelas",
         "name": "Muffin Vainilla con Chips chocolate x6",
-        "category": "confiteria",
-        "type": "Alimentos",
+        "category": "congelados",
+        "type": "Congelados",
         "availability": "stock",
         "clientTypes": [
             "minorista",
@@ -1343,8 +1343,8 @@ const PRODUCTS = [
         "id": "p60",
         "brand": "Molinos Cañuelas",
         "name": "Muffin Chocolate con Chips de Chocolate x6",
-        "category": "confiteria",
-        "type": "Alimentos",
+        "category": "congelados",
+        "type": "Congelados",
         "availability": "stock",
         "clientTypes": [
             "minorista",

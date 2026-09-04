@@ -80,6 +80,7 @@
                     <div class="dropdown-content" id="categoriesDropdown">
                         <a href="#" data-category="all">Ver Todo</a>
                         <a href="#" data-category="abarrotes">Abarrotes Básicos</a>
+                        <a href="#" data-category="congelados">Productos Congelados ❄️</a>
                         <a href="#" data-category="liquidos">Bebidas y Líquidos</a>
                         <a href="#" data-category="limpieza">Limpieza e Higiene</a>
                         <a href="#" data-category="lacteos">Lácteos y Fiambrería</a>
@@ -134,6 +135,7 @@
                 <div class="drawer-dropdown-content" id="drawerCategoriesContent" style="display: none; flex-direction: column;">
                     <a href="#" data-category="all" class="drawer-item">Ver Todo el Catálogo</a>
                     <a href="#" data-category="abarrotes" class="drawer-item">Abarrotes Básicos</a>
+                    <a href="#" data-category="congelados" class="drawer-item">Productos Congelados ❄️</a>
                     <a href="#" data-category="liquidos" class="drawer-item">Bebidas y Líquidos</a>
                     <a href="#" data-category="limpieza" class="drawer-item">Limpieza e Higiene</a>
                     <a href="#" data-category="lacteos" class="drawer-item">Lácteos y Fiambrería</a>
@@ -380,6 +382,11 @@
                                 Alimentos
                             </label>
                             <label class="filter-checkbox-label">
+                                <input type="checkbox" name="productTypeFilter" value="Congelados">
+                                <span class="checkbox-box"></span>
+                                Congelados ❄️
+                            </label>
+                            <label class="filter-checkbox-label">
                                 <input type="checkbox" name="productTypeFilter" value="Líquidos">
                                 <span class="checkbox-box"></span>
                                 Líquidos
@@ -413,6 +420,11 @@
                                 <input type="checkbox" name="categoryFilter" value="abarrotes">
                                 <span class="checkbox-box"></span>
                                 Abarrotes Básicos
+                            </label>
+                            <label class="filter-checkbox-label">
+                                <input type="checkbox" name="categoryFilter" value="congelados">
+                                <span class="checkbox-box"></span>
+                                Productos Congelados ❄️
                             </label>
                             <label class="filter-checkbox-label">
                                 <input type="checkbox" name="categoryFilter" value="liquidos">
