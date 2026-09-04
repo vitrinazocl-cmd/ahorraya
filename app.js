@@ -2,6 +2,19 @@
    AHORRAYA BUSINESS LOGIC & APPLICATION ENGINE (Vanilla JS / Harvard CyberSec)
    ========================================================================== */
 
+
+// GLOBAL PRICE RESOLUTION HELPER (Volume Pricing Tiers)
+function getUnitPriceByQty(product, qty) {
+    if (!product || !product.prices) return 0;
+    const tiers = Object.keys(product.prices).map(Number).sort((a, b) => b - a);
+    for (const t of tiers) {
+        if (qty >= t && product.prices[t] !== undefined && product.prices[t] !== null) {
+            return product.prices[t];
+        }
+    }
+    return product.prices['1'] || product.prices[1] || 0;
+}
+
 // 1. INPUT SANITIZATION (Harvard CyberSec standard to prevent XSS)
 function sanitizeInput(str) {
     if (!str) return '';
@@ -42,10 +55,11 @@ const PRODUCTS = [
         "popularity": 77,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
-            "1": 16754,
-            "6": 14520,
-            "12": 13613
+            "1": 15990,
+            "3": 14990,
+            "6": 14200
         },
         "image": "Nescafé 400g.webp"
     },
@@ -63,10 +77,11 @@ const PRODUCTS = [
         "popularity": 95,
         "isOffer": true,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
-            "1": 3846,
-            "6": 3333,
-            "12": 3125
+            "1": 3890,
+            "3": 3490,
+            "6": 3190
         },
         "image": "Nescafé Vainilla latte x 8 sobres.webp"
     },
@@ -84,10 +99,11 @@ const PRODUCTS = [
         "popularity": 84,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
-            "1": 3846,
-            "6": 3333,
-            "12": 3125
+            "1": 3890,
+            "3": 3490,
+            "6": 3190
         },
         "image": "Nescafé Capuchino x 8 sobres.webp"
     },
@@ -105,10 +121,11 @@ const PRODUCTS = [
         "popularity": 89,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
-            "1": 3846,
-            "6": 3333,
-            "12": 3125
+            "1": 3890,
+            "3": 3490,
+            "6": 3190
         },
         "image": "Nescafé Caramel  latte x 8 sobres.webp"
     },
@@ -126,10 +143,11 @@ const PRODUCTS = [
         "popularity": 78,
         "isOffer": true,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
-            "1": 3846,
-            "6": 3333,
-            "12": 3125
+            "1": 3890,
+            "3": 3490,
+            "6": 3190
         },
         "image": "Nescafé Mokka x 8 sobres.webp"
     },
@@ -147,332 +165,18 @@ const PRODUCTS = [
         "popularity": 74,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
             "1": 13846,
-            "6": 12000,
-            "12": 11250
+            "3": 12500,
+            "6": 11688
         },
         "image": "Nescafe Stick x 96 sobres.webp"
     },
     {
         "id": "p7",
-        "brand": "Genérica",
-        "name": "Leche Surlart Sin Lactosa descremada",
-        "category": "lacteos",
-        "type": "Lácteos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 70,
-        "isOffer": true,
-        "isNew": true,
-        "prices": {
-            "1": 1538,
-            "6": 1333,
-            "12": 1250
-        },
-        "image": "Leche Surlart Sin Lactosa descremada.webp"
-    },
-    {
-        "id": "p8",
-        "brand": "Pitrufquén",
-        "name": "Leche Pitrufquen 1lt",
-        "category": "lacteos",
-        "type": "Lácteos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 87,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 1268,
-            "6": 1099,
-            "12": 1030
-        },
-        "image": "Leche Pitrufquen 1lt.webp"
-    },
-    {
-        "id": "p9",
-        "brand": "Surlat",
-        "name": "Leche entera surlat 1lt",
-        "category": "lacteos",
-        "type": "Lácteos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 89,
-        "isOffer": true,
-        "isNew": false,
-        "prices": {
-            "1": 1385,
-            "6": 1200,
-            "12": 1125
-        },
-        "image": "Leche entera surlat 1lt.webp"
-    },
-    {
-        "id": "p10",
-        "brand": "Surlat",
-        "name": "Leche desceemda Surlat",
-        "category": "lacteos",
-        "type": "Lácteos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 85,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 1385,
-            "6": 1200,
-            "12": 1125
-        },
-        "image": "Leche descremada Surlat.webp"
-    },
-    {
-        "id": "p11",
         "brand": "San José",
-        "name": "Atun lomito 140g San jose en aceite",
-        "category": "conservas",
-        "type": "Conservas",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 70,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 1498,
-            "6": 1299,
-            "12": 1218
-        },
-        "image": "Atun lomito 140g San jose en aceite.webp"
-    },
-    {
-        "id": "p12",
-        "brand": "San José",
-        "name": "Atun lomito 140g San jose en agua",
-        "category": "conservas",
-        "type": "Conservas",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 95,
-        "isOffer": false,
-        "isNew": true,
-        "prices": {
-            "1": 1498,
-            "6": 1299,
-            "12": 1218
-        },
-        "image": "Atun lomito 140g San jose en agua.webp"
-    },
-    {
-        "id": "p13",
-        "brand": "San José",
-        "name": "Lomito de jurel 160g San Jose en aceite",
-        "category": "conservas",
-        "type": "Conservas",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 92,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 1190,
-            "6": 1031,
-            "12": 967
-        },
-        "image": "Lomito de jurel 160g San Jose en aceite.webp"
-    },
-    {
-        "id": "p14",
-        "brand": "Big Cola",
-        "name": "Big Cola 1,7lt",
-        "category": "liquidos",
-        "type": "Líquidos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 93,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 1008,
-            "6": 873,
-            "12": 819
-        },
-        "image": "Big Cola 1,7lt.webp"
-    },
-    {
-        "id": "p15",
-        "brand": "Big Cola",
-        "name": "Big Cola Zero 1,7lt",
-        "category": "liquidos",
-        "type": "Líquidos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 96,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 1008,
-            "6": 873,
-            "12": 819
-        },
-        "image": "Big Cola Zero 1,7lt.webp"
-    },
-    {
-        "id": "p16",
-        "brand": "Big Cola",
-        "name": "Big Cola 3 Lts",
-        "category": "liquidos",
-        "type": "Líquidos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 84,
-        "isOffer": true,
-        "isNew": false,
-        "prices": {
-            "1": 1512,
-            "6": 1311,
-            "12": 1229
-        },
-        "image": "Big Cola 3,03lt.webp"
-    },
-    {
-        "id": "p17",
-        "brand": "Big Cola",
-        "name": "Big Cola Zero 3.03 lt",
-        "category": "liquidos",
-        "type": "Líquidos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 80,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 1512,
-            "6": 1311,
-            "12": 1229
-        },
-        "image": "Big Cola Zero 3.03 lt.webp"
-    },
-    {
-        "id": "p18",
-        "brand": "Agua Vida",
-        "name": "Agua Vida sin gas 1600 mml",
-        "category": "liquidos",
-        "type": "Líquidos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 88,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 1008,
-            "6": 873,
-            "12": 819
-        },
-        "image": "Agua Vida sin gas 1600 mml.webp"
-    },
-    {
-        "id": "p19",
-        "brand": "Agua Vida",
-        "name": "Agua Vida con gas 1600 mml",
-        "category": "liquidos",
-        "type": "Líquidos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 85,
-        "isOffer": true,
-        "isNew": false,
-        "prices": {
-            "1": 1008,
-            "6": 873,
-            "12": 819
-        },
-        "image": "Agua Vida con gas 1600 mml.webp"
-    },
-    {
-        "id": "p20",
-        "brand": "Benedictino",
-        "name": "Bendictino sin gas 500 ml",
-        "category": "liquidos",
-        "type": "Líquidos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 76,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 446,
-            "6": 387,
-            "12": 363
-        },
-        "image": "Benedictino con gas 500 ml.webp"
-    },
-    {
-        "id": "p21",
-        "brand": "Benedictino",
-        "name": "Benedictino sin gas 500 ml",
-        "category": "liquidos",
-        "type": "Líquidos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 77,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 446,
-            "6": 387,
-            "12": 363
-        },
-        "image": "Benedictino sin gas 500 ml.webp"
-    },
-    {
-        "id": "p22",
-        "brand": "Canora",
-        "name": "Arroz Canora G2 1k",
+        "name": "Atun lomito 140g San josé en aceite",
         "category": "abarrotes",
         "type": "Alimentos",
         "availability": "stock",
@@ -480,18 +184,85 @@ const PRODUCTS = [
             "minorista",
             "mayorista"
         ],
-        "popularity": 70,
+        "popularity": 80,
         "isOffer": false,
-        "isNew": false,
+        "isNew": true,
+        "isFeatured": true,
         "prices": {
-            "1": 1077,
-            "6": 933,
-            "12": 875
+            "1": 1450,
+            "3": 1349,
+            "6": 1264
         },
-        "image": "Arroz Canora G2 1k.webp"
+        "image": "generic_product.webp"
     },
     {
-        "id": "p23",
+        "id": "p8",
+        "brand": "San José",
+        "name": "Atun lomito 140g San josé en agua",
+        "category": "abarrotes",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 80,
+        "isOffer": false,
+        "isNew": true,
+        "isFeatured": true,
+        "prices": {
+            "1": 1450,
+            "3": 1349,
+            "6": 1264
+        },
+        "image": "generic_product.webp"
+    },
+    {
+        "id": "p9",
+        "brand": "San José",
+        "name": "Lomito de jurel 160g San José en aceite",
+        "category": "abarrotes",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 80,
+        "isOffer": false,
+        "isNew": true,
+        "isFeatured": true,
+        "prices": {
+            "1": 1190,
+            "3": 1090,
+            "6": 990
+        },
+        "image": "generic_product.webp"
+    },
+    {
+        "id": "p10",
+        "brand": "Canoro",
+        "name": "Arroz Canoro G2 1k",
+        "category": "abarrotes",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 80,
+        "isOffer": false,
+        "isNew": true,
+        "isFeatured": true,
+        "prices": {
+            "1": 990,
+            "3": 950,
+            "10": 890
+        },
+        "image": "generic_product.webp"
+    },
+    {
+        "id": "p11",
         "brand": "Canoro",
         "name": "Arroz Canoro G1 1k",
         "category": "abarrotes",
@@ -504,15 +275,16 @@ const PRODUCTS = [
         "popularity": 87,
         "isOffer": true,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
-            "1": 1231,
-            "6": 1067,
-            "12": 1000
+            "1": 1190,
+            "3": 1090,
+            "10": 1000
         },
         "image": "Arroz Canora G2 1k.webp"
     },
     {
-        "id": "p24",
+        "id": "p12",
         "brand": "Miraflores",
         "name": "Arroz Miraflores 1k",
         "category": "abarrotes",
@@ -525,15 +297,16 @@ const PRODUCTS = [
         "popularity": 85,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
-            "1": 2292,
-            "6": 1987,
-            "12": 1863
+            "1": 2190,
+            "3": 1990,
+            "10": 1890
         },
         "image": "Arroz Miraflores 1k.webp"
     },
     {
-        "id": "p25",
+        "id": "p13",
         "brand": "Tucapel",
         "name": "Arroz Tucapel Gran Selección 1k",
         "category": "abarrotes",
@@ -546,16 +319,17 @@ const PRODUCTS = [
         "popularity": 73,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
-            "1": 1831,
-            "6": 1587,
-            "12": 1488
+            "1": 1789,
+            "3": 1649,
+            "10": 1499
         },
         "image": "Arroz Tucapel Gran Selección 1k.webp"
     },
     {
-        "id": "p26",
-        "brand": "Blue Bonet",
+        "id": "p14",
+        "brand": "Tucapel",
         "name": "Arroz Blue Bonet 900g",
         "category": "abarrotes",
         "type": "Alimentos",
@@ -567,15 +341,16 @@ const PRODUCTS = [
         "popularity": 78,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
-            "1": 1154,
-            "6": 1000,
-            "12": 938
+            "1": 1200,
+            "3": 1050,
+            "10": 950
         },
         "image": "Arroz Blue Bonnet 900g.webp"
     },
     {
-        "id": "p27",
+        "id": "p15",
         "brand": "Canoro",
         "name": "Spaguetti Canoro 400g",
         "category": "abarrotes",
@@ -588,15 +363,16 @@ const PRODUCTS = [
         "popularity": 78,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
-            "1": 677,
-            "6": 587,
-            "12": 550
+            "1": 679,
+            "3": 609,
+            "10": 569
         },
         "image": "Spaghetti Canoro 400g.webp"
     },
     {
-        "id": "p28",
+        "id": "p16",
         "brand": "Carozzi",
         "name": "Spaguetti #5 Carozzi 400g",
         "category": "abarrotes",
@@ -609,15 +385,16 @@ const PRODUCTS = [
         "popularity": 83,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
-            "1": 1000,
-            "6": 867,
-            "12": 813
+            "1": 990,
+            "3": 910,
+            "10": 849
         },
         "image": "Spaghetti N5 Carozzi 400g.webp"
     },
     {
-        "id": "p29",
+        "id": "p17",
         "brand": "Carozzi",
         "name": "Corbatas Carozzi 400g",
         "category": "abarrotes",
@@ -630,15 +407,16 @@ const PRODUCTS = [
         "popularity": 88,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
-            "1": 1000,
-            "6": 867,
-            "12": 813
+            "1": 990,
+            "3": 910,
+            "10": 849
         },
         "image": "Corbatas Carozzi 400g.webp"
     },
     {
-        "id": "p30",
+        "id": "p18",
         "brand": "Carozzi",
         "name": "Mostacholli Carozzi 400g",
         "category": "abarrotes",
@@ -651,15 +429,16 @@ const PRODUCTS = [
         "popularity": 95,
         "isOffer": true,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
-            "1": 1000,
-            "6": 867,
-            "12": 813
+            "1": 990,
+            "3": 910,
+            "10": 849
         },
         "image": "Mostaccioli Carozzi 400g.webp"
     },
     {
-        "id": "p31",
+        "id": "p19",
         "brand": "Pharma",
         "name": "Spaguetti Pharma 400g",
         "category": "abarrotes",
@@ -672,15 +451,16 @@ const PRODUCTS = [
         "popularity": 76,
         "isOffer": true,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
             "1": 846,
-            "6": 733,
-            "12": 688
+            "3": 763,
+            "10": 714
         },
         "image": "Spaghetti Pharma 400g.webp"
     },
     {
-        "id": "p32",
+        "id": "p20",
         "brand": "Pharma",
         "name": "Espirales Pharma 400g",
         "category": "abarrotes",
@@ -693,15 +473,16 @@ const PRODUCTS = [
         "popularity": 87,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
             "1": 846,
-            "6": 733,
-            "12": 688
+            "3": 763,
+            "10": 714
         },
         "image": "Espirales Parma 400g.webp"
     },
     {
-        "id": "p33",
+        "id": "p21",
         "brand": "Pharma",
         "name": "Mostacholi Pharma 400g",
         "category": "abarrotes",
@@ -714,19 +495,20 @@ const PRODUCTS = [
         "popularity": 98,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
             "1": 846,
-            "6": 733,
-            "12": 688
+            "3": 763,
+            "10": 714
         },
         "image": "Mostacholi Parma 400g.webp"
     },
     {
-        "id": "p34",
+        "id": "p22",
         "brand": "Carozzi",
         "name": "Salsa Carozzi Italiana 200g",
-        "category": "conservas",
-        "type": "Conservas",
+        "category": "abarrotes",
+        "type": "Alimentos",
         "availability": "stock",
         "clientTypes": [
             "minorista",
@@ -735,19 +517,20 @@ const PRODUCTS = [
         "popularity": 97,
         "isOffer": true,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
             "1": 738,
-            "6": 640,
-            "12": 600
+            "3": 666,
+            "10": 590
         },
         "image": "Salsa Carozzi Italiana 200g.webp"
     },
     {
-        "id": "p35",
+        "id": "p23",
         "brand": "San Remo",
         "name": "Salsa San Remo 200g",
-        "category": "conservas",
-        "type": "Conservas",
+        "category": "abarrotes",
+        "type": "Alimentos",
         "availability": "stock",
         "clientTypes": [
             "minorista",
@@ -756,19 +539,20 @@ const PRODUCTS = [
         "popularity": 92,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
             "1": 492,
-            "6": 427,
-            "12": 400
+            "3": 444,
+            "10": 390
         },
         "image": "Salsa San Remo 200g.webp"
     },
     {
-        "id": "p36",
+        "id": "p24",
         "brand": "Teodoro",
         "name": "Salsa Teodoro Italiana 200g",
-        "category": "conservas",
-        "type": "Conservas",
+        "category": "abarrotes",
+        "type": "Alimentos",
         "availability": "stock",
         "clientTypes": [
             "minorista",
@@ -777,624 +561,16 @@ const PRODUCTS = [
         "popularity": 86,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
-            "1": 308,
-            "6": 267,
-            "12": 250
+            "1": 307,
+            "3": 277,
+            "10": 259
         },
         "image": "Salsa Teodoro Italiana 200g.webp"
     },
     {
-        "id": "p37",
-        "brand": "Minuto Verde",
-        "name": "Arveja congelada 1k minuto verde",
-        "category": "conservas",
-        "type": "Conservas",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 90,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 2734,
-            "6": 2369,
-            "12": 2221
-        },
-        "image": "Arveja congelada 1k minuto verde.webp"
-    },
-    {
-        "id": "p38",
-        "brand": "Minuto Verde",
-        "name": "Arveja congelada200g Minuto Verde",
-        "category": "conservas",
-        "type": "Conservas",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 92,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 734,
-            "6": 636,
-            "12": 596
-        },
-        "image": "Arveja congelada200g Minuto Verde.webp"
-    },
-    {
-        "id": "p39",
-        "brand": "Minuto Verde",
-        "name": "Choclo congealdo 200g Minuto Verde",
-        "category": "conservas",
-        "type": "Conservas",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 74,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 672,
-            "6": 583,
-            "12": 546
-        },
-        "image": "Choclo congelado 200 g Minuto Verde.webp"
-    },
-    {
-        "id": "p40",
-        "brand": "Minuto Verde",
-        "name": "Choclo congelado 1k Minuto Verde",
-        "category": "conservas",
-        "type": "Conservas",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 92,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 2734,
-            "6": 2369,
-            "12": 2221
-        },
-        "image": "Choclo congelado 1k Minuto Verde.webp"
-    },
-    {
-        "id": "p41",
-        "brand": "Minuto Verde",
-        "name": "Habas congeladas 200g Minuto Verde",
-        "category": "conservas",
-        "type": "Conservas",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 87,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 715,
-            "6": 620,
-            "12": 581
-        },
-        "image": "Habas congeladas 200g Minuto Verde.webp"
-    },
-    {
-        "id": "p42",
-        "brand": "Minuto Verde",
-        "name": "Habas congeladas 1k Minuto Verde",
-        "category": "conservas",
-        "type": "Conservas",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 86,
-        "isOffer": true,
-        "isNew": false,
-        "prices": {
-            "1": 3092,
-            "6": 2680,
-            "12": 2513
-        },
-        "image": "Habas congeladas 1k Minuto Verde.webp"
-    },
-    {
-        "id": "p43",
-        "brand": "Minuto Verde",
-        "name": "Primavera congelada 200g Minuto Verde",
-        "category": "conservas",
-        "type": "Conservas",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 85,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 672,
-            "6": 583,
-            "12": 546
-        },
-        "image": "Primavera congelada 200g Minuto Verde.webp"
-    },
-    {
-        "id": "p44",
-        "brand": "Minuto Verde",
-        "name": "Primavera congelada 1k Minuto Verde",
-        "category": "conservas",
-        "type": "Conservas",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 86,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 3206,
-            "6": 2779,
-            "12": 2605
-        },
-        "image": "Primavera congelada 1k Minuto Verde.webp"
-    },
-    {
-        "id": "p45",
-        "brand": "Minuto Verde",
-        "name": "Papas pre fritas 7x7m 2,5k Minuto Verde",
-        "category": "conservas",
-        "type": "Conservas",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 92,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 5721,
-            "6": 4958,
-            "12": 4648
-        },
-        "image": "Papas pre fritas 7x7m 2,5k Minuto Verde.webp"
-    },
-    {
-        "id": "p46",
-        "brand": "Minuto Verde",
-        "name": "Papas Duquesa 500g Minuto Verde",
-        "category": "conservas",
-        "type": "Conservas",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 72,
-        "isOffer": false,
-        "isNew": true,
-        "prices": {
-            "1": 2148,
-            "6": 1861,
-            "12": 1745
-        },
-        "image": "Papas Duquesa 500g Minuto Verde.webp"
-    },
-    {
-        "id": "p47",
-        "brand": "Minuto Verde",
-        "name": "Pasta de Choclo 1k Minuto Verde",
-        "category": "conservas",
-        "type": "Conservas",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 89,
-        "isOffer": true,
-        "isNew": false,
-        "prices": {
-            "1": 3960,
-            "6": 3432,
-            "12": 3218
-        },
-        "image": "Pasta de Choclo 1k Minuto Verde.webp"
-    },
-    {
-        "id": "p48",
-        "brand": "Minuto Verde",
-        "name": "Mix Pimentones 150g  Minuto Verde",
-        "category": "conservas",
-        "type": "Conservas",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 70,
-        "isOffer": false,
-        "isNew": true,
-        "prices": {
-            "1": 706,
-            "6": 612,
-            "12": 574
-        },
-        "image": "Mix Pimentones 150g  Minuto Verde.webp"
-    },
-    {
-        "id": "p49",
-        "brand": "Minuto Verde",
-        "name": "Sofrito con ajo 150g Minuto Verde",
-        "category": "conservas",
-        "type": "Conservas",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 87,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 752,
-            "6": 652,
-            "12": 611
-        },
-        "image": "Sofrito con ajo 150g Minuto Verde.webp"
-    },
-    {
-        "id": "p50",
-        "brand": "Surlat",
-        "name": "Queso Gauda laminado 200g Surlat",
-        "category": "lacteos",
-        "type": "Lácteos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 77,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 3303,
-            "6": 2862,
-            "12": 2683
-        },
-        "image": "Queso Gauda laminado 200g Surlat.webp"
-    },
-    {
-        "id": "p51",
-        "brand": "Quillayes",
-        "name": "Queso Chanco laminado 250g Quillayes",
-        "category": "lacteos",
-        "type": "Lácteos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 92,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 3376,
-            "6": 2926,
-            "12": 2743
-        },
-        "image": "Queso Chanco laminado 250g Quillayes.webp"
-    },
-    {
-        "id": "p52",
-        "brand": "Swan",
-        "name": "Servilleta Swan x300un",
-        "category": "limpieza",
-        "type": "Limpieza",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 91,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 1154,
-            "6": 1000,
-            "12": 938
-        },
-        "image": "Servilleta Swan x300un.webp"
-    },
-    {
-        "id": "p53",
-        "brand": "Swan",
-        "name": "Confort 50mt x 4 Swan",
-        "category": "limpieza",
-        "type": "Limpieza",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 73,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 2846,
-            "6": 2467,
-            "12": 2313
-        },
-        "image": "Confort 50mt x 4 Swan.webp"
-    },
-    {
-        "id": "p54",
-        "brand": "Swan",
-        "name": "Toalla de papel Swan 70 m",
-        "category": "limpieza",
-        "type": "Limpieza",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 96,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 1652,
-            "6": 1432,
-            "12": 1342
-        },
-        "image": "Toalla de papel Swan 70 m.webp"
-    },
-    {
-        "id": "p55",
-        "brand": "Genérica",
-        "name": "Bolsa de basura 50x70",
-        "category": "limpieza",
-        "type": "Limpieza",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 77,
-        "isOffer": true,
-        "isNew": false,
-        "prices": {
-            "1": 538,
-            "6": 467,
-            "12": 438
-        },
-        "image": "Bolsa de basura 50x70.webp"
-    },
-    {
-        "id": "p56",
-        "brand": "Genérica",
-        "name": "Bolsa de basura 70x90",
-        "category": "limpieza",
-        "type": "Limpieza",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 77,
-        "isOffer": true,
-        "isNew": false,
-        "prices": {
-            "1": 769,
-            "6": 667,
-            "12": 625
-        },
-        "image": "Bolsa de basura 70x90.webp"
-    },
-    {
-        "id": "p57",
-        "brand": "Genérica",
-        "name": "Bolsa de basura 80x110",
-        "category": "limpieza",
-        "type": "Limpieza",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 80,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 1231,
-            "6": 1067,
-            "12": 1000
-        },
-        "image": "Bolsa de basura 80x110.webp"
-    },
-    {
-        "id": "p58",
-        "brand": "Genérica",
-        "name": "Trapero de algodón 50x70",
-        "category": "limpieza",
-        "type": "Limpieza",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 82,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 692,
-            "6": 600,
-            "12": 563
-        },
-        "image": "Trapero de algodón 50x70.webp"
-    },
-    {
-        "id": "p59",
-        "brand": "Genérica",
-        "name": "Paño microfibra 38x38 cm",
-        "category": "limpieza",
-        "type": "Limpieza",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 75,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 538,
-            "6": 467,
-            "12": 438
-        },
-        "image": "Paño microfibra 38x38 cm.webp"
-    },
-    {
-        "id": "p60",
-        "brand": "Genérica",
-        "name": "Paños de esponja x 3",
-        "category": "limpieza",
-        "type": "Limpieza",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 81,
-        "isOffer": true,
-        "isNew": false,
-        "prices": {
-            "1": 1077,
-            "6": 933,
-            "12": 875
-        },
-        "image": "Paños de esponja x 3.webp"
-    },
-    {
-        "id": "p61",
-        "brand": "Genérica",
-        "name": "Trapero de Microfibra",
-        "category": "limpieza",
-        "type": "Limpieza",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 78,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 846,
-            "6": 733,
-            "12": 688
-        },
-        "image": "Trapero de Microfibra.webp"
-    },
-    {
-        "id": "p62",
-        "brand": "Genérica",
-        "name": "Toalla 2 x250 Prepicada",
-        "category": "limpieza",
-        "type": "Limpieza",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 78,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 10000,
-            "6": 8667,
-            "12": 8125
-        },
-        "image": "Toalla 2 x250 Prepicada.webp"
-    },
-    {
-        "id": "p63",
-        "brand": "Genérica",
-        "name": "Paño de sacudir amarillo 35x40 cm",
-        "category": "limpieza",
-        "type": "Limpieza",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 70,
-        "isOffer": true,
-        "isNew": false,
-        "prices": {
-            "1": 615,
-            "6": 533,
-            "12": 500
-        },
-        "image": "Paño de sacudir amarillo 35x40 cm.webp"
-    },
-    {
-        "id": "p64",
-        "brand": "Genérica",
-        "name": "Trapero humedo x 12",
-        "category": "limpieza",
-        "type": "Limpieza",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 75,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 1692,
-            "6": 1467,
-            "12": 1375
-        },
-        "image": "Trapero humedo x 12.webp"
-    },
-    {
-        "id": "p65",
-        "brand": "Ariel",
-        "name": "Detergente Ariel 1,8l",
-        "category": "limpieza",
-        "type": "Limpieza",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 72,
-        "isOffer": false,
-        "isNew": true,
-        "prices": {
-            "1": 8600,
-            "6": 7453,
-            "12": 6988
-        },
-        "image": "Detergente Ariel 1,8l.webp"
-    },
-    {
-        "id": "p66",
+        "id": "p25",
         "brand": "Canoro",
         "name": "Azucar Canoro 1k",
         "category": "abarrotes",
@@ -1407,15 +583,16 @@ const PRODUCTS = [
         "popularity": 81,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
-            "1": 1077,
-            "6": 933,
-            "12": 875
+            "1": 990,
+            "3": 972,
+            "10": 890
         },
         "image": "Azucar Canoro 1k.webp"
     },
     {
-        "id": "p67",
+        "id": "p26",
         "brand": "Iansa",
         "name": "Azucar Iansa 1k",
         "category": "abarrotes",
@@ -1428,418 +605,20 @@ const PRODUCTS = [
         "popularity": 95,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
-            "1": 1615,
-            "6": 1400,
-            "12": 1313
+            "1": 1490,
+            "3": 1449,
+            "10": 1290
         },
         "image": "Azucar Iansa 1k.webp"
     },
     {
-        "id": "p68",
-        "brand": "Genérica",
-        "name": "Medialunas 45g x 180u",
+        "id": "p27",
+        "brand": "Club",
+        "name": "Té Club 100 bolsitas",
         "category": "abarrotes",
         "type": "Alimentos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 95,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 47600,
-            "6": 41253,
-            "12": 38675
-        },
-        "image": "Medialunas 45g x 180u.webp"
-    },
-    {
-        "id": "p69",
-        "brand": "Genérica",
-        "name": "Muffin relleno DDL  x 6",
-        "category": "abarrotes",
-        "type": "Alimentos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 75,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 6923,
-            "6": 6000,
-            "12": 5625
-        },
-        "image": "Muffin relleno ddl x6.webp"
-    },
-    {
-        "id": "p70",
-        "brand": "Genérica",
-        "name": "Muffin Chocolate Chips chocolate x6",
-        "category": "liquidos",
-        "type": "Líquidos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 75,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 6923,
-            "6": 6000,
-            "12": 5625
-        },
-        "image": "Muffin Chocolate Chips chocolate x6.webp"
-    },
-    {
-        "id": "p71",
-        "brand": "Genérica",
-        "name": "Muffin Vainilla chips chocolate x6",
-        "category": "liquidos",
-        "type": "Líquidos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 70,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 6923,
-            "6": 6000,
-            "12": 5625
-        },
-        "image": "Muffin Vainilla chips chocolate x6.webp"
-    },
-    {
-        "id": "p72",
-        "brand": "Costa",
-        "name": "Mini Cocaditas  Costa 35g",
-        "category": "liquidos",
-        "type": "Líquidos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 96,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 277,
-            "6": 240,
-            "12": 225
-        },
-        "image": "Mini Cocaditas  Costa 35g.webp"
-    },
-    {
-        "id": "p73",
-        "brand": "Costa",
-        "name": "Mini Mantequilla Costa 35g",
-        "category": "abarrotes",
-        "type": "Alimentos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 86,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 277,
-            "6": 240,
-            "12": 225
-        },
-        "image": "Mini Mantequilla Costa 35g.webp"
-    },
-    {
-        "id": "p74",
-        "brand": "Costa",
-        "name": "Mini Chips Costa 35",
-        "category": "abarrotes",
-        "type": "Alimentos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 70,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 277,
-            "6": 240,
-            "12": 225
-        },
-        "image": "Mini Chips Costa 35.webp"
-    },
-    {
-        "id": "p75",
-        "brand": "Costa",
-        "name": "Mini Brownie Chips Costa35g",
-        "category": "abarrotes",
-        "type": "Alimentos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 89,
-        "isOffer": false,
-        "isNew": true,
-        "prices": {
-            "1": 277,
-            "6": 240,
-            "12": 225
-        },
-        "image": "Mini Brownie Chips Costa 35g.webp"
-    },
-    {
-        "id": "p76",
-        "brand": "Costa",
-        "name": "Cereal Bar Chocolate Costa x20",
-        "category": "liquidos",
-        "type": "Líquidos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 96,
-        "isOffer": true,
-        "isNew": false,
-        "prices": {
-            "1": 5538,
-            "6": 4800,
-            "12": 4500
-        },
-        "image": "Cereal Bar Chocolate Costa x20.webp"
-    },
-    {
-        "id": "p77",
-        "brand": "Costa",
-        "name": "Mini Vino Costa 35g",
-        "category": "abarrotes",
-        "type": "Alimentos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 83,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 277,
-            "6": 240,
-            "12": 225
-        },
-        "image": "Mini Vino Costa 35g.webp"
-    },
-    {
-        "id": "p78",
-        "brand": "Costa",
-        "name": "Mini Dulcitas Costa 35g",
-        "category": "abarrotes",
-        "type": "Alimentos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 79,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 277,
-            "6": 240,
-            "12": 225
-        },
-        "image": "Mini Dulcitas Costa 35g.webp"
-    },
-    {
-        "id": "p79",
-        "brand": "Pita Chips",
-        "name": "Pita Chips Original 115g",
-        "category": "abarrotes",
-        "type": "Alimentos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 78,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 1648,
-            "6": 1428,
-            "12": 1339
-        },
-        "image": "Pita Chips Original 115g.webp"
-    },
-    {
-        "id": "p80",
-        "brand": "Pita Chips",
-        "name": "Pita Chips Toamte Romero 115g",
-        "category": "abarrotes",
-        "type": "Alimentos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 90,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 1648,
-            "6": 1428,
-            "12": 1339
-        },
-        "image": "Pita Chips Tomate Romero 115g.webp"
-    },
-    {
-        "id": "p81",
-        "brand": "Pita Chips",
-        "name": "Pita Chips Cebolla  115g",
-        "category": "abarrotes",
-        "type": "Alimentos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 86,
-        "isOffer": true,
-        "isNew": false,
-        "prices": {
-            "1": 1648,
-            "6": 1428,
-            "12": 1339
-        },
-        "image": "Pita Chips Cebolla  115g.webp"
-    },
-    {
-        "id": "p82",
-        "brand": "Pita Chips",
-        "name": "Pita Chips Jalapeño 115g",
-        "category": "abarrotes",
-        "type": "Alimentos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 76,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 1648,
-            "6": 1428,
-            "12": 1339
-        },
-        "image": "Pita Chips Jalapeño 115g.webp"
-    },
-    {
-        "id": "p83",
-        "brand": "Pita Chips",
-        "name": "Pita Chips Cúrcuma 115g",
-        "category": "abarrotes",
-        "type": "Alimentos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 74,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 1648,
-            "6": 1428,
-            "12": 1339
-        },
-        "image": "Pita Chips Cúrcuma 115g.webp"
-    },
-    {
-        "id": "p84",
-        "brand": "Té Club",
-        "name": "Te Club 100 bolsitas",
-        "category": "abarrotes",
-        "type": "Alimentos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 96,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 2908,
-            "6": 2520,
-            "12": 2363
-        },
-        "image": "Te Club 100 bolsitas.webp"
-    },
-    {
-        "id": "p85",
-        "brand": "3 Arroyos",
-        "name": "Areja lata 350g  3 Arroyos",
-        "category": "conservas",
-        "type": "Conservas",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 97,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 769,
-            "6": 667,
-            "12": 625
-        },
-        "image": "Arveja lata 350g 3 Arroyos.webp"
-    },
-    {
-        "id": "p86",
-        "brand": "3 Arroyos",
-        "name": "Lenteja en lata 350g 3 arroyos",
-        "category": "conservas",
-        "type": "Conservas",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 97,
-        "isOffer": true,
-        "isNew": false,
-        "prices": {
-            "1": 769,
-            "6": 667,
-            "12": 625
-        },
-        "image": "Lenteja en lata 350g 3 arroyos.webp"
-    },
-    {
-        "id": "p87",
-        "brand": "3 Arroyos",
-        "name": "Garbanzo lata 350g 3 arroyos",
-        "category": "conservas",
-        "type": "Conservas",
         "availability": "stock",
         "clientTypes": [
             "minorista",
@@ -1847,247 +626,17 @@ const PRODUCTS = [
         ],
         "popularity": 80,
         "isOffer": false,
-        "isNew": false,
+        "isNew": true,
+        "isFeatured": true,
         "prices": {
-            "1": 769,
-            "6": 667,
-            "12": 625
+            "1": 2990,
+            "3": 2625,
+            "6": 2454
         },
-        "image": "Garbanzo lata 350g 3 arroyos.webp"
+        "image": "generic_product.webp"
     },
     {
-        "id": "p88",
-        "brand": "3 Arroyos",
-        "name": "Choclo en grano  lata 350g 3 Arroyos",
-        "category": "conservas",
-        "type": "Conservas",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 86,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 923,
-            "6": 800,
-            "12": 750
-        },
-        "image": "Choclo en grano  lata 350g 3 Arroyos.webp"
-    },
-    {
-        "id": "p89",
-        "brand": "Canoro",
-        "name": "Energetica canoro 500ml",
-        "category": "liquidos",
-        "type": "Líquidos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 79,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 923,
-            "6": 800,
-            "12": 750
-        },
-        "image": "Energetica canoro 500ml.webp"
-    },
-    {
-        "id": "p90",
-        "brand": "Canoro",
-        "name": "Limonada Canoro 600 ml Frambuesa",
-        "category": "liquidos",
-        "type": "Líquidos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 84,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 846,
-            "6": 733,
-            "12": 688
-        },
-        "image": "Limonada Canoro 600 ml Frambuesa.webp"
-    },
-    {
-        "id": "p91",
-        "brand": "Canoro",
-        "name": "Limonada Canoro 600 ml Maracuya",
-        "category": "liquidos",
-        "type": "Líquidos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 87,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 846,
-            "6": 733,
-            "12": 688
-        },
-        "image": "Limonada Canoro 600 ml Maracuya.webp"
-    },
-    {
-        "id": "p92",
-        "brand": "Canoro",
-        "name": "Limonada Canoro 600 ml Maqui Berries",
-        "category": "liquidos",
-        "type": "Líquidos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 74,
-        "isOffer": true,
-        "isNew": false,
-        "prices": {
-            "1": 846,
-            "6": 733,
-            "12": 688
-        },
-        "image": "Limonada Canoro 600 ml Maqui Berries.webp"
-    },
-    {
-        "id": "p93",
-        "brand": "Canoro",
-        "name": "Limonada Canoro 600 ml Menta Jenjibre",
-        "category": "liquidos",
-        "type": "Líquidos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 95,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 846,
-            "6": 733,
-            "12": 688
-        },
-        "image": "Limonada Canoro 600 ml.webp"
-    },
-    {
-        "id": "p94",
-        "brand": "Canoro",
-        "name": "Limonada Canoro 600 ml",
-        "category": "liquidos",
-        "type": "Líquidos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 82,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 846,
-            "6": 733,
-            "12": 688
-        },
-        "image": "Limonada Canoro 600 ml.webp"
-    },
-    {
-        "id": "p95",
-        "brand": "Genérica",
-        "name": "Coca cola 591 ml",
-        "category": "liquidos",
-        "type": "Líquidos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 98,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 1308,
-            "6": 1133,
-            "12": 1063
-        },
-        "image": "Coca cola 591 ml.webp"
-    },
-    {
-        "id": "p96",
-        "brand": "Genérica",
-        "name": "Coca Zero 591 ml",
-        "category": "liquidos",
-        "type": "Líquidos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 72,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 1308,
-            "6": 1133,
-            "12": 1063
-        },
-        "image": "Coca Zero 591 ml.webp"
-    },
-    {
-        "id": "p97",
-        "brand": "Genérica",
-        "name": "Fanta 591 ml",
-        "category": "liquidos",
-        "type": "Líquidos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 71,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 1308,
-            "6": 1133,
-            "12": 1063
-        },
-        "image": "Fanta 591 ml.webp"
-    },
-    {
-        "id": "p98",
-        "brand": "Genérica",
-        "name": "Sprite 591 ml",
-        "category": "liquidos",
-        "type": "Líquidos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 92,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 1308,
-            "6": 1133,
-            "12": 1063
-        },
-        "image": "Sprite 591 ml.webp"
-    },
-    {
-        "id": "p99",
+        "id": "p28",
         "brand": "Maggi",
         "name": "Sopas Maggi Costilla",
         "category": "abarrotes",
@@ -2100,16 +649,17 @@ const PRODUCTS = [
         "popularity": 75,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
             "1": 692,
-            "6": 600,
-            "12": 563
+            "3": 625,
+            "6": 584
         },
         "image": "Sopas Maggi Costilla.webp"
     },
     {
-        "id": "p100",
-        "brand": "Genérica",
+        "id": "p29",
+        "brand": "Maggi",
         "name": "Sopa Pollo con Arroz",
         "category": "abarrotes",
         "type": "Alimentos",
@@ -2121,16 +671,17 @@ const PRODUCTS = [
         "popularity": 92,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
             "1": 692,
-            "6": 600,
-            "12": 563
+            "3": 625,
+            "6": 584
         },
         "image": "Sopa Pollo con Arroz.webp"
     },
     {
-        "id": "p101",
-        "brand": "Genérica",
+        "id": "p30",
+        "brand": "Maggi",
         "name": "Sopa Pollo con Fideos",
         "category": "abarrotes",
         "type": "Alimentos",
@@ -2142,16 +693,17 @@ const PRODUCTS = [
         "popularity": 86,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
             "1": 692,
-            "6": 600,
-            "12": 563
+            "3": 625,
+            "6": 584
         },
         "image": "Sopa Pollo con Fideos.webp"
     },
     {
-        "id": "p102",
-        "brand": "Genérica",
+        "id": "p31",
+        "brand": "Maggi",
         "name": "Sopa Carne con Fideos",
         "category": "abarrotes",
         "type": "Alimentos",
@@ -2163,57 +715,16 @@ const PRODUCTS = [
         "popularity": 98,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
             "1": 692,
-            "6": 600,
-            "12": 563
+            "3": 625,
+            "6": 584
         },
         "image": "Sopa Carne con Fideos.webp"
     },
     {
-        "id": "p103",
-        "brand": "Genérica",
-        "name": "Alitas de pollo rebozadas 2k",
-        "category": "abarrotes",
-        "type": "Alimentos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 70,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 14615,
-            "6": 12667,
-            "12": 11875
-        },
-        "image": "Alitas de pollo rebozadas 2k.webp"
-    },
-    {
-        "id": "p104",
-        "brand": "Genérica",
-        "name": "Nugguet de polllo 3k",
-        "category": "abarrotes",
-        "type": "Alimentos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 86,
-        "isOffer": true,
-        "isNew": false,
-        "prices": {
-            "1": 18677,
-            "6": 16187,
-            "12": 15175
-        },
-        "image": "Nugget de pollo 3k.webp"
-    },
-    {
-        "id": "p105",
+        "id": "p32",
         "brand": "Smart Price",
         "name": "Aceite vegetal 900 ml Samrt Price",
         "category": "abarrotes",
@@ -2226,15 +737,16 @@ const PRODUCTS = [
         "popularity": 93,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
-            "1": 2231,
-            "6": 1933,
-            "12": 1813
+            "1": 1750,
+            "3": 1649,
+            "12": 1590
         },
         "image": "Aceite vegetal 900ml Smart Price.webp"
     },
     {
-        "id": "p106",
+        "id": "p33",
         "brand": "Miraflores",
         "name": "Aceite Maravilla 900 ml Miraflores",
         "category": "abarrotes",
@@ -2247,100 +759,17 @@ const PRODUCTS = [
         "popularity": 72,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
-            "1": 2923,
-            "6": 2533,
-            "12": 2375
+            "1": 3230,
+            "3": 2916,
+            "12": 2727
         },
         "image": "Aceite Maravilla 900 ml Miraflores.webp"
     },
     {
-        "id": "p107",
-        "brand": "Genérica",
-        "name": "Muffin relleno ddl x6",
-        "category": "abarrotes",
-        "type": "Alimentos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 93,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 6923,
-            "6": 6000,
-            "12": 5625
-        },
-        "image": "Muffin relleno ddl x6.webp"
-    },
-    {
-        "id": "p108",
-        "brand": "Genérica",
-        "name": "Muffin Vainilla con Chips chocolate x6",
-        "category": "liquidos",
-        "type": "Líquidos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 82,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 6923,
-            "6": 6000,
-            "12": 5625
-        },
-        "image": "Muffin Vainilla con Chips chocolate x6 (repetido).webp"
-    },
-    {
-        "id": "p109",
-        "brand": "Genérica",
-        "name": "Muffin Chocolate con Chips de Chocolate x6",
-        "category": "liquidos",
-        "type": "Líquidos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 96,
-        "isOffer": true,
-        "isNew": false,
-        "prices": {
-            "1": 6923,
-            "6": 6000,
-            "12": 5625
-        },
-        "image": "Muffin Chocolate con Chips de Chocolate x6 (repetido).webp"
-    },
-    {
-        "id": "p110",
-        "brand": "Genérica",
-        "name": "Medialunas x30 Argentinas",
-        "category": "abarrotes",
-        "type": "Alimentos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 96,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 7930,
-            "6": 6873,
-            "12": 6443
-        },
-        "image": "Medialunas x30 Argentinas.webp"
-    },
-    {
-        "id": "p111",
-        "brand": "Genérica",
+        "id": "p34",
+        "brand": "KRAF",
         "name": "Ketchup Kraf 850g",
         "category": "abarrotes",
         "type": "Alimentos",
@@ -2351,17 +780,18 @@ const PRODUCTS = [
         ],
         "popularity": 95,
         "isOffer": false,
-        "isNew": true,
+        "isNew": false,
+        "isFeatured": true,
         "prices": {
-            "1": 3000,
-            "6": 2600,
-            "12": 2438
+            "1": 2890,
+            "3": 2708,
+            "6": 2532
         },
         "image": "Ketchup Kraft 850 g.webp"
     },
     {
-        "id": "p112",
-        "brand": "Hellmann's",
+        "id": "p35",
+        "brand": "Hellmans",
         "name": "Mayonesa Hellmans 630 g",
         "category": "abarrotes",
         "type": "Alimentos",
@@ -2373,15 +803,16 @@ const PRODUCTS = [
         "popularity": 73,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
-            "1": 2677,
-            "6": 2320,
-            "12": 2175
+            "1": 2590,
+            "3": 2390,
+            "6": 2190
         },
         "image": "Mayonesa Hellmann's 630 g.webp"
     },
     {
-        "id": "p113",
+        "id": "p36",
         "brand": "Heinz",
         "name": "Mostaza Heinz 1k",
         "category": "abarrotes",
@@ -2394,16 +825,17 @@ const PRODUCTS = [
         "popularity": 79,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
-            "1": 2754,
-            "6": 2387,
-            "12": 2238
+            "1": 2753,
+            "3": 2486,
+            "6": 2324
         },
         "image": "Mostaza Heinz 1k.webp"
     },
     {
-        "id": "p114",
-        "brand": "Selecta",
+        "id": "p37",
+        "brand": "Carozzi",
         "name": "Harina Selecta con polvo 1k",
         "category": "abarrotes",
         "type": "Alimentos",
@@ -2415,16 +847,17 @@ const PRODUCTS = [
         "popularity": 74,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
             "1": 1692,
-            "6": 1467,
-            "12": 1375
+            "3": 1490,
+            "6": 1390
         },
         "image": "Harina Selecta con polvo 1k.webp"
     },
     {
-        "id": "p115",
-        "brand": "Selecta",
+        "id": "p38",
+        "brand": "Carozzi",
         "name": "Harina Selecta sin Polvo 1k",
         "category": "abarrotes",
         "type": "Alimentos",
@@ -2436,16 +869,17 @@ const PRODUCTS = [
         "popularity": 75,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
             "1": 1692,
-            "6": 1467,
-            "12": 1375
+            "3": 1490,
+            "6": 1390
         },
         "image": "Harina Selecta sin polvo 1k.webp"
     },
     {
-        "id": "p116",
-        "brand": "Mont Blanc",
+        "id": "p39",
+        "brand": "Carozzi",
         "name": "Harina Mont Blanc sin polvo 1k",
         "category": "abarrotes",
         "type": "Alimentos",
@@ -2457,16 +891,17 @@ const PRODUCTS = [
         "popularity": 98,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
-            "1": 1431,
-            "6": 1240,
-            "12": 1163
+            "1": 1430,
+            "3": 1291,
+            "6": 1207
         },
         "image": "Harina Mont Blanc sin polvo 1k.webp"
     },
     {
-        "id": "p117",
-        "brand": "Mont Blanc",
+        "id": "p40",
+        "brand": "Carozzi",
         "name": "Harina Mont Blanc con polvo 1k",
         "category": "abarrotes",
         "type": "Alimentos",
@@ -2478,15 +913,16 @@ const PRODUCTS = [
         "popularity": 83,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
-            "1": 1431,
-            "6": 1240,
-            "12": 1163
+            "1": 1430,
+            "3": 1291,
+            "6": 1207
         },
         "image": "Harina Mont Blanc con polvo 1k.webp"
     },
     {
-        "id": "p118",
+        "id": "p41",
         "brand": "Linderos",
         "name": "Harina Linderos  1k sin polvo",
         "category": "abarrotes",
@@ -2499,15 +935,16 @@ const PRODUCTS = [
         "popularity": 73,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
-            "1": 1077,
-            "6": 933,
-            "12": 875
+            "1": 990,
+            "3": 940,
+            "6": 909
         },
         "image": "Harina Linderos  1k sin polvo.webp"
     },
     {
-        "id": "p119",
+        "id": "p42",
         "brand": "Linderos",
         "name": "Harina Linderos 1k con Polvo",
         "category": "abarrotes",
@@ -2520,16 +957,17 @@ const PRODUCTS = [
         "popularity": 90,
         "isOffer": true,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
-            "1": 1077,
-            "6": 933,
-            "12": 875
+            "1": 990,
+            "3": 940,
+            "6": 909
         },
         "image": "Harina Linderos  1k con polvo.webp"
     },
     {
-        "id": "p120",
-        "brand": "Nestlé",
+        "id": "p43",
+        "brand": "Nestle",
         "name": "Manjar Nestle 1k",
         "category": "abarrotes",
         "type": "Alimentos",
@@ -2541,61 +979,20 @@ const PRODUCTS = [
         "popularity": 97,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
-            "1": 4923,
-            "6": 4267,
-            "12": 4000
+            "1": 4490,
+            "3": 3990,
+            "6": 3790
         },
         "image": "Manjar Nestle 1k.webp"
     },
     {
-        "id": "p121",
-        "brand": "Super Beef",
-        "name": "Hamburguesa 100g x2 super beef",
-        "category": "lacteos",
-        "type": "Lácteos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 96,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 1231,
-            "6": 1067,
-            "12": 1000
-        },
-        "image": "Hamburguesa 100g x2 super beef.webp"
-    },
-    {
-        "id": "p122",
-        "brand": "Mastodonte",
-        "name": "Hamburguesa Mastodonte 180g",
-        "category": "lacteos",
-        "type": "Lácteos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 82,
-        "isOffer": false,
-        "isNew": false,
-        "prices": {
-            "1": 1892,
-            "6": 1640,
-            "12": 1538
-        },
-        "image": "Hamburguesa Mastodonte 185g.webp"
-    },
-    {
-        "id": "p123",
-        "brand": "King Kong",
-        "name": "Hamburguesa King Kong 185",
-        "category": "lacteos",
-        "type": "Lácteos",
+        "id": "p44",
+        "brand": "Minuto Verde",
+        "name": "Arveja congelada 1k minuto verde",
+        "category": "congelados",
+        "type": "Alimentos",
         "availability": "stock",
         "clientTypes": [
             "minorista",
@@ -2604,19 +1001,130 @@ const PRODUCTS = [
         "popularity": 90,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
-            "1": 1062,
-            "6": 920,
-            "12": 863
+            "1": 2790,
+            "3": 2390,
+            "6": 2307
         },
-        "image": "Hamburguesa King Kong 185.webp"
+        "image": "Arveja congelada 1k minuto verde.webp"
     },
     {
-        "id": "p124",
-        "brand": "Hacienda",
-        "name": "Carne Molida Hacienda",
-        "category": "lacteos",
-        "type": "Lácteos",
+        "id": "p45",
+        "brand": "Minuto Verde",
+        "name": "Arveja congelada200g Minuto Verde",
+        "category": "congelados",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 92,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 733,
+            "3": 662,
+            "6": 619
+        },
+        "image": "Arveja congelada200g Minuto Verde.webp"
+    },
+    {
+        "id": "p46",
+        "brand": "Minuto Verde",
+        "name": "Choclo congealdo 200g Minuto Verde",
+        "category": "congelados",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 74,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 734,
+            "3": 663,
+            "6": 619
+        },
+        "image": "Choclo congelado 200 g Minuto Verde.webp"
+    },
+    {
+        "id": "p47",
+        "brand": "Minuto Verde",
+        "name": "Choclo congelado 1k Minuto Verde",
+        "category": "congelados",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 92,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 2790,
+            "3": 2390,
+            "6": 2307
+        },
+        "image": "Choclo congelado 1k Minuto Verde.webp"
+    },
+    {
+        "id": "p48",
+        "brand": "Minuto Verde",
+        "name": "Habas congeladas 200g Minuto Verde",
+        "category": "congelados",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 87,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 734,
+            "3": 663,
+            "6": 619
+        },
+        "image": "Habas congeladas 200g Minuto Verde.webp"
+    },
+    {
+        "id": "p49",
+        "brand": "Minuto Verde",
+        "name": "Habas congeladas 1k Minuto Verde",
+        "category": "congelados",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 86,
+        "isOffer": true,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 3092,
+            "3": 2791,
+            "6": 2610
+        },
+        "image": "Habas congeladas 1k Minuto Verde.webp"
+    },
+    {
+        "id": "p50",
+        "brand": "Minuto Verde",
+        "name": "Primavera congelada 200g Minuto Verde",
+        "category": "congelados",
+        "type": "Alimentos",
         "availability": "stock",
         "clientTypes": [
             "minorista",
@@ -2625,19 +1133,328 @@ const PRODUCTS = [
         "popularity": 85,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
-            "1": 2108,
-            "6": 1827,
-            "12": 1713
+            "1": 672,
+            "3": 606,
+            "6": 567
         },
-        "image": "Carne Molida Hacienda.webp"
+        "image": "Primavera congelada 200g Minuto Verde.webp"
     },
     {
-        "id": "p125",
-        "brand": "Genérica",
-        "name": "Malaya 1k",
-        "category": "lacteos",
-        "type": "Lácteos",
+        "id": "p51",
+        "brand": "Minuto Verde",
+        "name": "Primavera congelada 1k Minuto Verde",
+        "category": "congelados",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 86,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 3206,
+            "3": 2790,
+            "6": 2690
+        },
+        "image": "Primavera congelada 1k Minuto Verde.webp"
+    },
+    {
+        "id": "p52",
+        "brand": "Minuto Verde",
+        "name": "Papas pre fritas 7x7m 2,5k Minuto Verde",
+        "category": "bebidas",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 92,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 5721,
+            "3": 4990,
+            "6": 4829
+        },
+        "image": "Papas pre fritas 7x7m 2,5k Minuto Verde.webp"
+    },
+    {
+        "id": "p53",
+        "brand": "Minuto Verde",
+        "name": "Papas Duquesa 500g Minuto Verde",
+        "category": "bebidas",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 72,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 2320,
+            "3": 1990,
+            "6": 1812
+        },
+        "image": "Papas Duquesa 500g Minuto Verde.webp"
+    },
+    {
+        "id": "p54",
+        "brand": "Minuto Verde",
+        "name": "Pasta de Choclo 1k Minuto Verde",
+        "category": "congelados",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 89,
+        "isOffer": true,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 3960,
+            "3": 3490,
+            "6": 3342
+        },
+        "image": "Pasta de Choclo 1k Minuto Verde.webp"
+    },
+    {
+        "id": "p55",
+        "brand": "Minuto Verde",
+        "name": "Mix Pimentones 150g  Minuto Verde",
+        "category": "congelados",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 70,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 990,
+            "3": 890,
+            "6": 790
+        },
+        "image": "Mix Pimentones 150g  Minuto Verde.webp"
+    },
+    {
+        "id": "p56",
+        "brand": "Minuto Verde",
+        "name": "Sofrito con ajo 150g Minuto Verde",
+        "category": "congelados",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 87,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 790,
+            "3": 689,
+            "6": 635
+        },
+        "image": "Sofrito con ajo 150g Minuto Verde.webp"
+    },
+    {
+        "id": "p57",
+        "brand": "Molinos Cañuelas",
+        "name": "Medialunas 45g x 30 und congeladas para hornear",
+        "category": "congelados",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 80,
+        "isOffer": false,
+        "isNew": true,
+        "isFeatured": true,
+        "prices": {
+            "1": 8900,
+            "3": 7900,
+            "6": 7500
+        },
+        "image": "generic_product.webp"
+    },
+    {
+        "id": "p58",
+        "brand": "Molinos Cañuelas",
+        "name": "Muffin relleno ddl x6",
+        "category": "congelados",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 93,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 6990,
+            "3": 6250,
+            "6": 5844
+        },
+        "image": "Muffin relleno ddl x6.webp"
+    },
+    {
+        "id": "p59",
+        "brand": "Molinos Cañuelas",
+        "name": "Muffin Vainilla con Chips chocolate x6",
+        "category": "confiteria",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 82,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 6990,
+            "3": 6250,
+            "6": 5844
+        },
+        "image": "Muffin Vainilla con Chips chocolate x6 (repetido).webp"
+    },
+    {
+        "id": "p60",
+        "brand": "Molinos Cañuelas",
+        "name": "Muffin Chocolate con Chips de Chocolate x6",
+        "category": "confiteria",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 96,
+        "isOffer": true,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 6990,
+            "3": 6250,
+            "6": 5844
+        },
+        "image": "Muffin Chocolate con Chips de Chocolate x6 (repetido).webp"
+    },
+    {
+        "id": "p61",
+        "brand": "Mastodonte",
+        "name": "Hamburguesa Mastodonte 180g",
+        "category": "congelados",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 82,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 1892,
+            "3": 1690,
+            "6": 1590
+        },
+        "image": "Hamburguesa Mastodonte 185g.webp"
+    },
+    {
+        "id": "p62",
+        "brand": "King",
+        "name": "Hamburguesa King Kong 185G",
+        "category": "congelados",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 90,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 1090,
+            "3": 958,
+            "6": 896
+        },
+        "image": "Hamburguesa King Kong 185.webp"
+    },
+    {
+        "id": "p63",
+        "brand": "Agrosuper",
+        "name": "Hamburguesa Super Beef 100g",
+        "category": "congelados",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 80,
+        "isOffer": false,
+        "isNew": true,
+        "isFeatured": true,
+        "prices": {
+            "1": 646,
+            "3": 583,
+            "6": 545
+        },
+        "image": "generic_product.webp"
+    },
+    {
+        "id": "p64",
+        "brand": "HSM",
+        "name": "Carne Molida 250G 10% de grasa  HSM",
+        "category": "congelados",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 80,
+        "isOffer": false,
+        "isNew": true,
+        "isFeatured": true,
+        "prices": {
+            "1": 2370,
+            "3": 2140,
+            "6": 2001
+        },
+        "image": "generic_product.webp"
+    },
+    {
+        "id": "p65",
+        "brand": "HSM",
+        "name": "Malaya 1k HSM",
+        "category": "congelados",
+        "type": "Alimentos",
         "availability": "stock",
         "clientTypes": [
             "minorista",
@@ -2646,18 +1463,19 @@ const PRODUCTS = [
         "popularity": 79,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
-            "1": 15928,
-            "6": 13804,
-            "12": 12941
+            "1": 15927,
+            "3": 14379,
+            "6": 13445
         },
         "image": "Malaya 1k.webp"
     },
     {
-        "id": "p126",
+        "id": "p66",
         "brand": "Sadia",
         "name": "Nugguet de pollo 3k Sadia",
-        "category": "abarrotes",
+        "category": "congelados",
         "type": "Alimentos",
         "availability": "stock",
         "clientTypes": [
@@ -2667,17 +1485,62 @@ const PRODUCTS = [
         "popularity": 81,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
-            "1": 18677,
-            "6": 16187,
-            "12": 15175
+            "1": 18676,
+            "3": 16861,
+            "6": 15766
         },
         "image": "Nugget de pollo 3k Sadia.webp"
     },
     {
-        "id": "p127",
+        "id": "p67",
         "brand": "Sadia",
         "name": "Alitas Rebozadas 2k Sadfia",
+        "category": "congelados",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 97,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 13076,
+            "3": 11805,
+            "6": 11038
+        },
+        "image": "Alitas Rebozadas 2k Sadia.webp"
+    },
+    {
+        "id": "p68",
+        "brand": "San José",
+        "name": "Filete de Merluza San José 500g",
+        "category": "congelados",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 80,
+        "isOffer": false,
+        "isNew": true,
+        "isFeatured": true,
+        "prices": {
+            "1": 4384,
+            "3": 3958,
+            "6": 3701
+        },
+        "image": "generic_product.webp"
+    },
+    {
+        "id": "p69",
+        "brand": "3 Arroyos",
+        "name": "Areja lata 350g  3 Arroyos",
         "category": "abarrotes",
         "type": "Alimentos",
         "availability": "stock",
@@ -2688,18 +1551,349 @@ const PRODUCTS = [
         "popularity": 97,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
-            "1": 13077,
-            "6": 11333,
-            "12": 10625
+            "1": 790,
+            "3": 690,
+            "6": 650
         },
-        "image": "Alitas Rebozadas 2k Sadia.webp"
+        "image": "Arveja lata 350g 3 Arroyos.webp"
     },
     {
-        "id": "p128",
-        "brand": "Genérica",
-        "name": "Mayonesa Kraft 1,42l",
+        "id": "p70",
+        "brand": "3 Arroyos",
+        "name": "Lenteja en lata 350g 3 arroyos",
         "category": "abarrotes",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 97,
+        "isOffer": true,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 790,
+            "3": 690,
+            "6": 650
+        },
+        "image": "Lenteja en lata 350g 3 arroyos.webp"
+    },
+    {
+        "id": "p71",
+        "brand": "3 Arroyos",
+        "name": "Garbanzo lata 350g 3 arroyos",
+        "category": "abarrotes",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 80,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 940,
+            "3": 800,
+            "6": 750
+        },
+        "image": "Garbanzo lata 350g 3 arroyos.webp"
+    },
+    {
+        "id": "p72",
+        "brand": "3 Arroyos",
+        "name": "Choclo en grano  lata 350g 3 Arroyos",
+        "category": "abarrotes",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 86,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 923,
+            "3": 833,
+            "6": 779
+        },
+        "image": "Choclo en grano  lata 350g 3 Arroyos.webp"
+    },
+    {
+        "id": "p73",
+        "brand": "Gentil",
+        "name": "Palimitos en Rodajas Gentil 400g",
+        "category": "abarrotes",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 80,
+        "isOffer": false,
+        "isNew": true,
+        "isFeatured": true,
+        "prices": {
+            "1": 2105,
+            "3": 1890,
+            "6": 1777
+        },
+        "image": "generic_product.webp"
+    },
+    {
+        "id": "p74",
+        "brand": "Gentil",
+        "name": "Palimitos en Enteros  Gentil 400g",
+        "category": "abarrotes",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 80,
+        "isOffer": false,
+        "isNew": true,
+        "isFeatured": true,
+        "prices": {
+            "1": 2746,
+            "3": 2479,
+            "6": 2318
+        },
+        "image": "generic_product.webp"
+    },
+    {
+        "id": "p75",
+        "brand": "Gentil",
+        "name": "Choclito Coktail 425g Gentil",
+        "category": "abarrotes",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 80,
+        "isOffer": false,
+        "isNew": true,
+        "isFeatured": true,
+        "prices": {
+            "1": 1446,
+            "3": 1305,
+            "6": 1220
+        },
+        "image": "generic_product.webp"
+    },
+    {
+        "id": "p76",
+        "brand": "Gentil",
+        "name": "Durazno en cubitos 3k Gentil",
+        "category": "abarrotes",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 80,
+        "isOffer": false,
+        "isNew": true,
+        "isFeatured": true,
+        "prices": {
+            "1": 7689,
+            "3": 6941,
+            "6": 6490
+        },
+        "image": "generic_product.webp"
+    },
+    {
+        "id": "p77",
+        "brand": "Gentil",
+        "name": "Durazno en Mitades 3k Gentil",
+        "category": "abarrotes",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 80,
+        "isOffer": false,
+        "isNew": true,
+        "isFeatured": true,
+        "prices": {
+            "1": 7689,
+            "3": 6941,
+            "6": 6490
+        },
+        "image": "generic_product.webp"
+    },
+    {
+        "id": "p78",
+        "brand": "Gentil",
+        "name": "Piña en Rodaja 3k Gentil",
+        "category": "abarrotes",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 80,
+        "isOffer": false,
+        "isNew": true,
+        "isFeatured": true,
+        "prices": {
+            "1": 11167,
+            "3": 10081,
+            "6": 9427
+        },
+        "image": "generic_product.webp"
+    },
+    {
+        "id": "p79",
+        "brand": "Gentil",
+        "name": "Piña en Trozos 3k Gentil",
+        "category": "abarrotes",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 80,
+        "isOffer": false,
+        "isNew": true,
+        "isFeatured": true,
+        "prices": {
+            "1": 11167,
+            "3": 10081,
+            "6": 9427
+        },
+        "image": "generic_product.webp"
+    },
+    {
+        "id": "p80",
+        "brand": "Costa",
+        "name": "Mini Cocaditas  Costa 35g",
+        "category": "confiteria",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 96,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 300,
+            "3": 270,
+            "6": 253
+        },
+        "image": "Mini Cocaditas  Costa 35g.webp"
+    },
+    {
+        "id": "p81",
+        "brand": "Costa",
+        "name": "Mini Mantequilla Costa 35g",
+        "category": "lacteos",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 86,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 300,
+            "3": 270,
+            "6": 253
+        },
+        "image": "Mini Mantequilla Costa 35g.webp"
+    },
+    {
+        "id": "p82",
+        "brand": "Costa",
+        "name": "Mini Chips Costa 35",
+        "category": "confiteria",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 70,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 300,
+            "3": 270,
+            "6": 253
+        },
+        "image": "Mini Chips Costa 35.webp"
+    },
+    {
+        "id": "p83",
+        "brand": "Costa",
+        "name": "Mini Brownie Chips Costa35g",
+        "category": "confiteria",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 89,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 300,
+            "3": 270,
+            "6": 253
+        },
+        "image": "Mini Brownie Chips Costa 35g.webp"
+    },
+    {
+        "id": "p84",
+        "brand": "Costa",
+        "name": "Cereal Bar Chocolate Costa x20",
+        "category": "confiteria",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 96,
+        "isOffer": true,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 5538,
+            "3": 5000,
+            "6": 4675
+        },
+        "image": "Cereal Bar Chocolate Costa x20.webp"
+    },
+    {
+        "id": "p85",
+        "brand": "Costa",
+        "name": "Mini Vino Costa 35g",
+        "category": "confiteria",
         "type": "Alimentos",
         "availability": "stock",
         "clientTypes": [
@@ -2709,39 +1903,19 @@ const PRODUCTS = [
         "popularity": 83,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
-            "1": 12600,
-            "6": 10920,
-            "12": 10238
+            "1": 300,
+            "3": 270,
+            "6": 253
         },
-        "image": "Mayonesa Kraft 1,42l.webp"
+        "image": "Mini Vino Costa 35g.webp"
     },
     {
-        "id": "p129",
-        "brand": "Genérica",
-        "name": "Mayonesa Kraft 650 ml",
-        "category": "abarrotes",
-        "type": "Alimentos",
-        "availability": "stock",
-        "clientTypes": [
-            "minorista",
-            "mayorista"
-        ],
-        "popularity": 82,
-        "isOffer": true,
-        "isNew": false,
-        "prices": {
-            "1": 6538,
-            "6": 5667,
-            "12": 5313
-        },
-        "image": "Mayonesa Kraft 650 ml.webp"
-    },
-    {
-        "id": "p130",
-        "brand": "Genérica",
-        "name": "Mayonesa Kraft 789ml pote",
-        "category": "abarrotes",
+        "id": "p86",
+        "brand": "Costa",
+        "name": "Mini Dulcitas Costa 35g",
+        "category": "confiteria",
         "type": "Alimentos",
         "availability": "stock",
         "clientTypes": [
@@ -2751,19 +1925,218 @@ const PRODUCTS = [
         "popularity": 79,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
-            "1": 8154,
-            "6": 7067,
-            "12": 6625
+            "1": 300,
+            "3": 270,
+            "6": 253
         },
-        "image": "Mayonesa Kraft 789ml pote.webp"
+        "image": "Mini Dulcitas Costa 35g.webp"
     },
     {
-        "id": "p131",
-        "brand": "La Española",
-        "name": "Salchica La Española x 20",
-        "category": "limpieza",
-        "type": "Limpieza",
+        "id": "p87",
+        "brand": "Almadre",
+        "name": "Pita Chips Original 115g",
+        "category": "licores",
+        "type": "Otros",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 78,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 1990,
+            "6": 1690,
+            "12": 1390
+        },
+        "image": "Pita Chips Original 115g.webp"
+    },
+    {
+        "id": "p88",
+        "brand": "Almadre",
+        "name": "Pita Chips Toamte Romero 115g",
+        "category": "abarrotes",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 90,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 1990,
+            "6": 1690,
+            "12": 1390
+        },
+        "image": "Pita Chips Tomate Romero 115g.webp"
+    },
+    {
+        "id": "p89",
+        "brand": "Almadre",
+        "name": "Pita Chips Cebolla  115g",
+        "category": "abarrotes",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 86,
+        "isOffer": true,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 1990,
+            "6": 1690,
+            "12": 1390
+        },
+        "image": "Pita Chips Cebolla  115g.webp"
+    },
+    {
+        "id": "p90",
+        "brand": "Almadre",
+        "name": "Pita Chips Jalapeño 115g",
+        "category": "abarrotes",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 76,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 1990,
+            "6": 1690,
+            "12": 1390
+        },
+        "image": "Pita Chips Jalapeño 115g.webp"
+    },
+    {
+        "id": "p91",
+        "brand": "Almadre",
+        "name": "Pita Chips Cúrcuma 115g",
+        "category": "abarrotes",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 74,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 1990,
+            "6": 1690,
+            "12": 1390
+        },
+        "image": "Pita Chips Cúrcuma 115g.webp"
+    },
+    {
+        "id": "p92",
+        "brand": "Quillayes  Surlat",
+        "name": "Leche Surlart Sin Lactosa descremada",
+        "category": "lacteos",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 70,
+        "isOffer": true,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 1538,
+            "6": 1390,
+            "12": 1250
+        },
+        "image": "Leche Surlart Sin Lactosa descremada.webp"
+    },
+    {
+        "id": "p93",
+        "brand": "Quillayes  Surlat",
+        "name": "Leche Pitrufquen 1lt",
+        "category": "lacteos",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 87,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 1267,
+            "6": 1144,
+            "12": 1070
+        },
+        "image": "Leche Pitrufquen 1lt.webp"
+    },
+    {
+        "id": "p94",
+        "brand": "Quillayes  Surlat",
+        "name": "Leche entera surlat 1lt",
+        "category": "lacteos",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 89,
+        "isOffer": true,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 1384,
+            "6": 1250,
+            "12": 1169
+        },
+        "image": "Leche entera surlat 1lt.webp"
+    },
+    {
+        "id": "p95",
+        "brand": "Quillayes  Surlat",
+        "name": "Leche descremda Surlat 1lt",
+        "category": "lacteos",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 80,
+        "isOffer": false,
+        "isNew": true,
+        "isFeatured": true,
+        "prices": {
+            "1": 1384,
+            "6": 1250,
+            "12": 1169
+        },
+        "image": "generic_product.webp"
+    },
+    {
+        "id": "p96",
+        "brand": "Quillayes  Surlat",
+        "name": "Queso Gauda laminado 200g Surlat",
+        "category": "lacteos",
+        "type": "Alimentos",
         "availability": "stock",
         "clientTypes": [
             "minorista",
@@ -2772,12 +2145,1003 @@ const PRODUCTS = [
         "popularity": 77,
         "isOffer": false,
         "isNew": false,
+        "isFeatured": true,
         "prices": {
-            "1": 3384,
-            "6": 2933,
-            "12": 2750
+            "1": 3302,
+            "3": 2981,
+            "6": 2788
         },
-        "image": "Salchicha La Española x 20.webp"
+        "image": "Queso Gauda laminado 200g Surlat.webp"
+    },
+    {
+        "id": "p97",
+        "brand": "Quillayes  Surlat",
+        "name": "Queso Chanco laminado 250g Quillayes",
+        "category": "lacteos",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 92,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 3375,
+            "3": 3047,
+            "6": 2849
+        },
+        "image": "Queso Chanco laminado 250g Quillayes.webp"
+    },
+    {
+        "id": "p98",
+        "brand": "Quillayes  Surlat",
+        "name": "Queso Rallado 40g Quillayes",
+        "category": "lacteos",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 80,
+        "isOffer": false,
+        "isNew": true,
+        "isFeatured": true,
+        "prices": {
+            "1": 1096,
+            "3": 2690,
+            "6": 925
+        },
+        "image": "generic_product.webp"
+    },
+    {
+        "id": "p99",
+        "brand": "La Española",
+        "name": "Salchichas x20",
+        "category": "lacteos",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 80,
+        "isOffer": false,
+        "isNew": true,
+        "isFeatured": true,
+        "prices": {
+            "1": 3076,
+            "3": 2777,
+            "6": 2597
+        },
+        "image": "generic_product.webp"
+    },
+    {
+        "id": "p100",
+        "brand": "Swan",
+        "name": "Servilleta Swan x300un",
+        "category": "aseo",
+        "type": "Hogar",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 91,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 1153,
+            "3": 1041,
+            "12": 974
+        },
+        "image": "Servilleta Swan x300un.webp"
+    },
+    {
+        "id": "p101",
+        "brand": "Swan",
+        "name": "Confort 50mt x 4 Swan",
+        "category": "aseo",
+        "type": "Hogar",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 73,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 2846,
+            "3": 2569,
+            "8": 2402
+        },
+        "image": "Confort 50mt x 4 Swan.webp"
+    },
+    {
+        "id": "p102",
+        "brand": "Swan",
+        "name": "Toalla de papel Swan 70 m",
+        "category": "bebidas",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 96,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 1651,
+            "3": 1491,
+            "8": 1394
+        },
+        "image": "Toalla de papel Swan 70 m.webp"
+    },
+    {
+        "id": "p103",
+        "brand": "Keiner",
+        "name": "Bolsa de basura 10 und  50x70",
+        "category": "aseo",
+        "type": "Hogar",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 80,
+        "isOffer": false,
+        "isNew": true,
+        "isFeatured": true,
+        "prices": {
+            "1": 538,
+            "3": 486,
+            "6": 454
+        },
+        "image": "generic_product.webp"
+    },
+    {
+        "id": "p104",
+        "brand": "Keiner",
+        "name": "Bolsa de basura 10 und  70x90",
+        "category": "aseo",
+        "type": "Hogar",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 80,
+        "isOffer": false,
+        "isNew": true,
+        "isFeatured": true,
+        "prices": {
+            "1": 769,
+            "3": 694,
+            "6": 649
+        },
+        "image": "generic_product.webp"
+    },
+    {
+        "id": "p105",
+        "brand": "Keiner",
+        "name": "Bolsa de basura 10 und  80x110",
+        "category": "aseo",
+        "type": "Hogar",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 80,
+        "isOffer": false,
+        "isNew": true,
+        "isFeatured": true,
+        "prices": {
+            "1": 1230,
+            "3": 1111,
+            "6": 1038
+        },
+        "image": "generic_product.webp"
+    },
+    {
+        "id": "p106",
+        "brand": "Keiner",
+        "name": "Trapero de algodón 50x70",
+        "category": "aseo",
+        "type": "Hogar",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 82,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 692,
+            "3": 625,
+            "6": 584
+        },
+        "image": "Trapero de algodón 50x70.webp"
+    },
+    {
+        "id": "p107",
+        "brand": "Keiner",
+        "name": "Paño microfibra 38x38 cm",
+        "category": "aseo",
+        "type": "Hogar",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 75,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 538,
+            "3": 486,
+            "6": 454
+        },
+        "image": "Paño microfibra 38x38 cm.webp"
+    },
+    {
+        "id": "p108",
+        "brand": "Keiner",
+        "name": "Paños de esponja x 3",
+        "category": "aseo",
+        "type": "Hogar",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 81,
+        "isOffer": true,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 1076,
+            "3": 972,
+            "6": 909
+        },
+        "image": "Paños de esponja x 3.webp"
+    },
+    {
+        "id": "p109",
+        "brand": "Keiner",
+        "name": "Trapero de Microfibra",
+        "category": "aseo",
+        "type": "Hogar",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 78,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 846,
+            "3": 763,
+            "6": 714
+        },
+        "image": "Trapero de Microfibra.webp"
+    },
+    {
+        "id": "p110",
+        "brand": "Keiner",
+        "name": "Paño de sacudir amarillo 35x40 cm",
+        "category": "aseo",
+        "type": "Hogar",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 70,
+        "isOffer": true,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 615,
+            "3": 555,
+            "6": 519
+        },
+        "image": "Paño de sacudir amarillo 35x40 cm.webp"
+    },
+    {
+        "id": "p111",
+        "brand": "Keiner",
+        "name": "Trapero humedo x 12",
+        "category": "aseo",
+        "type": "Hogar",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 75,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 1692,
+            "3": 1527,
+            "6": 6990
+        },
+        "image": "Trapero humedo x 12.webp"
+    },
+    {
+        "id": "p112",
+        "brand": "Keiner",
+        "name": "Detergente Ariel 1,8l",
+        "category": "aseo",
+        "type": "Hogar",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 72,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 8600,
+            "3": 7763,
+            "6": 7259
+        },
+        "image": "Detergente Ariel 1,8l.webp"
+    },
+    {
+        "id": "p113",
+        "brand": "Big Cola",
+        "name": "Big Cola 1,7lt",
+        "category": "bebidas",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 93,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 1007,
+            "3": 909,
+            "6": 850
+        },
+        "image": "Big Cola 1,7lt.webp"
+    },
+    {
+        "id": "p114",
+        "brand": "Big Cola",
+        "name": "Big Cola Zero 1,7lt",
+        "category": "bebidas",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 96,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 1007,
+            "3": 909,
+            "6": 850
+        },
+        "image": "Big Cola Zero 1,7lt.webp"
+    },
+    {
+        "id": "p115",
+        "brand": "Big Cola",
+        "name": "Big Cola 3,03lt",
+        "category": "bebidas",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 80,
+        "isOffer": false,
+        "isNew": true,
+        "isFeatured": true,
+        "prices": {
+            "1": 1512,
+            "3": 1365,
+            "6": 1276
+        },
+        "image": "Big Cola 3,03lt.webp"
+    },
+    {
+        "id": "p116",
+        "brand": "Big Cola",
+        "name": "Big Cola Zero 3.03 lt",
+        "category": "bebidas",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 80,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 1512,
+            "3": 1365,
+            "6": 1277
+        },
+        "image": "Big Cola Zero 3.03 lt.webp"
+    },
+    {
+        "id": "p117",
+        "brand": "Big Cola",
+        "name": "Agua Vida sin gas 1600 mml",
+        "category": "bebidas",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 88,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 1007,
+            "3": 909,
+            "6": 800
+        },
+        "image": "Agua Vida sin gas 1600 mml.webp"
+    },
+    {
+        "id": "p118",
+        "brand": "Big Cola",
+        "name": "Agua Vida con gas 1600 ml",
+        "category": "bebidas",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 80,
+        "isOffer": false,
+        "isNew": true,
+        "isFeatured": true,
+        "prices": {
+            "1": 1007,
+            "6": 909,
+            "12": 850
+        },
+        "image": "generic_product.webp"
+    },
+    {
+        "id": "p119",
+        "brand": "Big Cola",
+        "name": "Agua Vida sin gas 1600 ml",
+        "category": "bebidas",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 80,
+        "isOffer": false,
+        "isNew": true,
+        "isFeatured": true,
+        "prices": {
+            "1": 1007,
+            "6": 909,
+            "12": 850
+        },
+        "image": "generic_product.webp"
+    },
+    {
+        "id": "p120",
+        "brand": "Coca Cola",
+        "name": "Bendictino sin gas 500 ml",
+        "category": "bebidas",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 76,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 446,
+            "6": 402,
+            "12": 376
+        },
+        "image": "Benedictino con gas 500 ml.webp"
+    },
+    {
+        "id": "p121",
+        "brand": "Coca Cola",
+        "name": "Benedictino sin gas 500 ml",
+        "category": "bebidas",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 77,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 446,
+            "6": 402,
+            "12": 376
+        },
+        "image": "Benedictino sin gas 500 ml.webp"
+    },
+    {
+        "id": "p122",
+        "brand": "Big Cola",
+        "name": "Big cola Lata 473 ml x 6",
+        "category": "bebidas",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 80,
+        "isOffer": false,
+        "isNew": true,
+        "isFeatured": true,
+        "prices": {
+            "1": 4033,
+            "6": 3600,
+            "12": 3405
+        },
+        "image": "generic_product.webp"
+    },
+    {
+        "id": "p123",
+        "brand": "Big Cola",
+        "name": "Big Cola Zero Lata 473 ml x 6",
+        "category": "bebidas",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 80,
+        "isOffer": false,
+        "isNew": true,
+        "isFeatured": true,
+        "prices": {
+            "1": 4033,
+            "6": 3641,
+            "12": 3405
+        },
+        "image": "generic_product.webp"
+    },
+    {
+        "id": "p124",
+        "brand": "Big Cola",
+        "name": "Agua Vida sin gas 600 mml",
+        "category": "bebidas",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 80,
+        "isOffer": false,
+        "isNew": true,
+        "isFeatured": true,
+        "prices": {
+            "1": 461,
+            "6": 416,
+            "12": 389
+        },
+        "image": "generic_product.webp"
+    },
+    {
+        "id": "p125",
+        "brand": "Big Cola",
+        "name": "Agua Vida con gas 600 mml",
+        "category": "bebidas",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 80,
+        "isOffer": false,
+        "isNew": true,
+        "isFeatured": true,
+        "prices": {
+            "1": 461,
+            "6": 416,
+            "12": 389
+        },
+        "image": "generic_product.webp"
+    },
+    {
+        "id": "p126",
+        "brand": "Big Cola",
+        "name": "Vital sin gas 600 ml",
+        "category": "bebidas",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 80,
+        "isOffer": false,
+        "isNew": true,
+        "isFeatured": true,
+        "prices": {
+            "1": 613,
+            "6": 554,
+            "12": 518
+        },
+        "image": "generic_product.webp"
+    },
+    {
+        "id": "p127",
+        "brand": "Big Cola",
+        "name": "Vital con gas 600 ml",
+        "category": "bebidas",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 80,
+        "isOffer": false,
+        "isNew": true,
+        "isFeatured": true,
+        "prices": {
+            "1": 613,
+            "6": 554,
+            "12": 518
+        },
+        "image": "generic_product.webp"
+    },
+    {
+        "id": "p128",
+        "brand": "Canoro",
+        "name": "Energetica canoro 500ml",
+        "category": "bebidas",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 79,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 923,
+            "6": 833,
+            "12": 779
+        },
+        "image": "Energetica canoro 500ml.webp"
+    },
+    {
+        "id": "p129",
+        "brand": "Canoro",
+        "name": "Limonada Canoro 600 ml Frambuesa",
+        "category": "abarrotes",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 84,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 846,
+            "6": 763,
+            "12": 714
+        },
+        "image": "Limonada Canoro 600 ml Frambuesa.webp"
+    },
+    {
+        "id": "p130",
+        "brand": "Canoro",
+        "name": "Limonada Canoro 600 ml Maracuya",
+        "category": "abarrotes",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 87,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 846,
+            "6": 763,
+            "12": 714
+        },
+        "image": "Limonada Canoro 600 ml Maracuya.webp"
+    },
+    {
+        "id": "p131",
+        "brand": "Canoro",
+        "name": "Limonada Canoro 600 ml Maqui Berries",
+        "category": "abarrotes",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 74,
+        "isOffer": true,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 846,
+            "6": 763,
+            "12": 714
+        },
+        "image": "Limonada Canoro 600 ml Maqui Berries.webp"
+    },
+    {
+        "id": "p132",
+        "brand": "Canoro",
+        "name": "Limonada Canoro 600 ml Menta Jenjibre",
+        "category": "abarrotes",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 95,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 846,
+            "6": 763,
+            "12": 714
+        },
+        "image": "Limonada Canoro 600 ml.webp"
+    },
+    {
+        "id": "p133",
+        "brand": "Canoro",
+        "name": "Limonada Canoro 600 ml",
+        "category": "abarrotes",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 82,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 7500,
+            "6": 763,
+            "12": 714
+        },
+        "image": "Limonada Canoro 600 ml.webp"
+    },
+    {
+        "id": "p134",
+        "brand": "Coca Cola",
+        "name": "Pack Coca cola 591 ml x 6",
+        "category": "bebidas",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 98,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 7500,
+            "6": 7083,
+            "12": 6623
+        },
+        "image": "Coca cola 591 ml.webp"
+    },
+    {
+        "id": "p135",
+        "brand": "Coca Cola",
+        "name": "Pack Coca Zero 591 ml x6",
+        "category": "bebidas",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 72,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 7500,
+            "6": 7083,
+            "12": 6623
+        },
+        "image": "Coca Zero 591 ml.webp"
+    },
+    {
+        "id": "p136",
+        "brand": "Coca Cola",
+        "name": "Pack Fanta 591 ml x6",
+        "category": "bebidas",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 71,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 7500,
+            "6": 7083,
+            "12": 6623
+        },
+        "image": "Fanta 591 ml.webp"
+    },
+    {
+        "id": "p137",
+        "brand": "Coca Cola",
+        "name": "Pack Sprite 591 ml",
+        "category": "bebidas",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 92,
+        "isOffer": false,
+        "isNew": false,
+        "isFeatured": true,
+        "prices": {
+            "1": 7500,
+            "6": 7083,
+            "12": 6623
+        },
+        "image": "Sprite 591 ml.webp"
+    },
+    {
+        "id": "p138",
+        "brand": "Coca Cola",
+        "name": "Jugo del Valle Naranja 200ml x 6",
+        "category": "bebidas",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 80,
+        "isOffer": false,
+        "isNew": true,
+        "isFeatured": true,
+        "prices": {
+            "1": 1850,
+            "4": 1690,
+            "8": 1590
+        },
+        "image": "generic_product.webp"
+    },
+    {
+        "id": "p139",
+        "brand": "Coca Cola",
+        "name": "Jugo del Valle Piña 200ml x 6",
+        "category": "bebidas",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 80,
+        "isOffer": false,
+        "isNew": true,
+        "isFeatured": true,
+        "prices": {
+            "1": 1850,
+            "4": 1690,
+            "8": 1590
+        },
+        "image": "generic_product.webp"
+    },
+    {
+        "id": "p140",
+        "brand": "Coca Cola",
+        "name": "Jugo del Valle Manzana  200ml x 6",
+        "category": "bebidas",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 80,
+        "isOffer": false,
+        "isNew": true,
+        "isFeatured": true,
+        "prices": {
+            "1": 1850,
+            "4": 1690,
+            "8": 1590
+        },
+        "image": "generic_product.webp"
+    },
+    {
+        "id": "p141",
+        "brand": "Coca Cola",
+        "name": "Jugo del Valle Durazno 200ml x 6",
+        "category": "bebidas",
+        "type": "Alimentos",
+        "availability": "stock",
+        "clientTypes": [
+            "minorista",
+            "mayorista"
+        ],
+        "popularity": 80,
+        "isOffer": false,
+        "isNew": true,
+        "isFeatured": true,
+        "prices": {
+            "1": 1850,
+            "4": 1690,
+            "8": 1590
+        },
+        "image": "generic_product.webp"
     }
 ];
 
@@ -4308,8 +4672,10 @@ function setupCarousel() {
 // 10. PRODUCT CARDS
 function createProductCardHTML(product, isHome = false) {
     const priceUnit1 = product.prices[1];
-    const bestPrice = isHome ? (product.prices[12] || product.prices[6] || priceUnit1) : priceUnit1;
-    const bestTierQty = product.prices[12] ? 12 : (product.prices[6] ? 6 : 1);
+    const tierKeys = Object.keys(product.prices || {}).map(Number).sort((a, b) => b - a);
+    const maxTier = tierKeys.length > 0 ? tierKeys[0] : 1;
+    const bestPrice = isHome ? (product.prices[maxTier] || priceUnit1) : priceUnit1;
+    const bestTierQty = maxTier;
     const unitSavings = priceUnit1 - bestPrice;
     const pctSavings = unitSavings > 0 ? Math.round((unitSavings / priceUnit1) * 100) : 0;
     const totalBoxSavings = unitSavings * bestTierQty;
@@ -4482,11 +4848,7 @@ function bindCardInteractions(container) {
         const totalPriceLabel = card.querySelector('.total-amount');
         const addBtn = card.querySelector('.add-cart-btn');
 
-        const getTierPrice = (qty) => {
-            if (qty >= 12) return product.prices[12];
-            if (qty >= 6) return product.prices[6];
-            return product.prices[1];
-        };
+        const getTierPrice = (qty) => getUnitPriceByQty(product, qty);
 
         const updatePrices = (qty) => {
             const unitPrice = getTierPrice(qty);
@@ -4703,11 +5065,8 @@ function updateCartUI() {
         if (!product) return '';
         
         totalItemsCount += item.quantity;
-        const unitDetailPrice = product.prices[1];
-        let unitWholesalePrice = product.prices[1];
-        
-        if (item.quantity >= 12) unitWholesalePrice = product.prices[12];
-        else if (item.quantity >= 6) unitWholesalePrice = product.prices[6];
+        const unitDetailPrice = product.prices[1] || product.prices['1'] || 0;
+        let unitWholesalePrice = getUnitPriceByQty(product, item.quantity);
         
         const rowTotal = unitWholesalePrice * item.quantity;
         subtotalNormal += (unitDetailPrice * item.quantity);
@@ -4901,17 +5260,9 @@ async function submitCheckout() {
         const product = PRODUCTS.find(p => p.id === item.productId);
         if (!product) return;
 
-        const unitDetailPrice = product.prices[1];
-        let unitActivePrice = product.prices[1];
-        let formatType = 'Unidad';
-
-        if (item.quantity >= 12) {
-            unitActivePrice = product.prices[12];
-            formatType = 'Gran Mayor';
-        } else if (item.quantity >= 6) {
-            unitActivePrice = product.prices[6];
-            formatType = 'Packs';
-        }
+        const unitDetailPrice = product.prices[1] || product.prices['1'] || 0;
+        let unitActivePrice = getUnitPriceByQty(product, item.quantity);
+        let formatType = item.quantity >= 12 ? 'Gran Mayor' : (item.quantity >= 3 ? 'Packs / Mayor' : 'Unidad');
 
         const rowCost = unitActivePrice * item.quantity;
         totalNormalValue += (unitDetailPrice * item.quantity);
