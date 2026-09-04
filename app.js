@@ -1299,7 +1299,7 @@ const PRODUCTS = [
         "id": "p58",
         "brand": "Molinos Cañuelas",
         "name": "Muffin relleno ddl x6",
-        "category": "congelados",
+        "category": "confiteria",
         "type": "Alimentos",
         "availability": "stock",
         "clientTypes": [
@@ -1321,8 +1321,8 @@ const PRODUCTS = [
         "id": "p59",
         "brand": "Molinos Cañuelas",
         "name": "Muffin Vainilla con Chips chocolate x6",
-        "category": "congelados",
-        "type": "Congelados",
+        "category": "confiteria",
+        "type": "Alimentos",
         "availability": "stock",
         "clientTypes": [
             "minorista",
@@ -1343,8 +1343,8 @@ const PRODUCTS = [
         "id": "p60",
         "brand": "Molinos Cañuelas",
         "name": "Muffin Chocolate con Chips de Chocolate x6",
-        "category": "congelados",
-        "type": "Congelados",
+        "category": "confiteria",
+        "type": "Alimentos",
         "availability": "stock",
         "clientTypes": [
             "minorista",
